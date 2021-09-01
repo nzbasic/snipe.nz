@@ -1,0 +1,22 @@
+{
+  "name": "snipe.nz",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nzbasic/snipe.nz.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nzbasic/snipe.nz/issues"
+  },
+  "homepage": "https://github.com/nzbasic/snipe.nz#readme",
+  "dependencies": {
+    "mongoose": "^6.0.3"
+  }
+}

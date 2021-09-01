@@ -13,12 +13,24 @@ export interface Beatmap {
   bpm: number,
   cs: number,
   hp: number,
-  rankedDate: number,
-  submittedDate: number,
-  loved: boolean,
-  length: number,
-  genre: string,
-  language: string,
+  rankedDate: string,
+  drain: number,
+  mapper: string,
+  playerId: number
+}
+
+export interface CHBeatmap {
+  artist: string,
+  song: string,
+  difficulty: string,
+  sr: number,
+  setId: number,
+  id: number,
+  ar: number,
+  od: number,
+  bpm: number,
+  cs: number,
+  hp: number,
   mapper: string
 }
 
@@ -35,13 +47,10 @@ const schema = new Schema<Beatmap>({
     bpm: Number,
     cs: Number,
     hp: Number,
-    rankedDate: Number,
-    submittedDate: Number,
-    loved: Boolean,
-    length: Number,
-    genre: String,
-    language: String,
+    rankedDate: String,
+    drain: Number,
     mapper: String,
+    playerId: Number,
 });
 
 // 3. Create a Model.

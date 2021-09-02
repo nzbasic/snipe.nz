@@ -14,14 +14,14 @@ export const PlayerScores = (props: RouteComponentProps<{ id: string }>) => {
     const id = props.match.params.id
 
     useEffect(() => {
-        axios.get("http://localhost:8080/api/players/" + id).then(res => {
+        axios.get("/api/players/" + id).then(res => {
             setPlayer(res.data)
         })
     }, [id])
 
     useEffect(() => {
         setLoading(true)
-        axios.get("http://localhost:8080/api/scores", { params: { id, pageNumber, pageSize } }).then(res => {
+        axios.get("/api/scores", { params: { id, pageNumber, pageSize } }).then(res => {
             setNumberPlays(res.data.numberPlays)
             setPlays(res.data.plays)
             setLoading(false)
@@ -51,6 +51,7 @@ export const PlayerScores = (props: RouteComponentProps<{ id: string }>) => {
             <span>{numberPlays} Plays</span>
             <button onClick={() => setPageNumber(pageNumber-1)} disabled={pageNumber === 1} className={`${pageNumber === 1 ? 'bg-blue-400 cursor-default': 'bg-blue-600'} px-2 py-1 rounded-sm text-white`}>Prev</button>
             <button onClick={() => setPageNumber(pageNumber+1)} disabled={pageNumber*pageSize > numberPlays} className={`${pageNumber*pageSize > numberPlays ? 'bg-blue-400 cursor-default': 'bg-blue-600'} px-2 py-1 rounded-sm text-white`}>Next</button>
+            <input type="number" value="20"/>
         </div>
       </div>
 

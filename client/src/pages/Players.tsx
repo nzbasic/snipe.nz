@@ -14,13 +14,13 @@ export const Players = () => {
     const order = -1;
 
     useEffect(() => {
-        axios.get("http://localhost:8080/api/beatmaps/numberLoaded").then(res => {
+        axios.get("/api/beatmaps/numberLoaded").then(res => {
             setNumberLoaded(res.data)
         })
     }, [])
 
     useEffect(() => {
-        axios.get("http://localhost:8080/api/players", { params: { pageNumber, pageSize, searchTerm: debouncedSearchTerm, order } }).then(res => {
+        axios.get("/api/players", { params: { pageNumber, pageSize, searchTerm: debouncedSearchTerm, order } }).then(res => {
             setPlayers(res.data.players)
             setNumberPlayers(res.data.numberPlayers)
         })

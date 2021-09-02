@@ -28,17 +28,12 @@ export const PlayerScores = (props: RouteComponentProps<{ id: string }>) => {
         })
     }, [pageNumber, pageSize, id])
 
-
     return (
       <div className="flex flex-col p-4">
-
         <a href="/" className="text-blue-400 cursor-pointer hover:underline">Home</a>
-
         <div className="flex space-x-4 my-4">
-            <span>{player.name}</span>
+            <a href={"https://osu.ppy.sh/users/" + player.id} target="_blank" rel="noreferrer" className="text-blue-400 hover:underline">{player.name}</a>
         </div>
-
-
         {!isLoading ? plays.map(play => (
             <div key={play.id} className="flex text-xs lg:text-base space-x-2">
                 <span className="w-16 lg:w-28 truncate">{play.artist}</span>

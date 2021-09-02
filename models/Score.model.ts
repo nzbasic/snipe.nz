@@ -7,8 +7,8 @@ export interface Score {
   beatmapId: number,
   score: number,
   acc: number,
-  mods: number,
-  date: number,
+  mods: string[],
+  date: string,
   pp: number,
   missCount: number,
   maxCombo: number

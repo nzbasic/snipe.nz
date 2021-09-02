@@ -1,10 +1,10 @@
 import express from 'express';
 import scoreRouter from './routers/score';
 import playerRouter from './routers/player';
+import beatmapRouter from './routers/beatmaps'
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import { dirname } from "path";
 import path from 'path'
 dotenv.config();
 
@@ -32,6 +32,7 @@ if (process.env.NODE_ENV === "production") {
 
 app.use("/api/scores", scoreRouter);
 app.use("/api/players", playerRouter);
+app.use("/api/beatmaps", beatmapRouter);
 
 app.get("/*", (req, res) => {
     res.sendFile(path.join(__dirname, "../client/build/index.html"), (err) => {

@@ -1,10 +1,16 @@
 import React from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import { Players } from './pages/Players'
+import { PlayerScores } from './pages/PlayerScores'
 
 function App() {
   return (
-    <div className="bg-red-600">
-      Home
-    </div>
+    <BrowserRouter>
+      <Switch>
+        <Route path="/" exact component={Players} />
+        <Route path="/player/:id" component={PlayerScores} />
+      </Switch>
+    </BrowserRouter>
   );
 }
 

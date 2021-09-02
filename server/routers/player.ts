@@ -8,14 +8,21 @@ router.route("/numberPlayers").get(async (req, res) => {
     res.json(numberPlayers);
 })
 
+router.route("/:id").get(async (req, res) => {
+    const id = parseInt(req.params.id as string)
+    const player = await PlayerModel.findOne({ id });
+    res.json(player);
+})
+
 router.route("/").get(async (req, res) => {
-    const searchTerm = req.body.searchTerm??""
-    const pageNumber = req.body.pageNumber
-    const pageSize = req.body.pageSize
-    const order = { firstCount: req.body.order }
+    const searchTerm = req.query.searchTerm as string
+    const pageNumber = parseInt(req.query.pageNumber as string)
+    const pageSize = parseInt(req.query.pageSize as string)
+    const order = { firstCount: req.query.order }
     const regex = new RegExp(searchTerm, "i");
     const page = await PlayerModel.find({ name: { $regex: regex } }).sort(order).skip(pageSize * (pageNumber - 1)).limit(pageSize)
-    res.json(page)
+    const count = await PlayerModel.countDocuments({ name: { $regex: regex } })
+    res.json({ players: page, numberPlayers: count })
 })
 
 export default router

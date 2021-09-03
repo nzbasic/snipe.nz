@@ -8,5 +8,6 @@ export interface Play {
     pp: number,
     acc: number,
     mods: string[],
-    date: string
+    date: string,
+    score: number
 }

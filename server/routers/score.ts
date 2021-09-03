@@ -33,7 +33,8 @@ router.route("/").get(async (req, res) => {
             pp: score.pp,
             acc: score.acc,
             mods: score.mods,
-            date: score.date
+            date: score.date,
+            score: score.score
         }
         page.push(play)
     }

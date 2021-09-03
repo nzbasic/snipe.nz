@@ -34,14 +34,15 @@ export const PlayerScores = (props: RouteComponentProps<{ id: string }>) => {
         <div className="flex space-x-4 my-4">
             <a href={"https://osu.ppy.sh/users/" + player.id} target="_blank" rel="noreferrer" className="text-blue-400 hover:underline">{player.name}</a>
         </div>
-        {!isLoading ? plays.map(play => (
+        {!isLoading ? plays.map((play, index) => (
             <div key={play.id} className="flex text-xs lg:text-base space-x-2">
+                <span className="w-8">{(index+1) + ((pageNumber-1) * pageSize)}</span>
                 <span className="w-16 lg:w-28 truncate">{play.artist}</span>
                 <a href={"https://osu.ppy.sh/beatmaps/" + play.beatmapId} target="_blank" rel="noreferrer" className="truncate w-32 lg:w-60 text-blue-400 hover:underline">{play.title}</a>
                 <span className="w-20 lg:w-40 truncate">[{play.difficulty}]</span>
-                <span className="w-12 lg:w-20">{play.pp.toFixed(0)}pp</span>
-                <span className="w-20 hidden lg:block">{(play.acc*100).toFixed(2)}%</span>
-                <span className="w-20 hidden lg:block">{play.mods.join("")}</span>
+                <span className="w-12 lg:w-16">{(play.pp??0).toFixed(0)}pp</span>
+                <span className="w-16 hidden lg:block">{(play.acc*100).toFixed(2)}%</span>
+                <span className="w-20 hidden lg:block truncate">{play.mods.join("")}</span>
                 <a href={"https://osu.ppy.sh/scores/osu/" + play.id} target="_blank" rel="noreferrer" className="w-8 truncate text-blue-400 hover:underline">Link</a>
             </div>
             

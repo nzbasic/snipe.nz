@@ -10,7 +10,7 @@ export const PlayerScores = (props: RouteComponentProps<{ id: string }>) => {
     const [pageNumber, setPageNumber] = useState(1)
     const [player, setPlayer] = useState<Player>({ id: 0, name: "", firstCount: 0})
     const [isLoading, setLoading] = useState(true)
-    const pageSize = 20;
+    const [pageSize, setPageSize] = useState(20)
     const id = props.match.params.id
 
     useEffect(() => {
@@ -45,14 +45,19 @@ export const PlayerScores = (props: RouteComponentProps<{ id: string }>) => {
                 <span className="w-20 hidden lg:block truncate">{play.mods.join("")}</span>
                 <a href={"https://osu.ppy.sh/scores/osu/" + play.id} target="_blank" rel="noreferrer" className="w-8 truncate text-blue-400 hover:underline">Link</a>
             </div>
-            
         )) : "loading..."}
 
         <div className="flex space-x-4 items-center mt-4">
             <span>{numberPlays} Plays</span>
             <button onClick={() => setPageNumber(pageNumber-1)} disabled={pageNumber === 1} className={`${pageNumber === 1 ? 'bg-blue-400 cursor-default': 'bg-blue-600'} px-2 py-1 rounded-sm text-white`}>Prev</button>
             <button onClick={() => setPageNumber(pageNumber+1)} disabled={pageNumber*pageSize > numberPlays} className={`${pageNumber*pageSize > numberPlays ? 'bg-blue-400 cursor-default': 'bg-blue-600'} px-2 py-1 rounded-sm text-white`}>Next</button>
-            <input type="number" value="20"/>
+            <select onChange={(e) => setPageSize(parseInt(e.target.value))} value={pageSize} className="border-2 border-black">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="500">500</option>
+            </select>
         </div>
       </div>
 

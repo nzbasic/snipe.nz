@@ -33,7 +33,7 @@ export const Players = () => {
             <input className="border-2 w-60 border-black my-4" type="text" placeholder="Search" onChange={(e) => setSearchTerm(e.target.value)} />
             <div className="flex flex-row">
                 <span className="w-40">Name</span>
-                <span>Number of County #1s</span>
+                <span>Number of Country #1s</span>
             </div>
             {players.map(player => (
                 <div key={player.id} className="flex flex-row">

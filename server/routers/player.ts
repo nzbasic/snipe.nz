@@ -1,5 +1,6 @@
 import express from 'express';
-import { PlayerModel } from '../../models/Player.model';
+import { Player, PlayerModel } from '../../models/Player.model';
+import { ScoreModel } from '../../models/Score.model';
 
 const router = express.Router();
 
@@ -24,5 +25,7 @@ router.route("/").get(async (req, res) => {
     const count = await PlayerModel.countDocuments({ name: { $regex: regex } })
     res.json({ players: page, numberPlayers: count })
 })
+
+
 
 export default router

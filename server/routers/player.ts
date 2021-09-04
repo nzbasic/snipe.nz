@@ -29,8 +29,13 @@ router.route("/").get(async (req, res) => {
     const regex = new RegExp(searchTerm, "i");
     const page = await PlayerModel.find({ name: { $regex: regex } }).sort(order).skip(pageSize * (pageNumber - 1)).limit(pageSize)
 
+    const promises: Promise<number>[] = []
     for (const player of page) {
-        player.firstCount = await getNumberScores(player.id)
+        promises.push(getNumberScores(player.id))
+    }
+    const counts = await Promise.all(promises)
+    for (let i = 0; i < page.length; i++) {
+        page[i].firstCount = counts[i]
     }
 
     const count = await PlayerModel.countDocuments({ name: { $regex: regex } })

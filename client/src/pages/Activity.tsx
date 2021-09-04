@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios'
 import { FormattedSnipe } from '../../../models/Snipe.model'
+import { SingleActivity } from '../components/SingleActivity'
 
 export const Activity = () => {
     const [isLoading, setLoading] = useState(true)
@@ -21,14 +22,7 @@ export const Activity = () => {
                 <span className="text-3xl md:text-6xl">Latest Snipes:</span>
                 {!isLoading ? (
                     snipes.map((item, index) => (
-                        <div key={index} className="flex flex-row lg:max-w-7xl items-center space-x-1 lg:space-x-2">
-                            <span className="hidden md:block truncate">{new Date(item.time).toLocaleString()}:</span>
-                            <a href={"/player/" + item.sniperId} className="hover:underline truncate">{item.sniper}</a>
-                            <span>sniped</span>
-                            <a href={"/player/" + item.victimId} className="hover:underline truncate">{item.victim}</a>
-                            <span>on</span>
-                            <a href={"https://osu.ppy.sh/beatmaps/" + item.beatmapId} target="_blank" rel="noreferrer" className="hover:underline truncate">{item.beatmap}</a>
-                        </div>
+                        <SingleActivity key={index} snipe={item}/>
                     ))
                 ) : <span>Loading Activity...</span>}
             </div>

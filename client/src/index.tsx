@@ -5,8 +5,6 @@ import './index.css'
 import 'animate.css/animate.min.css'
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <App />,
   document.getElementById('root')
 );

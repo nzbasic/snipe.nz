@@ -4,7 +4,7 @@ import { Player } from '../../../models/Player.model'
 import { useDebounce } from 'use-debounce'
 import { Pagination } from '../components/Pagination';
 
-export const Players = () => {
+export const Leaderboard = () => {
     const [isLoading, setLoading] = useState(true)
     const [players, setPlayers] = useState<Player[]>([]);
     const [pageNumber, setPageNumber] = useState(1);

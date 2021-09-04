@@ -39,6 +39,14 @@ const randomMapPool = [
     "Sidetracked Kids",
 ]
 
+const initialTop: Player[] = [
+    { name: "jiantz", firstCount: 2441, id: 1 },
+    { name: "downy", firstCount: 2427, id: 2 },
+    { name: "Kiiwa", firstCount: 1583, id: 3 },
+    { name: "Flauz", firstCount: 1120, id: 4 },
+    { name: "Big Z", firstCount: 1117, id: 5 }
+]
+
 const getRandomSnipe = (): string => {
     const map = Math.floor(Math.random() * randomMapPool.length)
     const firstPlayer = Math.floor(Math.random() * randomNamePool.length)
@@ -51,7 +59,7 @@ const getRandomSnipe = (): string => {
 }
 
 export const Home = () => {
-    const [top5, setTop5] = useState<Player[]>([])
+    const [top5, setTop5] = useState<Player[]>(initialTop)
     const [carousel, setCarousel] = useState<string[]>([])
     const [randomBeatmap, setRandomBeatmap] = useState<Play>()
 

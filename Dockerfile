@@ -4,7 +4,6 @@ COPY package*.json .
 RUN npm install
 COPY . .
 RUN cd client
-RUN npm install
 RUN npm run build
 RUN cd ..
 EXPOSE 8080

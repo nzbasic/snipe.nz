@@ -59,6 +59,14 @@ router.route("/refresh/:id").post(async (req, res) => {
             if (score.rank == 'F') continue;
             const id = parseInt(score.beatmapId as string)
             const beatmap = await BeatmapModel.findOne({ id: id })
+            const oldScore = await ScoreModel.findOne({ beatmapId: id })
+
+            if (oldScore) {
+                if (score.score < oldScore.score) {
+                    continue;
+                }
+            }
+
             if (beatmap) {
                 try {
                     await updateBeatmap(id, await getCookieJar(), beatmap, prev)

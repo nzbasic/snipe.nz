@@ -30,11 +30,28 @@ export const PlayerScores = (props: RouteComponentProps<{ id: string }>) => {
         })
     }, [pageNumber, pageSize, id])
 
+    const refreshUser = () => {
+        setLoading(true)
+        axios.post("/api/players/refresh/" + id).then(res => {
+            setLoading(false)
+            setPageNumber(1)
+        })
+    }
+
+    const refreshMap = (id: number) => {
+        setLoading(true)
+        axios.post("/api/beatmaps/refresh/" + id).then(res => {
+            setLoading(false)
+            setPageNumber(1)
+        })
+    }
+
     return (
       <div className="flex flex-col p-4">
         <a href="/players" className="text-blue-400 cursor-pointer hover:underline">Home</a>
-        <div className="flex space-x-4 my-4">
+        <div className="flex space-x-4 my-4 items-center">
             <a href={"https://osu.ppy.sh/users/" + player.id} target="_blank" rel="noreferrer" className="text-blue-400 hover:underline">{player.name}</a>
+            <button disabled={isLoading} onClick={() => refreshUser()} className={`${isLoading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-800'}  text-white px-2 py-1`}>Refresh using last 50 plays (1 minute)</button>
         </div>
 
         {!isLoading ? plays.map((play, index) => (
@@ -48,6 +65,7 @@ export const PlayerScores = (props: RouteComponentProps<{ id: string }>) => {
                 <span className="w-16 hidden lg:block">{(play.acc*100).toFixed(2)}%</span>
                 <span className="w-20 hidden lg:block truncate">{play.mods.join("")}</span>
                 <a href={"https://osu.ppy.sh/scores/osu/" + play.id} target="_blank" rel="noreferrer" className="w-8 truncate text-blue-400 hover:underline">Link</a>
+                <button onClick={() => refreshMap(play.beatmapId)} className="text-blue-400 w-24 hover:underline">Refresh</button>
             </div>
         )) : "loading..."}
 

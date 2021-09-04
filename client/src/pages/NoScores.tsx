@@ -8,6 +8,7 @@ export const NoScores = () => {
     const [pageNumber, setPageNumber] = useState(1);
     const [pageSize, setPageSize] = useState(20)
     const [numberNoScore, setNumberNoScore] = useState(0)
+    const [isLoading, setLoading] = useState(true)
 
     useEffect(() => {
         axios.get("/api/beatmaps/noScoreCount").then(res => {
@@ -16,24 +17,34 @@ export const NoScores = () => {
     }, [])
 
     useEffect(() => {
+        setLoading(true)
         axios.get("/api/beatmaps/noScore", { params: { pageNumber, pageSize } }).then(res => {
             setMaps(res.data)
+            setLoading(false)
         })  
     }, [pageSize, pageNumber])
+
+    const refreshMap = (id: number) => {
+        setLoading(true)
+        axios.post("/api/beatmaps/refresh/" + id).then(res => {
+            setLoading(false)
+        })
+    }
 
     return (
         <div className="flex flex-col p-4">
             <a href="/players" className="text-blue-400 cursor-pointer hover:underline">Home</a>
             <span className="my-4">These maps have no country scores</span>    
 
-            {maps.map(map => (
+            {!isLoading ? maps.map(map => (
                 <div key={map.id} className="flex space-x-2">
                     <span className="w-20 truncate">{map.artist}</span>
                     <a href={"https://osu.ppy.sh/beatmaps/" + map.id} target="_blank" rel="noreferrer" className="truncate w-32 lg:w-60 text-blue-400 hover:underline">{map.song}</a>
                     <span className="w-32 truncate">[{map.difficulty}]</span>
                     <span className="w-8">{map.sr.toFixed(2)}</span>
+                    <button onClick={() => refreshMap(map.id)} className="w-24 text-blue-400 hover:underline">Refresh</button>
                 </div>
-            ))}
+            )) : <span>Loading...</span>}
 
             <Pagination text="Maps" number={numberNoScore} pageSize={pageSize} setPageSize={setPageSize} pageNumber={pageNumber} setPageNumber={setPageNumber}/>
         </div>

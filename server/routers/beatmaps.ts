@@ -1,8 +1,11 @@
 import express from 'express';
-import { BeatmapModel } from '../../models/Beatmap.model';
+import { CookieJar } from 'tough-cookie';
+import { Beatmap, BeatmapModel } from '../../models/Beatmap.model';
 import { Play } from '../../models/play';
 import { PlayerModel } from '../../models/Player.model';
 import { ScoreModel } from '../../models/Score.model';
+import { updateBeatmap } from '../../shared/updatemap';
+import { promisify } from 'util'
 
 const router = express.Router();
 
@@ -12,8 +15,18 @@ router.route("/numberLoaded").get(async (req, res) => {
 })
 
 //todo
-router.route("/refresh/:id").get(async (req, res) => {
+router.route("/refresh/:id").post(async (req, res) => {
+    const id = parseInt(req.params.id)
+    const beatmap = await BeatmapModel.findOne({ id: id })
 
+    if (beatmap) {
+        const jar = new CookieJar();
+        const setCookie = promisify(jar.setCookie.bind(jar))
+        await setCookie(process.env.COOKIE??"", 'https://osu.ppy.sh')
+        await updateBeatmap(id, jar, beatmap)
+    }
+
+    res.json()
 })
 
 router.route("/noScore").get(async (req, res) => {

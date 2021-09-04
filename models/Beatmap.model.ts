@@ -13,10 +13,11 @@ export interface Beatmap {
   bpm: number,
   cs: number,
   hp: number,
-  rankedDate: string,
+  rankedDate?: string,
   drain: number,
   mapper: string,
-  playerId: number
+  playerId: number,
+  lastUpdated: number
 }
 
 export interface CHBeatmap {

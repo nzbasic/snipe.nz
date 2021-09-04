@@ -5,11 +5,13 @@ import { Play } from '../../models/play';
 import { BeatmapModel } from '../../models/Beatmap.model';
 
 const router = express.Router();
+export const getNumberScores = async (id: number) => {
+    return await ScoreModel.countDocuments({ playerId: id });
+}
 
 router.route("/numberScores").get(async (req, res) => {
     const id = req.body.id;
-    const numberScores = await ScoreModel.countDocuments({ playerId: id });
-    res.json(numberScores);
+    res.json(await getNumberScores(id));
 })
 
 router.route("/").get(async (req, res) => {

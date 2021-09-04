@@ -8,6 +8,13 @@ export interface Snipe {
   beatmap: number
 }
 
+export interface FormattedSnipe {
+  sniper: string,
+  victim: string,
+  time: number,
+  beatmap: string
+}
+
 // 2. Create a Schema corresponding to the document interface.
 const schema = new Schema<Snipe>({
     sniper: Number,

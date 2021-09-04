@@ -28,6 +28,10 @@ export const updateBeatmap = async (id: number, jar: CookieJar, beatmap: CHBeatm
             // does another score exist on this map? 
             const existing = await ScoreModel.findOne({ beatmapId: beatmap.id })
             if (existing) {
+                if (existing.playerId == firstPlace.user_id) {
+                    console.log(existing.playerId + " sniped themselves")
+                }
+
                 console.log("new snipe on " + beatmap.id + " by " + firstPlace.user.username + " victim " + existing.playerId)
                 new SnipeModel({
                     beatmap: beatmap.id,

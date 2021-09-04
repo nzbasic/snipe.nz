@@ -32,17 +32,17 @@ export const NoScores = () => {
     }
 
     return (
-        <div className="flex flex-col p-4">
-            <a href="/players" className="text-blue-400 cursor-pointer hover:underline">Home</a>
+        <div className="flex flex-col p-4 text-white">
+            <a href="/players" className="text-blue-300 cursor-pointer hover:underline w-12">Home</a>
             <span className="my-4">These maps have no country scores</span>    
 
             {!isLoading ? maps.map(map => (
                 <div key={map.id} className="flex space-x-2">
                     <span className="w-20 truncate">{map.artist}</span>
-                    <a href={"https://osu.ppy.sh/beatmaps/" + map.id} target="_blank" rel="noreferrer" className="truncate w-32 lg:w-60 text-blue-400 hover:underline">{map.song}</a>
+                    <a href={"https://osu.ppy.sh/beatmaps/" + map.id} target="_blank" rel="noreferrer" className="truncate w-32 lg:w-60 text-blue-300 hover:underline">{map.song}</a>
                     <span className="w-32 truncate">[{map.difficulty}]</span>
                     <span className="w-8">{map.sr.toFixed(2)}</span>
-                    <button onClick={() => refreshMap(map.id)} className="w-24 text-blue-400 hover:underline">Refresh</button>
+                    <button onClick={() => refreshMap(map.id)} className="w-24 text-blue-300 hover:underline">Refresh</button>
                 </div>
             )) : <span>Loading...</span>}
 

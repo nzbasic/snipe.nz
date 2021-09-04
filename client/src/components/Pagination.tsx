@@ -16,7 +16,7 @@ export const Pagination = ({text, number, pageNumber, setPageNumber, pageSize, s
             <button onClick={() => setPageNumber(pageNumber-1)} disabled={pageNumber === 1} className={`${pageNumber === 1 ? 'bg-blue-400 cursor-default': 'bg-blue-600'} px-2 py-1 rounded-sm text-white`}>Prev</button>
             <span className="w-4 text-center">{pageNumber}</span>
             <button onClick={() => setPageNumber(pageNumber+1)} disabled={pageNumber*pageSize > number} className={`${pageNumber*pageSize > number ? 'bg-blue-400 cursor-default': 'bg-blue-600'} px-2 py-1 rounded-sm text-white`}>Next</button>
-            <select onChange={(e) => {setPageNumber(1); setPageSize(parseInt(e.target.value))}} value={pageSize} className="border-2 border-black">
+            <select onChange={(e) => {setPageNumber(1); setPageSize(parseInt(e.target.value))}} value={pageSize} className="text-black border-2 border-black">
                 <option value="10">10</option>
                 <option value="20">20</option>
                 <option value="50">50</option>

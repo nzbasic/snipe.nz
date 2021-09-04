@@ -13,6 +13,9 @@ export interface FormattedSnipe {
   victim: string,
   time: number,
   beatmap: string
+  sniperId: number,
+  victimId: number,
+  beatmapId: number
 }
 
 // 2. Create a Schema corresponding to the document interface.

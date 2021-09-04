@@ -22,6 +22,10 @@ export const Players = () => {
     }, [])
 
     useEffect(() => {
+        setPageNumber(1)
+    }, [debouncedSearchTerm])
+
+    useEffect(() => {
         setLoading(true)
         axios.get("/api/players", { params: { pageNumber, pageSize, searchTerm: debouncedSearchTerm, order } }).then(res => {
             setPlayers(res.data.players)
@@ -31,9 +35,9 @@ export const Players = () => {
     }, [pageNumber, pageSize, debouncedSearchTerm, order])
 
     return (
-        <div className="flex flex-col p-4">
-            <a href="/noScores" className=" text-blue-400 hover:underline">Maps with no country scores</a>
-            <input className="border-2 w-60 border-black my-4" type="text" placeholder="Search" onChange={(e) => setSearchTerm(e.target.value)} />
+        <div className="flex flex-col p-4 text-white">
+            <a href="/noScores" className=" text-blue-300 hover:underline w-52">Maps with no country scores</a>
+            <input className="border-2 w-60 border-black my-4 text-black" type="text" placeholder="Search" onChange={(e) => setSearchTerm(e.target.value)} />
             <div className="flex flex-row">
                 <span className="w-12">#</span>
                 <span className="w-40">Name</span>
@@ -42,7 +46,7 @@ export const Players = () => {
             {!isLoading ? players.map((player, index) => (
                 <div key={player.id} className="flex flex-row">
                     <span className="w-12">{(index+1) + ((pageNumber-1) * pageSize)}</span>
-                    <a href={"/player/" + player.id} className="w-40 text-blue-400 hover:underline">{player.name}</a>
+                    <a href={"/player/" + player.id} className="w-40 text-blue-300 hover:underline">{player.name}</a>
                     <span>{player.firstCount}</span>
                 </div>
             )) : <span>Loading...</span>}

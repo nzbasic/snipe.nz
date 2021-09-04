@@ -14,6 +14,7 @@ router.route("/latest/:number").get(async (req, res) => {
 
     for (const snipe of latest) {
         const formattedSnipe = {} as FormattedSnipe
+        formattedSnipe.time = snipe.time
         const victimPromise = PlayerModel.findOne({ id: snipe.victim })
         const sniperPromise = PlayerModel.findOne({ id: snipe.sniper })
         const beatmapPromise = BeatmapModel.findOne({ id: snipe.beatmap })

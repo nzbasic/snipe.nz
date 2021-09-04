@@ -5,6 +5,7 @@ import { useDebounce } from 'use-debounce'
 import { Pagination } from '../components/Pagination';
 
 export const Players = () => {
+    const [isLoading, setLoading] = useState(true)
     const [players, setPlayers] = useState<Player[]>([]);
     const [pageNumber, setPageNumber] = useState(1);
     const [numberLoaded, setNumberLoaded] = useState(0);
@@ -21,9 +22,11 @@ export const Players = () => {
     }, [])
 
     useEffect(() => {
+        setLoading(true)
         axios.get("/api/players", { params: { pageNumber, pageSize, searchTerm: debouncedSearchTerm, order } }).then(res => {
             setPlayers(res.data.players)
             setNumberPlayers(res.data.numberPlayers)
+            setLoading(false)
         })
     }, [pageNumber, pageSize, debouncedSearchTerm, order])
 
@@ -38,13 +41,13 @@ export const Players = () => {
                 <span className="w-40">Name</span>
                 <span>Number of Country #1s</span>
             </div>
-            {players.map((player, index) => (
+            {!isLoading ? players.map((player, index) => (
                 <div key={player.id} className="flex flex-row">
                     <span className="w-12">{(index+1) + ((pageNumber-1) * pageSize)}</span>
                     <a href={"/player/" + player.id} className="w-40 text-blue-400 hover:underline">{player.name}</a>
                     <span>{player.firstCount}</span>
                 </div>
-            ))}
+            )) : <span>Loading...</span>}
             
             <Pagination text="Players" number={numberPlayers} pageSize={pageSize} setPageSize={setPageSize} pageNumber={pageNumber} setPageNumber={setPageNumber}/>
         </div>

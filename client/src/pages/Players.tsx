@@ -32,8 +32,6 @@ export const Players = () => {
 
     return (
         <div className="flex flex-col p-4">
-            <h1>I'll make it look good later</h1>
-            <span>{numberLoaded} Beatmaps loaded / ~86000</span>
             <a href="/noScores" className=" text-blue-400 hover:underline">Maps with no country scores</a>
             <input className="border-2 w-60 border-black my-4" type="text" placeholder="Search" onChange={(e) => setSearchTerm(e.target.value)} />
             <div className="flex flex-row">

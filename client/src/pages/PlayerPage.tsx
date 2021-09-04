@@ -107,7 +107,7 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
     const loadActivity = () => {
         if (isActivityLoading) {
             axios.get("/api/activity/latestWeek/" + id).then(res => {
-                setActivity(res.data)
+                setActivity(res.data.sort((a: FormattedSnipe, b: FormattedSnipe) => b.time - a.time))
                 setActivityLoading(false)
             })
         }
@@ -150,7 +150,7 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
                     >
                         <Typography className={classes.heading}>People who are sniping you</Typography>
                     </AccordionSummary>
-                    <AccordionDetails>
+                    <AccordionDetails className="flex flex-col">
                         {!isSnipedByLoading ? 
                             snipedByData.length === 0 ? 
                                 <span>You haven't been sniped.</span> :
@@ -176,7 +176,9 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
                                 <span>You haven't sniped/been sniped this week.</span> :
                                 activity.map((item, index) => (
                                     <div key={index} className="flex space-x-1">
-                                        <span className="truncate">sniped {item.victimId === parseInt(id) ? 'by ' + item.sniper : item.victim}</span>
+                                        <span className="hidden md:block truncate">{new Date(item.time).toLocaleDateString()}</span>
+                                        <span className="truncate">sniped {item.victimId === parseInt(id) && 'by'}</span>
+                                        <a className="hover:underline" href={"/players/" + (item.victimId === parseInt(id) ? item.sniperId : item.victimId)}>{item.victimId === parseInt(id) ? item.sniper : item.victim}</a>
                                         <span>on</span>
                                         <a href={"https://osu.ppy.sh/beatmaps/" + item.beatmapId} target="_blank" rel="noreferrer" className="hover:underline truncate">{item.beatmap}</a>
                                     </div>

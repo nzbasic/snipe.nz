@@ -5,6 +5,7 @@ import { PlayerScores } from './pages/PlayerScores'
 import { NoScores } from './pages/NoScores'
 import { Header } from './components/Header'
 import { Home } from './pages/Home'
+import { Activity } from './pages/Activity'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/players" exact component={Players} />
         <Route path="/player/:id" component={PlayerScores} />
         <Route path="/noScores" component={NoScores} />
+        <Route path="/activity" component={Activity} />
       </Switch>
     </BrowserRouter>
   );

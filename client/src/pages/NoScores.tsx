@@ -23,7 +23,7 @@ export const NoScores = () => {
 
     return (
         <div className="flex flex-col p-4">
-            <a href="/" className="text-blue-400 cursor-pointer hover:underline">Home</a>
+            <a href="/players" className="text-blue-400 cursor-pointer hover:underline">Home</a>
             <span className="my-4">These maps have no country scores</span>    
 
             {maps.map(map => (

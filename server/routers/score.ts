@@ -23,18 +23,20 @@ router.route("/").get(async (req, res) => {
     const scores = await ScoreModel.find({ playerId: id }).sort(order).skip(pageSize * (pageNumber - 1)).limit(pageSize)
     for (const score of scores) {
         const map = await BeatmapModel.findOne({ id: score.beatmapId })
+        const player = await PlayerModel.findOne({ id: score.playerId })
         const play: Play = { 
-            id: score.id,
-            beatmapId: score.beatmapId,
+            id: score?.id??0,
+            beatmapId: score?.beatmapId??0,
             artist: map?.artist??"Map",
-            title: map?.song??"Not",
+            song: map?.song??"Not",
             mapper: map?.mapper??"Sorry",
             difficulty: map?.difficulty??"Found",
-            pp: score.pp,
-            acc: score.acc,
-            mods: score.mods,
-            date: score.date,
-            score: score.score
+            pp: score?.pp??0,
+            acc: score?.acc??0,
+            mods: score?.mods??[],
+            date: score?.date??"",
+            score: score?.score??0,
+            player: player?.name??"Player not found"
         }
         page.push(play)
     }

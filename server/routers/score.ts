@@ -6,7 +6,7 @@ import { BeatmapModel } from '../../models/Beatmap.model';
 
 const router = express.Router();
 export const getNumberScores = async (id: number) => {
-    return await ScoreModel.countDocuments({ playerId: id });
+    return ScoreModel.countDocuments({ playerId: id });
 }
 
 router.route("/numberScores").get(async (req, res) => {

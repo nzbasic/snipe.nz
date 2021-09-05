@@ -7,6 +7,10 @@ body {
     font-family: 'Roboto', sans-serif;
 }
 
+.recharts-brush-slide {
+  background-color: black;
+}
+
 .animate-underline {
   position: relative;
   color: white;

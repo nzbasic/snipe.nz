@@ -12,7 +12,7 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { makeStyles, Typography } from '@material-ui/core';
 import { FormattedSnipe, Snipe, SnipeTotal } from '../../../models/Snipe.model';
-import { SingleActivity } from '../components/SingleActivity';
+import { TimeSeriesChart } from '../components/TimeSeriesChart'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -24,6 +24,10 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+interface GraphData {
+    time: number,
+    total: number
+}
 interface Loading {
     any: string
 }
@@ -36,6 +40,7 @@ for (let i = 0; i < 500; i++) {
 
 export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
     const [plays, setPlays] = useState<Play[]>([])
+    const [numberThisWeek, setNumberThisWeek] = useState(0)
     const [numberPlays, setNumberPlays] = useState(0)
     const [pageNumber, setPageNumber] = useState(1)
     const [player, setPlayer] = useState<Player>({ id: 0, name: "", firstCount: 0})
@@ -43,7 +48,7 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
     const [pageSize, setPageSize] = useState(20)
     const [activity, setActivity] = useState<FormattedSnipe[]>([])
     const [isActivityLoading, setActivityLoading] = useState(true)
-    const [rawSnipeData, setRawSnipeData] = useState<Snipe[]>([])
+    const [rawSnipeData, setRawSnipeData] = useState<GraphData[]>([])
     const [snipedByData, setSnipedByData] = useState<SnipeTotal[]>([])
     const [snipedData, setSnipedData] = useState<SnipeTotal[]>([])
     const [isSnipedByLoading, setSnipedByLoading] = useState(true)
@@ -57,9 +62,37 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
         })
 
         axios.get("/api/activity/" + id).then(res => {
-            setRawSnipeData(res.data)
+            if (plays.length === 0) return
+            const sortedSnipes: Snipe[] = res.data.sort((a: Snipe, b: Snipe) => b.time - a.time)
+            const firstPoint: GraphData = { time: new Date().getTime(), total: numberPlays }
+            const rawData: GraphData[] = [firstPoint]
+            let lastTotal = numberPlays
+            sortedSnipes.forEach(data => {
+                const newPoint = {} as GraphData
+                newPoint.time = data.time
+                if (data.victim === parseInt(id)) {
+                    newPoint.total = lastTotal + 1
+                } else {
+                    newPoint.total = lastTotal - 1
+                }
+
+                lastTotal = newPoint.total
+                rawData.push(newPoint)
+            })
+
+            let count = 0;
+            sortedSnipes.filter(item => item.time > new Date().getTime() - (604800 * 1000)).forEach(data => {
+                if (data.victim === parseInt(id)) {
+                    count--;
+                } else {
+                    count++;
+                }
+            })
+            
+            setNumberThisWeek(count)
+            setRawSnipeData(rawData.sort((a, b) => b.time - a.time))
         })
-    }, [id])
+    }, [id, numberPlays, plays])
 
     useEffect(() => {
         setLoading(true)
@@ -118,8 +151,15 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
             <ScrollAnimation animateIn="animate__slideInRight" className="bg-green-400 flex p-8">
                 <a href={"https://osu.ppy.sh/users/" + player.id} target="_blank" rel="noreferrer" className="text-4xl md:text-9xl font-semibold animate-underline">{player.name}</a>
             </ScrollAnimation>
-            <ScrollAnimation animateIn="animate__slideInLeft" className="bg-black flex p-8">
-                <button disabled={isLoading} onClick={() => refreshUser()} className={`${isLoading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-800'}  text-white px-2 py-1`}>Refresh using last 50 plays (1 minute)</button>
+            <ScrollAnimation animateIn="animate__slideInLeft" className="bg-black flex p-8 w-full ">
+                <button disabled={isLoading} onClick={() => refreshUser()} className={`${isLoading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-800'}  text-white px-2 py-1 rounded-sm`}>Refresh using last 50 plays (1 minute)</button>
+            </ScrollAnimation>
+            <ScrollAnimation animateIn="animate__slideInLeft" className="bg-pink-400 text-4xl space-y-2 flex flex-col p-8 w-full">
+                <span>Number #1s: {player.firstCount}</span>
+                <span>Change this week: {numberThisWeek > 0 ? "+" + numberThisWeek : "-" + numberThisWeek}</span>
+            </ScrollAnimation>
+            <ScrollAnimation animateIn="animate__slideInLeft" className="bg-black flex p-8 w-full h-96 text-black">
+                <TimeSeriesChart chartData={rawSnipeData} brush={true} title={true}/>
             </ScrollAnimation>
             <ScrollAnimation animateIn="animate__slideInLeft" className="bg-blue-400 flex flex-col space-y-4 p-8">
                 <Accordion onChange={() => loadSniped()}>
@@ -178,7 +218,7 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
                                     <div key={index} className="flex space-x-1">
                                         <span className="hidden md:block truncate">{new Date(item.time).toLocaleDateString()}</span>
                                         <span className="truncate">sniped {item.victimId === parseInt(id) && 'by'}</span>
-                                        <a className="hover:underline" href={"/players/" + (item.victimId === parseInt(id) ? item.sniperId : item.victimId)}>{item.victimId === parseInt(id) ? item.sniper : item.victim}</a>
+                                        <a className="hover:underline" href={"/player/" + (item.victimId === parseInt(id) ? item.sniperId : item.victimId)}>{item.victimId === parseInt(id) ? item.sniper : item.victim}</a>
                                         <span>on</span>
                                         <a href={"https://osu.ppy.sh/beatmaps/" + item.beatmapId} target="_blank" rel="noreferrer" className="hover:underline truncate">{item.beatmap}</a>
                                     </div>

@@ -18,6 +18,10 @@ router.route("/numberPlayers").get(async (req, res) => {
 router.route("/:id").get(async (req, res) => {
     const id = parseInt(req.params.id as string)
     const player = await PlayerModel.findOne({ id });
+    if (player) {
+        player.firstCount = await getNumberScores(id)
+    }
+    
     res.json(player);
 })
 

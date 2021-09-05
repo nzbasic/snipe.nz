@@ -17,7 +17,9 @@ export interface Beatmap {
   drain: number,
   mapper: string,
   playerId: number,
-  lastUpdated: number
+  lastUpdated: number,
+  hasSpinner?: boolean,
+  hash?: string
 }
 
 export interface CHBeatmap {
@@ -32,26 +34,30 @@ export interface CHBeatmap {
   bpm: number,
   cs: number,
   hp: number,
-  mapper: string
+  mapper: string,
+  spinners: number,
+  hash: string
 }
 
 // 2. Create a Schema corresponding to the document interface.
 const schema = new Schema<Beatmap>({
-    artist: String,
-    song: String,
-    difficulty: String,
-    sr: Number,
-    setId: Number,
-    id: Number,
-    ar: Number,
-    od: Number,
-    bpm: Number,
-    cs: Number,
-    hp: Number,
-    rankedDate: String,
-    drain: Number,
-    mapper: String,
-    playerId: Number,
+  artist: String,
+  song: String,
+  difficulty: String,
+  sr: Number,
+  setId: Number,
+  id: Number,
+  ar: Number,
+  od: Number,
+  bpm: Number,
+  cs: Number,
+  hp: Number,
+  rankedDate: String,
+  drain: Number,
+  mapper: String,
+  playerId: Number,
+  hasSpinner: Boolean,
+  hash: String
 });
 
 // 3. Create a Model.

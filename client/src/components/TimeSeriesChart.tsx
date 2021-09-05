@@ -14,13 +14,13 @@ import {
 } from "recharts";
 
 const CustomTooltip = ({ payload, label, active }: any) => {
-    if (active) {
+    if (active && payload.length) {
       return (
         <div className="text-white bg-black rounded-md p-4">
             <p className="label">
                 {moment(label).format("DD M YY") + " : " + payload[0].value}
             </p>
-      </div>
+        </div>
       );
     }
   
@@ -44,7 +44,8 @@ export const TimeSeriesChart = ({ chartData, brush, title }: { chartData: any[],
           <YAxis
             dataKey="total"
             name="pp"
-            domain={["dataMin-0.1", "auto"]}
+            domain={["auto", "auto"]}
+            tickFormatter={(item) => Math.floor(item) + ""}
           />
           {brush &&
             <Brush

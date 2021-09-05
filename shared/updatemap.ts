@@ -29,22 +29,23 @@ export const updateBeatmap = async (id: number, jar: CookieJar, beatmap: CHBeatm
             const existing = await ScoreModel.findOne({ beatmapId: beatmap.id })
             if (existing) {
                 if (existing.playerId == firstPlace.user_id) {
+                    // sniped themselves, still need to update the score 
                     console.log(existing.playerId + " sniped themselves")
-                }
-
-                console.log("new snipe on " + beatmap.id + " by " + firstPlace.user.username + " victim " + existing.playerId)
-                new SnipeModel({
-                    beatmap: beatmap.id,
-                    sniper: firstPlace.user_id,
-                    victim: existing.playerId,
-                    time: new Date(firstPlace.created_at).getTime()
-                }).save()
-
-                // update beatmap
-                const oldBeatmap = await BeatmapModel.findOne({ id: beatmap.id })
-                if (oldBeatmap) {
-                    oldBeatmap.playerId = firstPlace.user_id
-                    oldBeatmap.save()
+                } else {
+                    console.log("new snipe on " + beatmap.id + " by " + firstPlace.user.username + " victim " + existing.playerId)
+                    new SnipeModel({
+                        beatmap: beatmap.id,
+                        sniper: firstPlace.user_id,
+                        victim: existing.playerId,
+                        time: new Date(firstPlace.created_at).getTime()
+                    }).save()
+    
+                    // update beatmap
+                    const oldBeatmap = await BeatmapModel.findOne({ id: beatmap.id })
+                    if (oldBeatmap) {
+                        oldBeatmap.playerId = firstPlace.user_id
+                        oldBeatmap.save()
+                    }
                 }
 
                 new ScoreModel({ 

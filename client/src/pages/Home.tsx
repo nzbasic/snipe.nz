@@ -83,11 +83,14 @@ export const Home = () => {
 
         const data: Data[] = []
         for (let i = 0; i < 20; i++) {
+            const newData = { time: new Date().getTime() - (604800000 * i) } as Data
             if (i === 0) {
-                data.push({ time: new Date().getTime(), total: Math.ceil(Math.random() * 1000) })
+                newData.total = Math.ceil(Math.random() * 1000)
             } else {
-                data.push({ time: new Date().getTime() - (604800000 * i), total: data[i-1].total += (Math.ceil(Math.random() * 10) - 5) })
+                const random = data[i-1].total += (Math.ceil(Math.random() * 10) - 5)
+                newData.total = random > 0 ? random : 0
             }
+            data.push(newData)
         }
 
         setChartData(data)

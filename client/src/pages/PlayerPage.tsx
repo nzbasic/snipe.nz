@@ -64,6 +64,7 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
     useEffect(() => {
         axios.get("/api/players/" + id).then(res => {
             setPlayer(res.data)
+            window.document.title = res.data.name
         })
 
         axios.get("/api/activity/" + id).then(res => {

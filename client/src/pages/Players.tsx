@@ -16,6 +16,8 @@ export const Leaderboard = () => {
     const order = -1;
 
     useEffect(() => {
+        window.document.title = "Leaderboard"
+        
         axios.get("/api/beatmaps/numberLoaded").then(res => {
             setNumberLoaded(res.data)
         })

@@ -11,6 +11,7 @@ export const NoScores = () => {
     const [isLoading, setLoading] = useState(true)
 
     useEffect(() => {
+
         axios.get("/api/beatmaps/noScoreCount").then(res => {
             setNumberNoScore(res.data)
         })

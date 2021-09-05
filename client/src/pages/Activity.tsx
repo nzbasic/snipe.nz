@@ -9,6 +9,8 @@ export const Activity = () => {
     const numberShown = 50;
     
     useEffect(() => {
+        window.document.title = "Activity"
+
         axios.get("/api/activity/latest/" + numberShown).then(res => {
             setSnipes(res.data)
             setLoading(false)

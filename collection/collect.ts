@@ -1,4 +1,4 @@
-import { CHBeatmap } from './../models/Beatmap.model';
+import { BeatmapModel, CHBeatmap } from './../models/Beatmap.model';
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import fs from 'fs'
@@ -22,6 +22,16 @@ dotenv.config();
 
         let prev = new Date().getTime()
         try { 
+
+            //update spinner
+            const found = await BeatmapModel.findOne({ id: beatmap.id })
+            if (found) {
+               found.hasSpinner = beatmap.spinners >= 1
+               found.hash = beatmap.hash
+               found.sr = beatmap.sr
+               found.save()
+            }
+
             await updateBeatmap(beatmap.id, jar, beatmap, prev)
         } catch(err) {
             const difference = 2000 - (new Date().getTime() - prev)

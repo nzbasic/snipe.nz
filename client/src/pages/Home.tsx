@@ -5,6 +5,7 @@ import { AiFillCrown } from 'react-icons/ai'
 import ScrollAnimation from 'react-animate-on-scroll';
 import { Beatmap } from '../../../models/Beatmap.model';
 import { Play } from '../../../models/play';
+import { TimeSeriesChart } from '../components/TimeSeriesChart';
 
 const randomNamePool = [
     "YEP",
@@ -58,10 +59,16 @@ const getRandomSnipe = (): string => {
     return randomNamePool[firstPlayer] + " has sniped " + randomNamePool[secondPlayer] + " on " + randomMapPool[map]
 }
 
+interface Data {
+    time: number,
+    total: number
+}
+
 export const Home = () => {
     const [top5, setTop5] = useState<Player[]>(initialTop)
     const [carousel, setCarousel] = useState<string[]>([])
     const [randomBeatmap, setRandomBeatmap] = useState<Play>()
+    const [chartData, setChartData] = useState<Data[]>([])
 
     useEffect(() => {
         axios.get("/api/players", { params: { pageSize: 5, pageNumber: 1, order: -1 }}).then((res => {
@@ -74,6 +81,16 @@ export const Home = () => {
         }
         setCarousel(randomCarousel)
 
+        const data: Data[] = []
+        for (let i = 0; i < 20; i++) {
+            if (i === 0) {
+                data.push({ time: new Date().getTime(), total: Math.ceil(Math.random() * 1000) })
+            } else {
+                data.push({ time: new Date().getTime() - (604800000 * i), total: data[i-1].total += (Math.ceil(Math.random() * 10) - 5) })
+            }
+        }
+
+        setChartData(data)
         getRandomBeatmap()
     }, [])
 
@@ -117,7 +134,9 @@ export const Home = () => {
                 </div>
             </ScrollAnimation>
             <ScrollAnimation animateIn="animate__slideInLeft" className="bg-green-500 flex lg:flex-nowrap flex-wrap-reverse py-12 w-full px-8 2xl:px-44 justify-center sm:justify-between items-center">
-                <span className="mt-8 sm:mt-0 h-80 lg:max-w-3xl w-full border-2 border-white flex items-center justify-center">Some graph</span>
+                <div className="h-96 lg:max-w-xl 2xl:max-w-3xl w-full">
+                    <TimeSeriesChart chartData={chartData} brush={false} title={false} />
+                </div>                
                 <span className="mb-8 ml-8 text-5xl lg:text-5xl pr-4">Follow your stats over time.</span>
             </ScrollAnimation>
             <ScrollAnimation animateIn="animate__slideInRight" className="bg-black flex px-8 2xl:px-44 p-8 flex-wrap lg:flex-nowrap justify-between items-center">

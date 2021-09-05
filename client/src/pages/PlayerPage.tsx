@@ -156,7 +156,7 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
             </ScrollAnimation>
             <ScrollAnimation animateIn="animate__slideInLeft" className="bg-pink-400 text-4xl space-y-2 flex flex-col p-8 w-full">
                 <span>Number #1s: {player.firstCount}</span>
-                <span>Change this week: {numberThisWeek === 0 ? "+" + numberThisWeek : "-" + numberThisWeek}</span>
+                <span>Change this week: {numberThisWeek >= 0 ? "+" + numberThisWeek : "-" + numberThisWeek}</span>
             </ScrollAnimation>
             <ScrollAnimation animateIn="animate__slideInLeft" className="bg-black flex p-8 w-full h-96 text-black">
                 <TimeSeriesChart chartData={rawSnipeData} brush={true} title={true}/>

@@ -22,11 +22,20 @@ export const updateBeatmap = async (id: number, jar: CookieJar, beatmap: CHBeatm
     if (scores.length > 0) {
         const firstPlace = scores[0]
         const foundScore = await ScoreModel.findOne({ id: firstPlace.id })
+        const player = await PlayerModel.findOne({ id: firstPlace.user_id})
+
+        if (!player) {
+            new PlayerModel({ id: firstPlace.user_id, name: firstPlace.user.username }).save()
+        } else {
+            player.name = firstPlace.user.username
+            player.save()
+        }
 
         // if there is no found score with the maps first place id, that means there has been a snipe OR there is a new score on a map with no plays
         if (!foundScore) {
             // does another score exist on this map? 
             const existing = await ScoreModel.findOne({ beatmapId: beatmap.id })
+
             if (existing) {
                 if (existing.playerId == firstPlace.user_id) {
                     // sniped themselves, still need to update the score 

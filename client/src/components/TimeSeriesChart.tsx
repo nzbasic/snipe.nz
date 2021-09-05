@@ -30,7 +30,7 @@ const CustomTooltip = ({ payload, label, active }: any) => {
 export const TimeSeriesChart = ({ chartData, brush, title }: { chartData: any[], brush: boolean, title: boolean }) => {
   return (
     <div className="w-full h-full flex flex-col items-center bg-white justify-center pt-6 pb-6 pr-6 rounded-md">
-      {title && <span className="relative top-2">Country #1s over time</span>}
+      {title && <span className="relative top-2">Relative snipes over time</span>}
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={chartData} margin={{ top: 25 }}>
           <CartesianGrid strokeDasharray="3 3" />

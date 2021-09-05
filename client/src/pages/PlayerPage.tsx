@@ -69,17 +69,20 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
 
         axios.get("/api/activity/" + id).then(res => {
             if (plays.length === 0) return
-            const sortedSnipes: Snipe[] = res.data.sort((a: Snipe, b: Snipe) => b.time - a.time)
-            const firstPoint: GraphData = { time: new Date().getTime(), total: numberPlays }
+
+            console.log(res.data)
+
+            const sortedSnipes: Snipe[] = res.data.sort((a: Snipe, b: Snipe) => a.time - b.time)
+            const firstPoint: GraphData = { time: sortedSnipes[0].time - 86400, total: 0 }
             const rawData: GraphData[] = [firstPoint]
-            let lastTotal = numberPlays
+            let lastTotal = 0
             sortedSnipes.forEach(data => {
                 const newPoint = {} as GraphData
                 newPoint.time = data.time
                 if (data.victim === parseInt(id)) {
-                    newPoint.total = lastTotal + 1
-                } else {
                     newPoint.total = lastTotal - 1
+                } else {
+                    newPoint.total = lastTotal + 1
                 }
 
                 lastTotal = newPoint.total
@@ -164,7 +167,7 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
             <ScrollAnimation animateIn="animate__slideInLeft" className="bg-pink-400 text-xl md:text-4xl space-y-2 flex flex-col p-8 w-full">
                 <span>Number #1s: {player.firstCount}</span>
                 <div className="flex items-center">
-                    <span className="mr-2">Change this week:</span>
+                    <span className="mr-2">Snipes this week:</span>
                     {isPlayerLoading ? 
                         <CircularProgress className={classes.loading}/> :
                         <span>{numberThisWeek >= 0 ? "+" + numberThisWeek : numberThisWeek}</span>

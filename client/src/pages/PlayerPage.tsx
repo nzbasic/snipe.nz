@@ -13,6 +13,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { makeStyles, Typography } from '@material-ui/core';
 import { FormattedSnipe, Snipe, SnipeTotal } from '../../../models/Snipe.model';
 import { TimeSeriesChart } from '../components/TimeSeriesChart'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -22,6 +23,9 @@ const useStyles = makeStyles((theme) => ({
       fontSize: theme.typography.pxToRem(15),
       fontWeight: theme.typography.fontWeightRegular,
     },
+    loading: {
+      color: "white"
+    }
 }));
 
 interface GraphData {
@@ -39,12 +43,13 @@ for (let i = 0; i < 500; i++) {
 }
 
 export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
+    const [isPlayerLoading, setPlayerLoading] = useState(true)
     const [plays, setPlays] = useState<Play[]>([])
     const [numberThisWeek, setNumberThisWeek] = useState(0)
     const [numberPlays, setNumberPlays] = useState(0)
     const [pageNumber, setPageNumber] = useState(1)
     const [player, setPlayer] = useState<Player>({ id: 0, name: "", firstCount: 0})
-    const [isLoading, setLoading] = useState(true)
+    const [isScoresLoading, setScoresLoading] = useState(true)
     const [pageSize, setPageSize] = useState(20)
     const [activity, setActivity] = useState<FormattedSnipe[]>([])
     const [isActivityLoading, setActivityLoading] = useState(true)
@@ -91,30 +96,31 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
             
             setNumberThisWeek(count)
             setRawSnipeData(rawData.sort((a, b) => b.time - a.time))
+            setPlayerLoading(false)
         })
     }, [id, numberPlays, plays])
 
     useEffect(() => {
-        setLoading(true)
+        setScoresLoading(true)
         axios.get("/api/scores", { params: { id, pageNumber, pageSize } }).then(res => {
             setNumberPlays(res.data.numberPlays)
             setPlays(res.data.plays)
-            setLoading(false)
+            setScoresLoading(false)
         })
     }, [pageNumber, pageSize, id])
 
     const refreshUser = () => {
-        setLoading(true)
+        setScoresLoading(true)
         axios.post("/api/players/refresh/" + id).then(res => {
-            setLoading(false)
+            setScoresLoading(false)
             setPageNumber(1)
         })
     }
 
     const refreshMap = (id: number) => {
-        setLoading(true)
+        setScoresLoading(true)
         axios.post("/api/beatmaps/refresh/" + id).then(res => {
-            setLoading(false)
+            setScoresLoading(false)
             setPageNumber(1)
         })
     }
@@ -152,14 +158,24 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
                 <a href={"https://osu.ppy.sh/users/" + player.id} target="_blank" rel="noreferrer" className="text-4xl md:text-9xl font-semibold animate-underline">{player.name}</a>
             </ScrollAnimation>
             <ScrollAnimation animateIn="animate__slideInLeft" className="bg-black flex p-8 w-full ">
-                <button disabled={isLoading} onClick={() => refreshUser()} className={`${isLoading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-800'}  text-white px-2 py-1 rounded-sm`}>Refresh using last 50 plays (1 minute)</button>
+                <button disabled={isScoresLoading} onClick={() => refreshUser()} className={`${isScoresLoading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-800'}  text-white px-2 py-1 rounded-sm`}>Refresh using last 50 plays (1 minute)</button>
             </ScrollAnimation>
             <ScrollAnimation animateIn="animate__slideInLeft" className="bg-pink-400 text-4xl space-y-2 flex flex-col p-8 w-full">
                 <span>Number #1s: {player.firstCount}</span>
-                <span>Change this week: {numberThisWeek >= 0 ? "+" + numberThisWeek : "-" + numberThisWeek}</span>
+                <div className="flex items-center">
+                    <span className="mr-2">Change this week:</span>
+                    {isPlayerLoading ? 
+                        <CircularProgress className={classes.loading}/> :
+                        <span>{numberThisWeek >= 0 ? "+" + numberThisWeek : "-" + numberThisWeek}</span>
+                    }
+                </div>
+                
             </ScrollAnimation>
-            <ScrollAnimation animateIn="animate__slideInLeft" className="bg-black flex p-8 w-full h-96 text-black">
-                <TimeSeriesChart chartData={rawSnipeData} brush={true} title={true}/>
+            <ScrollAnimation animateIn="animate__slideInLeft" className="bg-black flex items-center justify-center p-8 w-full h-96 text-black">
+                {!isPlayerLoading ? 
+                    <TimeSeriesChart chartData={rawSnipeData} brush={true} title={true}/> : 
+                    <CircularProgress className={classes.loading} size="10rem"/>    
+                } 
             </ScrollAnimation>
             <ScrollAnimation animateIn="animate__slideInLeft" className="bg-blue-400 flex flex-col space-y-4 p-8">
                 <Accordion onChange={() => loadSniped()}>
@@ -237,7 +253,7 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
                         <Typography className={classes.heading}>Your #1s</Typography>
                     </AccordionSummary>
                     <AccordionDetails className="flex flex-col text-xs lg:text-base">
-                        {!isLoading ? plays.map((play, index) => (
+                        {!isScoresLoading ? plays.map((play, index) => (
                             <div key={play.id} className="flex space-x-2">
                                 <span className="w-8">{(index+1) + ((pageNumber-1) * pageSize)}</span>
                                 <span className="w-16 lg:w-28 truncate">{play.artist}</span>

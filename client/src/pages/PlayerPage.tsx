@@ -160,16 +160,15 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
             <ScrollAnimation animateIn="animate__slideInLeft" className="bg-black flex p-8 w-full ">
                 <button disabled={isScoresLoading} onClick={() => refreshUser()} className={`${isScoresLoading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-800'}  text-white px-2 py-1 rounded-sm`}>Refresh using last 50 plays (1 minute)</button>
             </ScrollAnimation>
-            <ScrollAnimation animateIn="animate__slideInLeft" className="bg-pink-400 text-4xl space-y-2 flex flex-col p-8 w-full">
+            <ScrollAnimation animateIn="animate__slideInLeft" className="bg-pink-400 text-xl md:text-4xl space-y-2 flex flex-col p-8 w-full">
                 <span>Number #1s: {player.firstCount}</span>
                 <div className="flex items-center">
                     <span className="mr-2">Change this week:</span>
                     {isPlayerLoading ? 
                         <CircularProgress className={classes.loading}/> :
-                        <span>{numberThisWeek >= 0 ? "+" + numberThisWeek : "-" + numberThisWeek}</span>
+                        <span>{numberThisWeek >= 0 ? "+" + numberThisWeek : numberThisWeek}</span>
                     }
                 </div>
-                
             </ScrollAnimation>
             <ScrollAnimation animateIn="animate__slideInLeft" className="bg-black flex items-center justify-center p-8 w-full h-96 text-black">
                 {!isPlayerLoading ? 

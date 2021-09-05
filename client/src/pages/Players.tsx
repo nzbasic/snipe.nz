@@ -17,7 +17,7 @@ export const Leaderboard = () => {
 
     useEffect(() => {
         window.document.title = "Leaderboard"
-        
+
         axios.get("/api/beatmaps/numberLoaded").then(res => {
             setNumberLoaded(res.data)
         })
@@ -39,7 +39,7 @@ export const Leaderboard = () => {
     return (
         <div className="flex flex-col p-4 text-white">
             <a href="/noScores" className=" text-blue-300 hover:underline w-52">Maps with no country scores</a>
-            <input className="border-2 w-60 border-black my-4 text-black" type="text" placeholder="Search" onChange={(e) => setSearchTerm(e.target.value)} />
+            <input disabled={isLoading} className="border-2 w-60 border-black my-4 text-black" type="text" placeholder="Search" onChange={(e) => setSearchTerm(e.target.value)} />
             <div className="flex flex-row">
                 <span className="w-12">#</span>
                 <span className="w-40">Name</span>

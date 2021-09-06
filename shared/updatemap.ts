@@ -78,7 +78,7 @@ export const updateBeatmap = async (id: number, jar: CookieJar, beatmap: CHBeatm
                 player.firstCount = await getNumberScores(player.id)
                 player.save()
                 if (snipedPlayer) {
-                    snipedPlayer.firstCount = await getNumberScores(player.id)
+                    snipedPlayer.firstCount = await getNumberScores(snipedPlayer.id)
                     snipedPlayer.save()
                 }
 

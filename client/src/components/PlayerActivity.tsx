@@ -6,6 +6,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useStyles } from '../Share'
 import { Pagination } from "./Pagination";
 import { CopyrightOutlined } from "@material-ui/icons";
+import { PlayerSearch } from "./PlayerSearch";
+import { Player } from "../../../models/Player.model";
 
 interface Option {
     value: string,
@@ -19,24 +21,27 @@ const options: Option[] = [
     { value: "99999", label: "All Time"}
 ]
 
+const defaultPlayer = { name: "", id: 0, firstCount: 0 }
+
 export const PlayerActivity = ({ id }: { id: string }) => {
     const [activity, setActivity] = useState<FormattedSnipe[]>([])
+    const [searchTerm, setSearchTerm] = useState("")
     const [pageNumber, setPageNumber] = useState(1)
     const [numberResults, setNumberResults] = useState(0)
     const [option, setOption] = useState(options[0].value)
     const [isLoading, setLoading] = useState(true)
+    const [player, setPlayer] = useState<Player>(defaultPlayer)
     const classes = useStyles();
     const pageSize = 20
 
     useEffect(() => {
         setLoading(true)
-        axios.get("/api/activity/latestId/" + id, { params: { pageNumber, pageSize, option }}).then(res => {
+        axios.get("/api/activity/latestId/" + id, { params: { pageNumber, pageSize, option, playerId: player.id }}).then(res => {
             setActivity(res.data.page)
             setNumberResults(res.data.number)
-            console.log(res.data.number)
             setLoading(false)
         })
-    }, [pageNumber, id, pageSize, option])
+    }, [pageNumber, id, pageSize, option, player])
 
     return (
         <Accordion >
@@ -48,11 +53,16 @@ export const PlayerActivity = ({ id }: { id: string }) => {
                 <Typography className={classes.heading}>Activity</Typography>
             </AccordionSummary>
             <AccordionDetails className="flex flex-col">
-                <select onChange={(e) => {setPageNumber(1); setOption(e.target.value)}} value={option} className="text-black border mb-4 w-32 border-black">
-                    {options.map(item => (
-                        <option key={item.value} value={item.value}>{item.label}</option>
-                    ))}
-                </select>
+
+                <div className="flex items-center mb-4 space-x-2">
+                    <PlayerSearch width="w-52" height="h-8" callback={(player: Player) => {setPlayer(player)}}/>
+                    {player.id !== 0 && <button onClick={() => setPlayer(defaultPlayer)} className="bg-red-500 px-2 rounded-sm text-white">{player.name} x</button>}
+                    <select onChange={(e) => {setPageNumber(1); setOption(e.target.value)}} value={option} className="text-black border w-28 border-black">
+                        {options.map(item => (
+                            <option key={item.value} value={item.value}>{item.label}</option>
+                        ))}
+                    </select>
+                </div>
 
                 {!isLoading ? 
                     activity.length === 0 ? 

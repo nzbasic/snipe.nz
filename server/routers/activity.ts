@@ -48,8 +48,16 @@ router.route("/latestId/:id").get(async (req, res) => {
     const pageNumber = parseInt(req.query.pageNumber as string)
     const pageSize = parseInt(req.query.pageSize as string)
     const option = parseInt(req.query.option as string)
+    const playerId = parseInt(req.query.playerId as string)
     const time = new Date().getTime() - (option * 86400 * 1000)
-    const total = await SnipeModel.find({ $or: [ { victim: id }, { sniper: id }], time: { $gt: time }}).sort({ time: -1 }).skip((pageNumber-1) * pageSize).limit(pageSize)
+
+    const or = [{ victim: id }, { sniper: id }]
+    if (playerId) {
+        or[0].sniper = playerId
+        or[1].victim = playerId
+    }
+
+    const total = await SnipeModel.find({ $or: or, time: { $gt: time }}).sort({ time: -1 }).skip((pageNumber-1) * pageSize).limit(pageSize)
     const count = await SnipeModel.countDocuments({ $or: [ { victim: id }, { sniper: id }], time: { $gt: time }})
     const output = await formatSnipes(total)
     res.json({ page: output, number: count })

@@ -59,8 +59,8 @@ export const Leaderboard = () => {
 
     return (
         <div className="flex flex-col text-white">
-            <ScrollAnimation animateIn="animate__slideInLeft" className="bg-pink-400 flex items-center justify-center w-full p-8 text-black">
-                <PlayerSearch />
+            <ScrollAnimation animateIn="animate__slideInLeft" className="bg-pink-400 flex items-center justify-center w-full p-8 text-black z-20">
+                <PlayerSearch width="w-80" height="h-12" callback={(player: Player) => {window.location.href="/player/" + player.id}}/>
             </ScrollAnimation>
             <ScrollAnimation animateIn="animate__slideInRight" className="bg-black flex flex-col items-center p-8 space-y-1">
                 <div className="mb-4">

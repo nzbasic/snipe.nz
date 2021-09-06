@@ -3,6 +3,15 @@ import axios from 'axios';
 import { Player } from '../../../models/Player.model'
 import { useDebounce } from 'use-debounce'
 import { Pagination } from '../components/Pagination';
+import ScrollAnimation from 'react-animate-on-scroll';
+import { PlayerSearch } from '../components/PlayerSearch';
+import { Footer } from '../components/Footer';
+
+const loadingData: Player[] = []
+
+for (let i = 0; i < 100; i++) {
+    loadingData.push({ name: "Loading...", id: 0, firstCount: 0 })
+}
 
 export const Leaderboard = () => {
     const [isLoading, setLoading] = useState(true)
@@ -12,7 +21,7 @@ export const Leaderboard = () => {
     const [numberPlayers, setNumberPlayers] = useState(0);
     const [searchTerm, setSearchTerm] = useState("")
     const [debouncedSearchTerm] = useDebounce(searchTerm, 200)
-    const [pageSize, setPageSize] = useState(20)
+    const [pageSize, setPageSize] = useState(100)
     const order = -1;
 
     useEffect(() => {
@@ -36,24 +45,46 @@ export const Leaderboard = () => {
         })
     }, [pageNumber, pageSize, debouncedSearchTerm, order])
 
+    const placing = (index: number, pageNumber: number) => {
+        if (pageNumber === 1) {
+            if (index === 0) {
+                return 'bg-yellow-300'
+            } else if (index === 1) {
+                return 'bg-gray-400'
+            } else if (index === 2) {
+                return 'bg-yellow-500'
+            }
+        }
+    }
+
     return (
-        <div className="flex flex-col p-4 text-white">
-            <a href="/noScores" className=" text-blue-300 hover:underline w-52">Maps with no country scores</a>
-            <input disabled={isLoading} className="border-2 w-60 border-black my-4 text-black" type="text" placeholder="Search" onChange={(e) => setSearchTerm(e.target.value)} />
-            <div className="flex flex-row">
-                <span className="w-12">#</span>
-                <span className="w-40">Name</span>
-                <span>Number of Country #1s</span>
-            </div>
-            {!isLoading ? players.map((player, index) => (
-                <div key={player.id} className="flex flex-row">
-                    <span className="w-12">{(index+1) + ((pageNumber-1) * pageSize)}</span>
-                    <a href={"/player/" + player.id} className="w-40 text-blue-300 hover:underline">{player.name}</a>
-                    <span>{player.firstCount}</span>
+        <div className="flex flex-col text-white">
+            <ScrollAnimation animateIn="animate__slideInLeft" className="bg-pink-400 flex items-center justify-center w-full p-8 text-black">
+                <PlayerSearch />
+            </ScrollAnimation>
+            <ScrollAnimation animateIn="animate__slideInRight" className="bg-black flex flex-col items-center p-8 space-y-1">
+                <div className="mb-4">
+                    <Pagination number={numberPlayers} pageNumber={pageNumber} setPageNumber={setPageNumber}/> 
                 </div>
-            )) : <span>Loading...</span>}
-            
-            <Pagination text="Players" number={numberPlayers} pageSize={pageSize} setPageSize={setPageSize} pageNumber={pageNumber} setPageNumber={setPageNumber}/>
+                {!isLoading ? players.map((player, index) => (
+                    <div key={player.id} className={`${placing(index, pageNumber)} w-full max-w-3xl flex flex-row bg-white rounded-md p-2 justify-between text-black`}>
+                        <div className="flex">
+                            <span className="mr-4">{(index+1) + ((pageNumber-1) * pageSize)}</span>
+                            <a href={"/player/" + player.id} className="w-40 text-blue-700 hover:underline">{player.name}</a>
+                        </div>
+                        <span className="w-12">{player.firstCount}</span>
+                    </div>
+                )) : loadingData.map((item, index) => (
+                    <div className="w-full max-w-3xl flex bg-white rounded-md p-2 justify-between text-black">
+                        <div className="flex">
+                            <span className="mr-4">{(index+1) + ((pageNumber-1) * pageSize)}</span>
+                            <span className="w-40">Loading...</span>
+                        </div>
+                        <span className="w-12">0</span>
+                    </div>
+                ))}
+            </ScrollAnimation>
+            <Footer />
         </div>
     );
 }

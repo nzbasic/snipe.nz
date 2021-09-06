@@ -6,6 +6,7 @@ import ScrollAnimation from 'react-animate-on-scroll';
 import { Beatmap } from '../../../models/Beatmap.model';
 import { Play } from '../../../models/play';
 import { TimeSeriesChart } from '../components/TimeSeriesChart';
+import { Footer } from '../components/Footer'
 
 const randomNamePool = [
     "YEP",
@@ -165,9 +166,7 @@ export const Home = () => {
                     <span className="text-2xl lg:text-lg lg:text-right">Random maps will be given to you to try snipe.</span>
                 </div>
             </ScrollAnimation>
-            <div className="h-32 items-center px-8 2xl:px-44 bg-black flex py-4 text-5xl justify-end">
-                <a className="animate-underline pr-4" target="_blank" rel="noreferrer" href="https://github.com/nzbasic">Site by nzbasic</a>
-            </div>
+            <Footer />
         </div>
     )
 }

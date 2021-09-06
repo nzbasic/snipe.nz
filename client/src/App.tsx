@@ -6,18 +6,21 @@ import { NoScores } from './pages/NoScores'
 import { Header } from './components/Header'
 import { Home } from './pages/Home'
 import { Activity } from './pages/Activity'
+import { Footer } from './components/Footer';
 
 function App() {
   return (
     <BrowserRouter>
-      <Header />
-      <Switch>
-        <Route path="/" exact component={Home} />
-        <Route path="/players" exact component={Leaderboard} />
-        <Route path="/player/:id" component={PlayerPage} />
-        <Route path="/noScores" component={NoScores} />
-        <Route path="/activity" component={Activity} />
-      </Switch>
+      <div className="flex flex-col">
+        <Header />
+        <Switch>
+          <Route path="/" exact component={Home} />
+          <Route path="/players" exact component={Leaderboard} />
+          <Route path="/player/:id" component={PlayerPage} />
+          <Route path="/noScores" component={NoScores} />
+          <Route path="/activity" component={Activity} />
+        </Switch>
+      </div>
     </BrowserRouter>
   );
 }

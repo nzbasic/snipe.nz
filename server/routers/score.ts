@@ -18,7 +18,9 @@ router.route("/").get(async (req, res) => {
     const id = parseInt(req.query.id as string)
     const pageNumber = parseInt(req.query.pageNumber as string)
     const pageSize = parseInt(req.query.pageSize as string)
-    const order = { pp: -1 }
+    const sortBy = req.query.sortBy as string
+    const sortOrder = req.query.sortOrder as string
+    const order = { [sortBy]: sortOrder }
     const page: Play[] = []
 
     const count = await ScoreModel.countDocuments({ playerId: id})

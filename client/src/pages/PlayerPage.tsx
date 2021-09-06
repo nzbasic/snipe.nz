@@ -3,19 +3,18 @@ import { RouteComponentProps } from 'react-router-dom'
 import { Play } from '../../../models/play'
 import axios from 'axios'
 import { Player } from '../../../models/Player.model';
-import NumberFormat from 'react-number-format'
-import { Pagination } from '../components/Pagination'
 import ScrollAnimation from 'react-animate-on-scroll';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { makeStyles, Typography } from '@material-ui/core';
-import { FormattedSnipe, Snipe, SnipeTotal } from '../../../models/Snipe.model';
+import { Snipe } from '../../../models/Snipe.model';
 import { TimeSeriesChart } from '../components/TimeSeriesChart'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { PlayerActivity } from '../components/PlayerActivity'
 import { PlayerSniping } from '../components/PlayerSniping'
+import { PlayerScores } from '../components/PlayerScores'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -46,19 +45,9 @@ for (let i = 0; i < 500; i++) {
 
 export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
     const [isPlayerLoading, setPlayerLoading] = useState(true)
-    const [plays, setPlays] = useState<Play[]>([])
     const [numberThisWeek, setNumberThisWeek] = useState(0)
-    const [numberPlays, setNumberPlays] = useState(0)
-    const [pageNumber, setPageNumber] = useState(1)
     const [player, setPlayer] = useState<Player>({ id: 0, name: "", firstCount: 0})
-    const [isScoresLoading, setScoresLoading] = useState(true)
-    const [pageSize, setPageSize] = useState(20)
-    
     const [rawSnipeData, setRawSnipeData] = useState<GraphData[]>([])
-    const [snipedByData, setSnipedByData] = useState<SnipeTotal[]>([])
-    const [snipedData, setSnipedData] = useState<SnipeTotal[]>([])
-    const [isSnipedByLoading, setSnipedByLoading] = useState(true)
-    const [isSnipedLoading, setSnipedLoading] = useState(true)
     const id = props.match.params.id
     const classes = useStyles();
 
@@ -69,8 +58,6 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
         })
 
         axios.get("/api/activity/" + id).then(res => {
-            if (plays.length === 0) return
-
             const sortedSnipes: Snipe[] = res.data.sort((a: Snipe, b: Snipe) => a.time - b.time)
             const firstPoint: GraphData = { time: sortedSnipes[0].time - 86400, total: 0 }
             const rawData: GraphData[] = [firstPoint]
@@ -101,45 +88,16 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
             setRawSnipeData(rawData.sort((a, b) => b.time - a.time))
             setPlayerLoading(false)
         })
-    }, [id, numberPlays, plays])
+    }, [id])
 
-    useEffect(() => {
-        setScoresLoading(true)
-        axios.get("/api/scores", { params: { id, pageNumber, pageSize } }).then(res => {
-            setNumberPlays(res.data.numberPlays)
-            setPlays(res.data.plays)
-            setScoresLoading(false)
-        })
-    }, [pageNumber, pageSize, id])
+    
 
     const refreshUser = () => {
-        setScoresLoading(true)
+        setPlayerLoading(true)
         axios.post("/api/players/refresh/" + id).then(res => {
-            setScoresLoading(false)
-            setPageNumber(1)
+            setPlayerLoading(false)
         })
     }
-
-    const refreshMap = (id: number) => {
-        setScoresLoading(true)
-        axios.post("/api/beatmaps/refresh/" + id).then(res => {
-            setScoresLoading(false)
-            setPageNumber(1)
-        })
-    }
-
-    
-
-    const loadVictim = () => {
-        if (isSnipedByLoading) {
-            axios.get("/api/activity/snipedBy/" + id).then(res => {
-                setSnipedByData(res.data.sort((a: SnipeTotal, b: SnipeTotal) => b.total - a.total))
-                setSnipedByLoading(false)
-            })
-        }
-    }
-
-    
 
     return (
         <div className="flex flex-col w-full text-white">
@@ -147,7 +105,7 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
                 <a href={"https://osu.ppy.sh/users/" + player.id} target="_blank" rel="noreferrer" className="text-4xl md:text-9xl font-semibold animate-underline">{player.name}</a>
             </ScrollAnimation>
             <ScrollAnimation animateIn="animate__slideInLeft" className="bg-black flex p-8 w-full ">
-                <button disabled={isScoresLoading} onClick={() => refreshUser()} className={`${isScoresLoading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-800'}  text-white px-2 py-1 rounded-sm`}>Refresh using last 50 plays (1 minute)</button>
+                <button disabled={isPlayerLoading} onClick={() => refreshUser()} className={`${isPlayerLoading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-800'}  text-white px-2 py-1 rounded-sm`}>Refresh using last 50 plays (1 minute)</button>
             </ScrollAnimation>
             <ScrollAnimation animateIn="animate__slideInLeft" className="bg-pink-400 text-xl md:text-4xl space-y-2 flex flex-col p-8 w-full">
                 <span>Number #1s: {player.firstCount}</span>
@@ -214,27 +172,7 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
                         <Typography className={classes.heading}>Your #1s</Typography>
                     </AccordionSummary>
                     <AccordionDetails className="flex flex-col text-xs lg:text-base">
-                        {!isScoresLoading ? plays.map((play, index) => (
-                            <div key={play.id} className="flex space-x-2">
-                                <span className="w-8">{(index+1) + ((pageNumber-1) * pageSize)}</span>
-                                <span className="w-16 lg:w-28 truncate">{play.artist}</span>
-                                <a href={"https://osu.ppy.sh/beatmaps/" + play.beatmapId} target="_blank" rel="noreferrer" className="truncate w-32 lg:w-60 text-blue-300 hover:underline">{play.song}</a>
-                                <span className="w-20 lg:w-40 truncate">[{play.difficulty}]</span>
-                                <NumberFormat className="w-24 hidden md:block" value={play.score} displayType={'text'} thousandSeparator={true}/>
-                                <span className="hidden md:block w-12 lg:w-16">{(play.pp??0).toFixed(0)}pp</span>
-                                <span className="w-16 hidden lg:block">{(play.acc*100).toFixed(2)}%</span>
-                                <span className="w-20 hidden lg:block truncate">{play.mods.join("")}</span>
-                                <a href={"https://osu.ppy.sh/scores/osu/" + play.id} target="_blank" rel="noreferrer" className="w-8 truncate text-blue-300 hover:underline">Link</a>
-                                <button onClick={() => refreshMap(play.beatmapId)} className="hidden md:block text-blue-300 w-24 hover:underline">Refresh</button>
-                            </div>
-                        )) : loadingData.slice(0, pageSize).map((item, index) => (
-                            <div key={index} className="flex space-x-2">
-                                <span className="w-8">{(index+1) + ((pageNumber-1) * pageSize)}</span>
-                                <span>Loading...</span>
-                            </div>
-                        ))
-                        }
-                        <Pagination text="Plays" number={numberPlays} pageSize={pageSize} setPageSize={setPageSize} pageNumber={pageNumber} setPageNumber={setPageNumber}/> 
+                        <PlayerScores id={id} />
                     </AccordionDetails>
                 </Accordion>
                 

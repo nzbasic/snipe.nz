@@ -30,11 +30,11 @@ const formatSnipes = async (snipes: Snipe[]) => {
     return output
 }
 
-const getAllUserActivity = async (id: number) => {
-    const victim = await SnipeModel.find({ victim: id })
-    const sniper = await SnipeModel.find({ sniper: id })
-    return victim.concat(sniper)
-}
+// const getAllUserActivity = async (id: number, time=9999) => {
+//     const victim = await SnipeModel.find({ victim: id })
+//     const sniper = await SnipeModel.find({ sniper: id })
+//     return victim.concat(sniper)
+// }
 
 router.route("/latest/:number").get(async (req, res) => {
     const number = parseInt(req.params.number)
@@ -43,18 +43,21 @@ router.route("/latest/:number").get(async (req, res) => {
     res.json(output)
 })
 
-router.route("/latestWeek/:id").get(async (req, res) => {
+router.route("/latestId/:id").get(async (req, res) => {
     const id = parseInt(req.params.id)
-    const activity = await getAllUserActivity(id)
-    const oldTime = new Date().getTime() - (604800 * 1000)
-    const thisWeek = activity.filter(item => item.time > oldTime)
-    const output = await formatSnipes(thisWeek)
-    res.json(output)
+    const pageNumber = parseInt(req.query.pageNumber as string)
+    const pageSize = parseInt(req.query.pageSize as string)
+    const option = parseInt(req.query.option as string)
+    const time = new Date().getTime() - (option * 86400 * 1000)
+    const total = await SnipeModel.find({ $or: [ { victim: id }, { sniper: id }], time: { $gt: time }}).sort({ time: -1 }).skip((pageNumber-1) * pageSize).limit(pageSize)
+    const count = await SnipeModel.countDocuments({ $or: [ { victim: id }, { sniper: id }], time: { $gt: time }})
+    const output = await formatSnipes(total)
+    res.json({ page: output, number: count })
 })
 
 router.route("/:id").get(async (req, res) => {
     const id = parseInt(req.params.id)
-    const output = await getAllUserActivity(id)
+    const output = await SnipeModel.find().or([{ victim: id }, { sniper: id }]).sort({ time: -1 })
     res.json(output)
 })
 

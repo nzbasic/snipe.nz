@@ -14,19 +14,8 @@ import { makeStyles, Typography } from '@material-ui/core';
 import { FormattedSnipe, Snipe, SnipeTotal } from '../../../models/Snipe.model';
 import { TimeSeriesChart } from '../components/TimeSeriesChart'
 import CircularProgress from '@material-ui/core/CircularProgress'
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-      width: '100%',
-    },
-    heading: {
-      fontSize: theme.typography.pxToRem(15),
-      fontWeight: theme.typography.fontWeightRegular,
-    },
-    loading: {
-      color: "white"
-    }
-}));
+import { PlayerActivity } from '../components/PlayerActivity'
+import { useStyles } from '../Share'
 
 interface GraphData {
     time: number,
@@ -51,8 +40,7 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
     const [player, setPlayer] = useState<Player>({ id: 0, name: "", firstCount: 0})
     const [isScoresLoading, setScoresLoading] = useState(true)
     const [pageSize, setPageSize] = useState(20)
-    const [activity, setActivity] = useState<FormattedSnipe[]>([])
-    const [isActivityLoading, setActivityLoading] = useState(true)
+    
     const [rawSnipeData, setRawSnipeData] = useState<GraphData[]>([])
     const [snipedByData, setSnipedByData] = useState<SnipeTotal[]>([])
     const [snipedData, setSnipedData] = useState<SnipeTotal[]>([])
@@ -69,8 +57,6 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
 
         axios.get("/api/activity/" + id).then(res => {
             if (plays.length === 0) return
-
-            console.log(res.data)
 
             const sortedSnipes: Snipe[] = res.data.sort((a: Snipe, b: Snipe) => a.time - b.time)
             const firstPoint: GraphData = { time: sortedSnipes[0].time - 86400, total: 0 }
@@ -147,14 +133,7 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
         }
     }
 
-    const loadActivity = () => {
-        if (isActivityLoading) {
-            axios.get("/api/activity/latestWeek/" + id).then(res => {
-                setActivity(res.data.sort((a: FormattedSnipe, b: FormattedSnipe) => b.time - a.time))
-                setActivityLoading(false)
-            })
-        }
-    }
+    
 
     return (
         <div className="flex flex-col w-full text-white">
@@ -221,31 +200,7 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
                     </AccordionDetails>
                 </Accordion>
 
-                <Accordion onChange={() => loadActivity()}>
-                    <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1a-content"
-                        id="panel1a-header"
-                    >
-                        <Typography className={classes.heading}>Activity this week</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails className="flex flex-col">
-                        {!isActivityLoading ? 
-                            activity.length === 0 ? 
-                                <span>You haven't sniped/been sniped this week.</span> :
-                                activity.map((item, index) => (
-                                    <div key={index} className="flex space-x-1">
-                                        <span className="hidden md:block truncate">{new Date(item.time).toLocaleDateString()}</span>
-                                        <span className="truncate">sniped {item.victimId === parseInt(id) && 'by'}</span>
-                                        <a className="hover:underline" href={"/player/" + (item.victimId === parseInt(id) ? item.sniperId : item.victimId)}>{item.victimId === parseInt(id) ? item.sniper : item.victim}</a>
-                                        <span>on</span>
-                                        <a href={"https://osu.ppy.sh/beatmaps/" + item.beatmapId} target="_blank" rel="noreferrer" className="hover:underline truncate">{item.beatmap}</a>
-                                    </div>
-                                ))
-                            : <span>Loading...</span>
-                        }
-                    </AccordionDetails>
-                </Accordion>
+                <PlayerActivity id={id} />
 
                 <Accordion defaultExpanded={true}>
                     <AccordionSummary

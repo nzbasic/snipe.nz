@@ -56,14 +56,14 @@ export const PlayerScores = ({ id }: { id: string }) => {
                 <div key={play.id} className="flex space-x-2">
                     <span className="w-8">{(index+1) + ((pageNumber-1) * pageSize)}</span>
                     <span className="w-16 lg:w-28 truncate">{play.artist}</span>
-                    <a href={"https://osu.ppy.sh/beatmaps/" + play.beatmapId} target="_blank" rel="noreferrer" className="truncate w-32 lg:w-60 text-blue-300 hover:underline">{play.song}</a>
+                    <a href={"https://osu.ppy.sh/beatmaps/" + play.beatmapId} target="_blank" rel="noreferrer" className="truncate w-32 lg:w-60 text-blue-400 hover:underline">{play.song}</a>
                     <span className="w-20 lg:w-40 truncate">[{play.difficulty}]</span>
                     <NumberFormat className="w-24 hidden md:block" value={play.score} displayType={'text'} thousandSeparator={true}/>
                     <span className="hidden md:block w-12 lg:w-16">{(play.pp??0).toFixed(0)}pp</span>
                     <span className="w-16 hidden lg:block">{(play.acc*100).toFixed(2)}%</span>
                     <span className="w-20 hidden lg:block truncate">{play.mods.join("")}</span>
-                    <a href={"https://osu.ppy.sh/scores/osu/" + play.id} target="_blank" rel="noreferrer" className="w-8 truncate text-blue-300 hover:underline">Link</a>
-                    <button onClick={() => refreshMap(play.beatmapId)} className="hidden md:block text-blue-300 w-24 hover:underline">Refresh</button>
+                    <a href={"https://osu.ppy.sh/scores/osu/" + play.id} target="_blank" rel="noreferrer" className="w-8 truncate text-blue-400 hover:underline">Link</a>
+                    <button onClick={() => refreshMap(play.beatmapId)} className="hidden md:block text-blue-400 w-24 hover:underline">Refresh</button>
                 </div>
             )) : Array.from(Array(pageSize).keys()).map((_, index) => (
                 <div key={index} className="flex space-x-2">

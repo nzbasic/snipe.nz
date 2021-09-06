@@ -69,46 +69,51 @@ router.route("/:id").get(async (req, res) => {
     res.json(output)
 })
 
-router.route("/snipedBy/:id").get(async (req, res) => {
-    const id = parseInt(req.params.id)
-    const snipedBy = await SnipeModel.find({ victim: id })
-    const temp = new Map<number, number>()
-    for (const snipe of snipedBy) {
-        temp.set(snipe.sniper, (temp.get(snipe.sniper)??0)+1)
-    }
-
-    const output: SnipeTotal[] = []
-    for (const entry of temp.entries()) {
-        const name = (await PlayerModel.findOne({ id: entry[0] }))?.name??""
-        const total: SnipeTotal = {
-            name: name,
-            total: entry[1]
-        }
-        output.push(total)
-    }
-
-    res.json(output)
-})
-
 router.route("/sniped/:id").get(async (req, res) => {
     const id = parseInt(req.params.id)
-    const sniped = await SnipeModel.find({ sniper: id })
-    const temp = new Map<number, number>()
-    for (const snipe of sniped) {
-        temp.set(snipe.victim, (temp.get(snipe.victim)??0)+1)
+    const pageNumber = parseInt(req.query.pageNumber as string)
+    const pageSize = parseInt(req.query.pageSize as string)
+    const playerAsSniper = JSON.parse(req.query.playerAsSniper as string)
+
+    const options: any = { }
+    if (playerAsSniper) {
+        options.sniper = id
+    } else {
+        options.victim = id
+    }
+
+    const joinedResult = await SnipeModel.aggregate([
+        { $match: options },
+        {
+            $lookup: {
+                localField: playerAsSniper ? "victim" : "sniper",
+                from: "players",
+                foreignField: "id",
+                as: "joinedPlayer"
+            }
+        }
+    ])
+
+    const temp = new Map<string, number>()
+    for (const snipe of joinedResult) {
+        const name = snipe.joinedPlayer[0]?.name??""
+        temp.set(name, (temp.get(name)??0)+1)
     }
 
     const output: SnipeTotal[] = []
     for (const entry of temp.entries()) {
-        const name = (await PlayerModel.findOne({ id: entry[0] }))?.name??""
         const total: SnipeTotal = {
-            name: name,
+            name: entry[0],
             total: entry[1]
         }
         output.push(total)
     }
 
-    res.json(output)
+    const lowerBound = (pageNumber-1) * pageSize
+    const upperBound = pageNumber * pageSize
+    const page = output.sort((a, b) => b.total - a.total).slice(lowerBound, upperBound)
+
+    res.json({ page, number: output.length })
 })
 
 export default router

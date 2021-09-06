@@ -15,7 +15,20 @@ import { FormattedSnipe, Snipe, SnipeTotal } from '../../../models/Snipe.model';
 import { TimeSeriesChart } from '../components/TimeSeriesChart'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { PlayerActivity } from '../components/PlayerActivity'
-import { useStyles } from '../Share'
+import { PlayerSniping } from '../components/PlayerSniping'
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+      width: '100%',
+    },
+    heading: {
+      fontSize: theme.typography.pxToRem(15),
+      fontWeight: theme.typography.fontWeightRegular,
+    },
+    loading: {
+      color: "white"
+    }
+}));
 
 interface GraphData {
     time: number,
@@ -115,14 +128,7 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
         })
     }
 
-    const loadSniped = () => {
-        if (isSnipedLoading) {
-            axios.get("/api/activity/sniped/" + id).then(res => {
-                setSnipedData(res.data.sort((a: SnipeTotal, b: SnipeTotal) => b.total - a.total))
-                setSnipedLoading(false)
-            })
-        }
-    }
+    
 
     const loadVictim = () => {
         if (isSnipedByLoading) {
@@ -160,7 +166,7 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
                 } 
             </ScrollAnimation>
             <ScrollAnimation animateIn="animate__slideInLeft" className="bg-blue-400 flex flex-col space-y-4 p-8">
-                <Accordion onChange={() => loadSniped()}>
+                <Accordion>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel1a-content"
@@ -169,18 +175,11 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
                         <Typography className={classes.heading}>People you are sniping</Typography>
                     </AccordionSummary>
                     <AccordionDetails className="flex flex-col">
-                        {!isSnipedLoading ? 
-                            snipedData.length === 0 ? 
-                                <span>You haven't sniped anyone.</span> :
-                                snipedData.map((item, index) => (
-                                    <span key={index}>{item.name} - {item.total}</span>
-                                ))
-                            : <span>Loading...</span>
-                        }
+                        <PlayerSniping id={id} playerAsSniper={true}/>
                     </AccordionDetails>
                 </Accordion>
 
-                <Accordion onChange={() => loadVictim()}>
+                <Accordion>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel1a-content"
@@ -189,18 +188,22 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
                         <Typography className={classes.heading}>People who are sniping you</Typography>
                     </AccordionSummary>
                     <AccordionDetails className="flex flex-col">
-                        {!isSnipedByLoading ? 
-                            snipedByData.length === 0 ? 
-                                <span>You haven't been sniped.</span> :
-                                snipedByData.map((item, index) => (
-                                    <span key={index}>{item.name} - {item.total}</span>
-                                ))
-                            : <span>Loading...</span>
-                        }
+                        <PlayerSniping id={id} playerAsSniper={false}/>
                     </AccordionDetails>
                 </Accordion>
 
-                <PlayerActivity id={id} />
+                <Accordion >
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
+                    >
+                        <Typography className={classes.heading}>Activity</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails className="flex flex-col">
+                        <PlayerActivity id={id} />
+                    </AccordionDetails>
+                </Accordion>
 
                 <Accordion defaultExpanded={true}>
                     <AccordionSummary

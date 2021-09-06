@@ -67,7 +67,7 @@ export const Leaderboard = () => {
                     <Pagination number={numberPlayers} pageNumber={pageNumber} setPageNumber={setPageNumber}/> 
                 </div>
                 {!isLoading ? players.map((player, index) => (
-                    <div key={player.id} className={`${placing(index, pageNumber)} w-full max-w-3xl flex flex-row bg-white rounded-md p-2 justify-between text-black`}>
+                    <div key={player.id} className={`${placing(index, pageNumber)} w-full max-w-3xl flex flex-row bg-gray-200 rounded-md p-2 justify-between text-black`}>
                         <div className="flex">
                             <span className="mr-4">{(index+1) + ((pageNumber-1) * pageSize)}</span>
                             <a href={"/player/" + player.id} className="w-40 text-blue-700 hover:underline">{player.name}</a>

@@ -1,34 +1,17 @@
 import axios from 'axios';
-import { FormEvent, useEffect, useState } from 'react';
-import Autosuggest, { InputProps, ChangeEvent } from 'react-autosuggest'
+import { useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce/lib';
 import { Player } from '../../../models/Player.model';
 
-const names: Player[] = [
-    { 
-        name: 'YEP',
-        firstCount: 1,
-        id: 1,
-    },
-    { 
-        name: 'Prendar',
-        firstCount: 2,
-        id: 3
-    },
-]
-
 export const PlayerSearch = () => {
     const [focus, setFocus] = useState(false)
-    const [isLoading, setLoading] = useState(true)
     const [searchTerm, setSearchTerm] = useState('')
     const [debouncedSearchTerm] = useDebounce(searchTerm, 200)
     const [players, setPlayers] = useState<Player[]>([])
 
     useEffect(() => {
-        setLoading(true)
         axios.get("/api/players", { params: { pageNumber: 1, pageSize: 5, searchTerm: debouncedSearchTerm, order: -1 } }).then(res => {
             setPlayers(res.data.players)
-            setLoading(false)
         })
     }, [debouncedSearchTerm])
 

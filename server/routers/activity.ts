@@ -36,6 +36,50 @@ const formatSnipes = async (snipes: Snipe[]) => {
 //     return victim.concat(sniper)
 // }
 
+const getSnipeStats = async (option: string) => {
+    const sniped = await SnipeModel.aggregate([
+        { 
+            $group: {
+                _id: option,
+                count: { $sum: 1 }
+            }
+        },
+        { 
+            $lookup: {
+                from: "players",
+                localField: "_id",
+                foreignField: "id",
+                as: "player"
+            }
+        },
+        { 
+            $unwind: "$player"
+        }
+    ]).exec()
+
+    return sniped.sort((a, b) => b.count - a.count)
+}
+
+let snipeCount = 0;
+let snipedCache: any[] = [];
+let sniperCache: any[] = [];
+
+router.route("/topSniped").get(async (req, res) => {
+    const isSniper = JSON.parse(req.query.isSniper as string)
+    const pageNumber = parseInt(req.query.pageNumber as string)
+    const pageSize = parseInt(req.query.pageSize as string)
+
+    const localCount = await SnipeModel.countDocuments()
+    if (snipeCount != localCount) {
+        snipeCount = localCount
+        snipedCache = await getSnipeStats("$victim")
+        sniperCache = await getSnipeStats("$sniper")
+    } 
+
+    const page = (isSniper ? sniperCache : snipedCache).slice((pageNumber-1) * pageSize, (pageNumber) * pageSize)
+    res.json({ page, number: isSniper ? sniperCache.length : snipedCache.length })
+})
+
 router.route("/latest/:number").get(async (req, res) => {
     const number = parseInt(req.params.number)
     const latest = await SnipeModel.find().sort({ time: -1 }).limit(number)

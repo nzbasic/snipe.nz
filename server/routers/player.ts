@@ -6,6 +6,7 @@ import { Beatmap, BeatmapModel } from '../../models/Beatmap.model';
 import { getCookieJar } from '../../shared/jar';
 import { updateBeatmap } from '../../shared/updatemap';
 import { getNumberScores } from './score';
+import { SnipeModel } from '../../models/Snipe.model';
 
 let osuApi: osu.Api
 const router = express.Router();

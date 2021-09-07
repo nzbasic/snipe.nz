@@ -7,6 +7,7 @@ import { Header } from './components/Header'
 import { Home } from './pages/Home'
 import { Activity } from './pages/Activity'
 import { Footer } from './components/Footer';
+import { Stats } from './pages/Stats'
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/player/:id" component={PlayerPage} />
           <Route path="/noScores" component={NoScores} />
           <Route path="/activity" component={Activity} />
+          <Route path="/stats" component={Stats} />
         </Switch>
       </div>
     </BrowserRouter>

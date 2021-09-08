@@ -8,6 +8,7 @@ import Table from 'rc-table'
 import { DefaultRecordType } from "rc-table/lib/interface"
 import { StyleTwoTone } from "@material-ui/icons"
 import NumberFormat from "react-number-format"
+import moment from 'moment'
 
 const renderSong = (value: string, record: Play, index: number) => {
     return renderEllipsis(<a href={"https://osu.ppy.sh/beatmaps/" + record.beatmapId} target="_blank" rel="noreferrer" className="text-blue-400 hover:underline">{record.artist} - {record.song} [{record.difficulty}]</a>);
@@ -35,7 +36,7 @@ const columns = [
     { 
         title: 'Beatmap',
         dataIndex: 'artist',
-        width: '40%',
+        width: '30%',
         ellipsis: true, 
         render: renderSong
     },
@@ -49,7 +50,7 @@ const columns = [
     {
         title: 'Acc',
         dataIndex: 'acc',
-        width: '5%',
+        width: '6%',
         ellipsis: true, 
         render: (value: string, record: Play) => renderEllipsis(<span>{(record.acc*100).toFixed(2)}%</span>)
     },
@@ -66,6 +67,13 @@ const columns = [
         width: '6%',
         ellipsis: true, 
         render: (value: string, record: Play) => renderEllipsis(<span>{record.mods.join(",")}</span>)
+    },
+    {
+        title: 'Age',
+        dataIndex: 'date',
+        width: '8%',
+        ellipsis: true,
+        render: (value: string, record: Play) => renderEllipsis(<span>{moment(record.date).fromNow(true)}</span>)
     }
 ]
 

@@ -7,6 +7,7 @@ import { Beatmap } from '../../../models/Beatmap.model';
 import { Play } from '../../../models/play';
 import { TimeSeriesChart } from '../components/TimeSeriesChart';
 import { Footer } from '../components/Footer'
+import NumberFormat from 'react-number-format';
 
 const randomNamePool = [
     "YEP",
@@ -159,7 +160,11 @@ export const Home = () => {
                     <button className="px-2 py-1 text-lg bg-gray-200 rounded-sm text-black hover:bg-gray-300 transition duration-200" onClick={() => getRandomBeatmap()}>Get Random #1</button>
                     <a href={"https://osu.ppy.sh/beatmaps/" + (randomBeatmap?.beatmapId??"2790767")} target="_blank" rel="noreferrer" className="mt-2 animate-underline truncate text-center">{randomBeatmap?.song??"Press the button to get a random map!"}</a>
                     <span>Played by: {randomBeatmap?.player}</span>
-                    <span>Score: {randomBeatmap?.score}</span>
+                    <div className="flex items-center justify-center space-x-1">
+                        <span>Score: </span>
+                        <NumberFormat className="hidden md:block" value={randomBeatmap?.score} displayType={'text'} thousandSeparator={true}/>
+                    </div>
+                    
                 </div>
                 <div className="flex flex-col pr-4">
                     <span className="text-3xl lg:text-3xl lg:text-right">Get Recommendations</span>

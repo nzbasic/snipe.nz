@@ -25,14 +25,14 @@ export const PlayerSniping = ({ id, playerAsSniper }: { id: string, playerAsSnip
         <div className="flex flex-col">
             {!isLoading ? 
                 data.length === 0 ? 
-                    <span>You haven't sniped anyone</span> : 
+                    <span>{playerAsSniper ? "You haven't sniped anyone" : "You haven't been sniped"}</span> : 
                     data.map((item, index) => (
                         <span key={index}>{item.name} - {item.total}</span> 
                     ))
             : Array.from(Array(pageSize).keys()).map((_, index) => (
                 <span key={index}>Loading...</span>
             )) }
-            <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageSize={pageSize} number={numberResults} />
+            <Pagination isLoading={isLoading} pageNumber={pageNumber} setPageNumber={setPageNumber} pageSize={pageSize} number={numberResults} />
         </div>
     )
 }

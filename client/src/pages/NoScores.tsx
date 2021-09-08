@@ -47,7 +47,7 @@ export const NoScores = () => {
                 </div>
             )) : <span>Loading...</span>}
 
-            <Pagination text="Maps" number={numberNoScore} pageSize={pageSize} setPageSize={setPageSize} pageNumber={pageNumber} setPageNumber={setPageNumber}/>
+            <Pagination isLoading={isLoading} text="Maps" number={numberNoScore} pageSize={pageSize} setPageSize={setPageSize} pageNumber={pageNumber} setPageNumber={setPageNumber}/>
         </div>
     )
 }

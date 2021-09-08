@@ -112,7 +112,7 @@ export const Leaderboard = () => {
                     <button className={`${mode === Mode.SNIPER && 'invisible'} w-8`} onClick={() => changeMode(1)}>🡒</button>
                 </div>
                 <div className="py-4">
-                    <Pagination number={numberPlayers} pageNumber={pageNumber} setPageNumber={setPageNumber}/> 
+                    <Pagination isLoading={isLoading} number={numberPlayers} pageNumber={pageNumber} setPageNumber={setPageNumber}/> 
                 </div>
                 {!isLoading ? players.map((player, index) => (
                     <div key={player.id} className={`${placing(index, pageNumber)} w-full max-w-3xl flex flex-row bg-gray-100 rounded-md p-2 justify-between text-black`}>

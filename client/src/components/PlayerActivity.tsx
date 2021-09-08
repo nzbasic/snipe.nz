@@ -66,7 +66,7 @@ export const PlayerActivity = ({ id }: { id: string }) => {
                 ))
             }   
 
-            <Pagination number={numberResults} pageNumber={pageNumber} setPageNumber={setPageNumber} pageSize={pageSize} />    
+            <Pagination isLoading={isLoading} number={numberResults} pageNumber={pageNumber} setPageNumber={setPageNumber} pageSize={pageSize} />    
         </div>
     )
 }

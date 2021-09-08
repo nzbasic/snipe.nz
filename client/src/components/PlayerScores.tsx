@@ -72,7 +72,7 @@ export const PlayerScores = ({ id }: { id: string }) => {
                 </div>
             ))
             }
-            <Pagination text="Plays" number={numberPlays} pageSize={pageSize} setPageSize={setPageSize} pageNumber={pageNumber} setPageNumber={setPageNumber}/> 
+            <Pagination isLoading={isLoading} text="Plays" number={numberPlays} pageSize={pageSize} setPageSize={setPageSize} pageNumber={pageNumber} setPageNumber={setPageNumber}/> 
         </div>
     )
 }

@@ -46,12 +46,19 @@ const columns = [
         ellipsis: true, 
         render: (value: string, record: Play) => renderEllipsis(<span>{record.pp.toFixed(0)}</span>)
     },
+    {
+        title: 'Acc',
+        dataIndex: 'acc',
+        width: '5%',
+        ellipsis: true, 
+        render: (value: string, record: Play) => renderEllipsis(<span>{(record.acc*100).toFixed(2)}%</span>)
+    },
     { 
         title: 'Score',
         dataIndex: 'score',
         width: '8%',
         ellipsis: true,
-        render: (value: string, record: Play) => renderEllipsis(<NumberFormat className="hidden md:block" value={record?.score} displayType={'text'} thousandSeparator={true}/>)
+        render: (value: string, record: Play) => renderEllipsis(<NumberFormat className="" value={record?.score} displayType={'text'} thousandSeparator={true}/>)
     },
     { 
         title: 'Mods',
@@ -87,11 +94,9 @@ export const Scores = () => {
                 <SortingDropdown setPageNumber={setPageNumber} sortBy={sortBy} setSortBy={setSortBy} sortOrder={sortOrder} setSortOrder={setSortOrder}/>
             </ScrollAnimation>
             <ScrollAnimation animateIn="animate__slideInLeft" className="bg-black flex flex-col items-center justify-center w-full p-8 text-black">
-                <div className="flex flex-col bg-gray-100 p-8 rounded-sm items-center">
-                    <Pagination isLoading={isLoading} number={numberResults} text="Scores" pageSize={pageSize} setPageSize={setPageSize} pageNumber={pageNumber} setPageNumber={setPageNumber} />
-                    <div className="mt-8">
-                        <Table columns={columns} data={scores} />
-                    </div>
+                <div className="flex flex-col bg-gray-100 p-4 rounded-sm items-center text-xs md:text-base">
+                    <Table columns={columns} data={scores} />
+                    <Pagination isLoading={isLoading} number={numberResults} pageSize={pageSize} setPageSize={setPageSize} pageNumber={pageNumber} setPageNumber={setPageNumber} />
                 </div>
             </ScrollAnimation>
         </div>

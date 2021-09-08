@@ -172,7 +172,7 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
                         <Typography className={classes.heading}>Your #1s</Typography>
                     </AccordionSummary>
                     <AccordionDetails className="flex flex-col text-xs lg:text-base">
-                        <PlayerScores id={id} />
+                        <PlayerScores id={id} name={player.name} />
                     </AccordionDetails>
                 </Accordion>
                 

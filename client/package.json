@@ -19,6 +19,7 @@
     "animate.css": "^4.1.1",
     "axios": "^0.21.1",
     "hamburger-react": "^2.4.1",
+    "js-file-download": "^0.4.12",
     "moment": "^2.29.1",
     "node-sass": "^6.0.1",
     "react": "^17.0.2",

@@ -14,7 +14,6 @@ router.route("/numberLoaded").get(async (req, res) => {
     res.json(number);
 })
 
-//todo
 router.route("/refresh/:id").post(async (req, res) => {
     const id = parseInt(req.params.id)
     const beatmap = await BeatmapModel.findOne({ id: id })

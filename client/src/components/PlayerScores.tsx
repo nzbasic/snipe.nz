@@ -3,6 +3,8 @@ import { useEffect, useState } from "react"
 import NumberFormat from "react-number-format"
 import { Play } from "../../../models/play"
 import { Pagination } from "./Pagination"
+import fileDownloader from 'js-file-download'
+import { CircularProgress, makeStyles } from "@material-ui/core"
 
 const options = [
     { value: "score", label: "Score"},
@@ -11,7 +13,13 @@ const options = [
     { value: "pp", label: "pp"}
 ]
 
-export const PlayerScores = ({ id }: { id: string }) => {
+const useStyles = makeStyles((theme) => ({
+    loading: {
+      color: "white"
+    }
+}));
+
+export const PlayerScores = ({ id, name }: { id: string, name: string }) => {
     const [isLoading, setLoading] = useState(true)
     const [pageNumber, setPageNumber] = useState(1)
     const [pageSize, setPageSize] = useState(20)
@@ -19,6 +27,8 @@ export const PlayerScores = ({ id }: { id: string }) => {
     const [plays, setPlays] = useState<Play[]>([])
     const [sortBy, setSortBy] = useState("pp")
     const [sortOrder, setSortOrder] = useState("desc")
+    const [exportLoading, setExportLoading] = useState(false)
+    const classes = useStyles()
 
     const refreshMap = (id: number) => {
         setLoading(true)
@@ -37,8 +47,22 @@ export const PlayerScores = ({ id }: { id: string }) => {
         })
     }, [pageNumber, pageSize, id, sortBy, sortOrder])
 
+    const exportCollection = () => {
+        setExportLoading(true)
+        axios.get("/api/scores/export/" + id, { responseType: "arraybuffer" }).then(res => {
+            setExportLoading(false)
+            fileDownloader(res.data, name + ".db")
+        })
+    }
+
     return (
         <div className="flex flex-col">
+            <button disabled={exportLoading} className={`${exportLoading ? 'bg-blue-400 cursor-default' : 'bg-blue-600 hover:bg-blue-700'} hidden lg:block px-2 py-1 w-72 text-white rounded-sm mb-4`} onClick={() => exportCollection()}>
+                {!exportLoading ? 
+                    <span>Export to Collection Helper .db file</span> :
+                    <CircularProgress size={15} className={classes.loading}/>
+                }
+            </button>
             <div className="flex items-center mb-4 space-x-2">
                 <span>Sort by:</span>
                 <select onChange={(e) => {setPageNumber(1); setSortBy(e.target.value)}} value={sortBy} className="text-black border border-black">

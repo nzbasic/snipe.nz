@@ -8,6 +8,8 @@ import { Home } from './pages/Home'
 import { Activity } from './pages/Activity'
 import { Footer } from './components/Footer';
 import { Stats } from './pages/Stats'
+import { Scores } from './pages/Scores'
+import { Redirect } from './pages/Redirect'
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
           <Route path="/noScores" component={NoScores} />
           <Route path="/activity" component={Activity} />
           <Route path="/stats" component={Stats} />
+          <Route path="/scores" component={Scores} />
+          <Route path="/redirect/:name" component={Redirect} />
         </Switch>
       </div>
     </BrowserRouter>

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 
 export const Stats = () => {
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col bg-grey">
 
         </div>
     )

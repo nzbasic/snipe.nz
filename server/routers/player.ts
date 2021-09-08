@@ -11,6 +11,16 @@ import { SnipeModel } from '../../models/Snipe.model';
 let osuApi: osu.Api
 const router = express.Router();
 
+router.route("/nameToId/:name").get(async (req, res) => {
+    const name = req.params.name;
+    const player = await PlayerModel.findOne({ name: name });
+    if (player) {
+        res.json(player.id);
+    } else {
+        res.json({ error: "Player not found" });
+    }
+})
+
 router.route("/numberPlayers").get(async (req, res) => {
     const numberPlayers = await PlayerModel.countDocuments();
     res.json(numberPlayers);

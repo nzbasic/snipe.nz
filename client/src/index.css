@@ -7,6 +7,18 @@ body {
     font-family: 'Roboto', sans-serif;
 }
 
+.rc-table-content {
+  border: 1px solid black;
+  border-right: 0;
+  border-bottom: 0;
+}
+
+.rc-table td, .rc-table th {
+  border: 1px solid black;
+  border-top: 0;
+  border-left: 0;
+}
+
 .recharts-brush-slide {
   background-color: black;
 }

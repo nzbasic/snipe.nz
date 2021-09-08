@@ -5,13 +5,7 @@ import { Play } from "../../../models/play"
 import { Pagination } from "./Pagination"
 import fileDownloader from 'js-file-download'
 import { CircularProgress, makeStyles } from "@material-ui/core"
-
-const options = [
-    { value: "score", label: "Score"},
-    { value: "date", label: "Date"},
-    { value: "acc", label: "Accuracy"},
-    { value: "pp", label: "pp"}
-]
+import { SortingDropdown } from './SortingDropdown'
 
 const useStyles = makeStyles((theme) => ({
     loading: {
@@ -63,19 +57,7 @@ export const PlayerScores = ({ id, name }: { id: string, name: string }) => {
                     <CircularProgress size={15} className={classes.loading}/>
                 }
             </button>
-            <div className="flex items-center mb-4 space-x-2">
-                <span>Sort by:</span>
-                <select onChange={(e) => {setPageNumber(1); setSortBy(e.target.value)}} value={sortBy} className="text-black border border-black">
-                    {options.map(item => (
-                        <option key={item.value} value={item.value}>{item.label}</option>
-                    ))}
-                </select>
-                <span>Order:</span>
-                <select onChange={(e) => {setPageNumber(1); setSortOrder(e.target.value)}} value={sortOrder} className="text-black border border-black">
-                    <option value="desc">Descending</option>
-                    <option value="asc">Ascending</option>
-                </select>
-            </div>
+            <SortingDropdown setPageNumber={setPageNumber} sortBy={sortBy} setSortBy={setSortBy} sortOrder={sortOrder} setSortOrder={setSortOrder}/>
             {!isLoading ? plays.map((play, index) => (
                 <div key={play.id} className="flex space-x-2">
                     <span className="w-8">{(index+1) + ((pageNumber-1) * pageSize)}</span>
@@ -94,8 +76,7 @@ export const PlayerScores = ({ id, name }: { id: string, name: string }) => {
                     <span className="w-8">{(index+1) + ((pageNumber-1) * pageSize)}</span>
                     <span>Loading...</span>
                 </div>
-            ))
-            }
+            ))}
             <Pagination isLoading={isLoading} text="Plays" number={numberPlays} pageSize={pageSize} setPageSize={setPageSize} pageNumber={pageNumber} setPageNumber={setPageNumber}/> 
         </div>
     )

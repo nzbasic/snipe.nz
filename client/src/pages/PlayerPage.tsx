@@ -59,7 +59,7 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
 
         axios.get("/api/activity/" + id).then(res => {
             const sortedSnipes: Snipe[] = res.data.sort((a: Snipe, b: Snipe) => a.time - b.time)
-            const firstPoint: GraphData = { time: sortedSnipes[0].time - 86400, total: 0 }
+            const firstPoint: GraphData = { time: sortedSnipes[0]?.time??(new Date().getTime()) - 86400, total: 0 }
             const rawData: GraphData[] = [firstPoint]
             let lastTotal = 0
             sortedSnipes.forEach(data => {
@@ -70,11 +70,11 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
                 } else {
                     newPoint.total = lastTotal + 1
                 }
-
+    
                 lastTotal = newPoint.total
                 rawData.push(newPoint)
             })
-
+    
             let count = 0;
             sortedSnipes.filter(item => item.time > new Date().getTime() - (604800 * 1000)).forEach(data => {
                 if (data.victim === parseInt(id)) {
@@ -83,7 +83,7 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
                     count++;
                 }
             })
-            
+                
             setNumberThisWeek(count)
             setRawSnipeData(rawData.sort((a, b) => b.time - a.time))
             setPlayerLoading(false)

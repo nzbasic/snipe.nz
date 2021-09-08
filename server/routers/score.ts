@@ -24,27 +24,42 @@ router.route("/").get(async (req, res) => {
     const pageSize = parseInt(req.query.pageSize as string)
     const sortBy = req.query.sortBy as string
     const sortOrder = req.query.sortOrder as string
-    const order = { [sortBy]: sortOrder }
+    const order = { [sortBy]: sortOrder === "asc" ? 1 : -1 }
     const page: Play[] = []
+    const option: any = {}
 
-    const count = await ScoreModel.countDocuments({ playerId: id })
-    const scores = await ScoreModel.find({ playerId: id }).sort(order).skip(pageSize * (pageNumber - 1)).limit(pageSize)
+    if (id) {
+        option.playerId = id
+    }
+
+    const count = await ScoreModel.countDocuments(option)
+
+    const scores = await ScoreModel.aggregate([
+        { $match: option },
+        { $sort: order },
+        { $skip: pageSize * (pageNumber - 1) },
+        { $limit: pageSize },
+        { $lookup: { from: "players", localField: "playerId", foreignField: "id", as: "player" } },
+        { $lookup: { from: "beatmaps", localField: "beatmapId", foreignField: "id", as: "beatmap" } },
+        { $unwind: "$player" },
+        { $unwind: "$beatmap" },
+    ])
+
+    //const scores = await ScoreModel.find(option).sort(order).skip(pageSize * (pageNumber - 1)).limit(pageSize)
     for (const score of scores) {
-        const map = await BeatmapModel.findOne({ id: score.beatmapId })
-        const player = await PlayerModel.findOne({ id: score.playerId })
         const play: Play = { 
-            id: score?.id??0,
-            beatmapId: score?.beatmapId??0,
-            artist: map?.artist??"Map",
-            song: map?.song??"Not",
-            mapper: map?.mapper??"Sorry",
-            difficulty: map?.difficulty??"Found",
+            id: score.id,
+            beatmapId: score.beatmapId,
+            artist: score.beatmap?.artist??"Map",
+            song: score.beatmap?.song??"Not",
+            mapper: score.beatmap?.mapper??"Sorry",
+            difficulty: score.beatmap?.difficulty??"Found",
             pp: score?.pp??0,
             acc: score?.acc??0,
             mods: score?.mods??[],
             date: score?.date??"",
             score: score?.score??0,
-            player: player?.name??"Player not found"
+            player: score.player?.name??"Player not found"
         }
         page.push(play)
     }

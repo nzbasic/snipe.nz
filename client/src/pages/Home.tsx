@@ -158,7 +158,7 @@ export const Home = () => {
             <ScrollAnimation animateIn="animate__slideInLeft" duration={0.5} className="bg-indigo-600 flex flex-wrap-reverse lg:flex-no-wrap justify-between p-8 px-8 2xl:px-44 items-center">
                 <div className="flex flex-col lg:max-w-xl 2xl:max-w-3xl w-full justify-center items-center mt-8 lg:mt-0">
                     <button className="px-2 py-1 text-lg bg-gray-200 rounded-sm text-black hover:bg-gray-300 transition duration-200" onClick={() => getRandomBeatmap()}>Get Random #1</button>
-                    <a href={"https://osu.ppy.sh/beatmaps/" + (randomBeatmap?.beatmapId??"2790767")} target="_blank" rel="noreferrer" className="mt-2 animate-underline truncate text-center">{randomBeatmap?.song??"Press the button to get a random map!"}</a>
+                    <a href={"/beatmap/" + (randomBeatmap?.beatmapId??"2790767")} className="mt-2 animate-underline truncate text-center">{randomBeatmap?.song??"Press the button to get a random map!"}</a>
                     <span>Played by: {randomBeatmap?.player}</span>
                     <div className="flex items-center justify-center space-x-1">
                         <span>Score: </span>

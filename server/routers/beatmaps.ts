@@ -10,7 +10,7 @@ import { FormattedSnipe, SnipeModel } from '../../models/Snipe.model';
 
 const router = express.Router();
 
-router.route("/:id").get(async (req, res) => {
+router.route("/details/:id").get(async (req, res) => {
     const id = parseInt(req.params.id);
     const map = await BeatmapModel.findOne({ id });
     const activity = await SnipeModel.aggregate([
@@ -88,7 +88,7 @@ router.route("/noScoreCount").get(async (req, res) => {
 })
 
 router.route("/random").get(async (req, res) => {
-    const count = await ScoreModel.countDocuments({})
+    const count = await ScoreModel.countDocuments()
     const random = Math.floor(Math.random() * count)
     const score = await ScoreModel.findOne().skip(random)
     if (score == null) {

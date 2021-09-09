@@ -18,7 +18,7 @@ export const BeatmapPage = (props: RouteComponentProps<{ id: string }>) => {
 
     useEffect(() => {
         setLoading(true)
-        axios.get("/api/beatmaps/" + id).then(res => {
+        axios.get("/api/beatmaps/details/" + id).then(res => {
             setBeatmap(res.data.beatmap)
             setActivity(res.data.activity)
             console.log(res.data.activity)
@@ -75,9 +75,9 @@ export const BeatmapPage = (props: RouteComponentProps<{ id: string }>) => {
                         {activity.length ? activity.map((item, index) => (
                             <div className="flex space-x-1 text-base">
                                 <span className="truncate">{new Date(item.time).toLocaleDateString()}:</span>
-                                <a href={"/player/" + item.sniperId} className="hover:underline truncate text-green-400">{item.sniper}</a>
+                                <a href={"/player/" + item.victimId} className="hover:underline truncate text-green-400">{item.victim}</a>
                                 <span>sniped</span>
-                                <a href={"/player/" + item.victimId} className="hover:underline truncate text-red-400">{item.victim}</a>
+                                <a href={"/player/" + item.sniperId} className="hover:underline truncate text-red-400">{item.sniper}</a>
                             </div>
                         )) : <span>No snipes recorded!</span>}
                     </div>

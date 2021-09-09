@@ -107,7 +107,7 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
             <ScrollAnimation animateIn="animate__slideInLeft" className="bg-black flex p-8 w-full ">
                 <button disabled={isPlayerLoading} onClick={() => refreshUser()} className={`${isPlayerLoading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-800'}  text-white px-2 py-1 rounded-sm`}>Refresh using last 50 plays (1 minute)</button>
             </ScrollAnimation>
-            <ScrollAnimation animateIn="animate__slideInLeft" className="bg-pink-400 text-xl md:text-4xl space-y-2 flex flex-col p-8 w-full">
+            <ScrollAnimation animateIn="animate__slideInRight" className="bg-pink-400 text-xl md:text-4xl space-y-2 flex flex-col p-8 w-full">
                 <span>Number #1s: {player.firstCount}</span>
                 <div className="flex items-center">
                     <span className="mr-2">Snipes this week:</span>
@@ -123,7 +123,7 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
                     <CircularProgress className={classes.loading} size="10rem"/>    
                 } 
             </ScrollAnimation>
-            <ScrollAnimation animateIn="animate__slideInLeft" className="bg-blue-400 flex flex-col space-y-4 p-8">
+            <ScrollAnimation animateIn="animate__slideInRight" className="bg-blue-400 flex flex-col space-y-4 p-8">
                 <Accordion>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}

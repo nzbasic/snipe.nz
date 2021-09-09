@@ -51,18 +51,21 @@ export const PlayerScores = ({ id, name }: { id: string, name: string }) => {
 
     return (
         <div className="flex flex-col">
-            <button disabled={exportLoading} className={`${exportLoading ? 'bg-blue-400 cursor-default' : 'bg-blue-600 hover:bg-blue-700'} hidden lg:block px-2 py-1 w-72 text-white rounded-sm mb-4`} onClick={() => exportCollection()}>
-                {!exportLoading ? 
-                    <span>Export to Collection Helper .db file</span> :
-                    <CircularProgress size={15} className={classes.loading}/>
-                }
-            </button>
+            <div className="hidden lg:flex items-center mb-4 space-x-2">
+                <button disabled={exportLoading} className={`${exportLoading ? 'bg-blue-400 cursor-default' : 'bg-blue-600 hover:bg-blue-700'} px-2 py-1 w-72 text-white rounded-sm `} onClick={() => exportCollection()}>
+                    {!exportLoading ? 
+                        <span>Export to Collection Helper .db file</span> :
+                        <CircularProgress size={15} className={classes.loading}/>
+                    }
+                </button>
+                <a href="https://github.com/nzbasic/Collection-Helper" target="_blank" rel="noreferrer" className="text-blue-400 hover:underline">Download Collection Helper</a>
+            </div>
             <SortingDropdown setPageNumber={setPageNumber} sortBy={sortBy} setSortBy={setSortBy} sortOrder={sortOrder} setSortOrder={setSortOrder}/>
             {!isLoading ? plays.map((play, index) => (
                 <div key={play.id} className="flex space-x-2">
                     <span className="w-8">{(index+1) + ((pageNumber-1) * pageSize)}</span>
                     <span className="w-16 lg:w-28 truncate">{play.artist}</span>
-                    <a href={"https://osu.ppy.sh/beatmaps/" + play.beatmapId} target="_blank" rel="noreferrer" className="truncate w-32 lg:w-60 text-blue-400 hover:underline">{play.song}</a>
+                    <a href={"/beatmap/" + play.beatmapId} className="truncate w-32 lg:w-60 text-blue-400 hover:underline">{play.song}</a>
                     <span className="w-20 lg:w-40 truncate">[{play.difficulty}]</span>
                     <NumberFormat className="w-24 hidden md:block" value={play.score} displayType={'text'} thousandSeparator={true}/>
                     <span className="hidden md:block w-12 lg:w-16">{(play.pp??0).toFixed(0)}pp</span>

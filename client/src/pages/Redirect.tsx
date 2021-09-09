@@ -7,7 +7,7 @@ export const Redirect = (props: RouteComponentProps<{ name: string }>) => {
 
     useEffect(() => {
         axios.get("/api/players/nameToId/" + name).then(res => {
-            window.location.href = "/player/" + res.data
+            window.location.replace("/player/" + res.data);
         })
     }, [name])
 

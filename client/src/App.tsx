@@ -10,6 +10,7 @@ import { Footer } from './components/Footer';
 import { Stats } from './pages/Stats'
 import { Scores } from './pages/Scores'
 import { Redirect } from './pages/Redirect'
+import { BeatmapPage } from './pages/Beatmap'
 
 function App() {
   return (
@@ -18,13 +19,14 @@ function App() {
         <Header />
         <Switch>
           <Route path="/" exact component={Home} />
-          <Route path="/players" exact component={Leaderboard} />
+          <Route path="/players" component={Leaderboard} />
           <Route path="/player/:id" component={PlayerPage} />
           <Route path="/noScores" component={NoScores} />
           <Route path="/activity" component={Activity} />
           <Route path="/stats" component={Stats} />
           <Route path="/scores" component={Scores} />
           <Route path="/redirect/:name" component={Redirect} />
+          <Route path="/beatmap/:id" component={BeatmapPage} />
         </Switch>
       </div>
     </BrowserRouter>

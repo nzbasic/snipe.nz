@@ -8,7 +8,7 @@ export const SingleActivity = ({snipe}: { snipe: FormattedSnipe }) => {
             <span>sniped</span>
             <a href={"/player/" + snipe.victimId} className="hover:underline truncate text-red-400">{snipe.victim}</a>
             <span>on</span>
-            <a href={"https://osu.ppy.sh/beatmaps/" + snipe.beatmapId} target="_blank" rel="noreferrer" className="hover:underline truncate text-blue-400">{snipe.beatmap}</a>
+            <a href={"/beatmap/" + snipe.beatmapId} className="hover:underline truncate text-blue-400">{snipe.beatmap}</a>
         </div>
     )
 }

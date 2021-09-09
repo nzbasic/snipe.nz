@@ -6,8 +6,54 @@ import { PlayerModel } from '../../models/Player.model';
 import { ScoreModel } from '../../models/Score.model';
 import { updateBeatmap } from '../../shared/updatemap';
 import { promisify } from 'util'
+import { FormattedSnipe, SnipeModel } from '../../models/Snipe.model';
 
 const router = express.Router();
+
+router.route("/:id").get(async (req, res) => {
+    const id = parseInt(req.params.id);
+    const map = await BeatmapModel.findOne({ id });
+    const activity = await SnipeModel.aggregate([
+        { $match: { beatmap: id } },
+        { $lookup: { localField: "victim", from: "players", foreignField: "id", as: "victimFull"}},
+        { $lookup: { localField: "sniper", from: "players", foreignField: "id", as: "sniperFull"}},
+        { $unwind: "$victimFull" },
+        { $unwind: "$sniperFull" },
+    ])
+
+    const snipes: FormattedSnipe[] = []
+    for (const snipe of activity) {
+        const formatted: FormattedSnipe = {
+            sniperId: snipe.sniper,
+            victimId: snipe.victim,
+            time: new Date(snipe.time).getTime(),
+            sniper: snipe.victimFull.name,
+            victim: snipe.sniperFull.name,
+            beatmapId: id, 
+            beatmap: ""
+        }
+        snipes.push(formatted)
+    }
+
+    const score = await ScoreModel.findOne({ beatmapId: id });
+    const player = await PlayerModel.findOne({ id: score?.playerId })
+    const play: Play = { 
+        id: score?.id??0,
+        beatmapId: score?.beatmapId??0,
+        artist: map?.artist??"Map",
+        song: map?.song??"Not",
+        mapper: map?.mapper??"Sorry",
+        difficulty: map?.difficulty??"Found",
+        pp: score?.pp??0,
+        acc: score?.acc??0,
+        mods: score?.mods??[],
+        date: score?.date??"",
+        score: score?.score??0,
+        player: player?.name??"Player not found"
+    }
+
+    res.json({ beatmap: map, activity: snipes, score: play })
+})
 
 router.route("/numberLoaded").get(async (req, res) => {
     const number = await BeatmapModel.countDocuments();
@@ -34,6 +80,7 @@ router.route("/noScore").get(async (req, res) => {
     const beatmaps = await BeatmapModel.find({ playerId: undefined }).sort({sr: -1}).skip((pageNumber-1) * pageSize).limit(pageSize);
     res.json(beatmaps);
 })
+
 
 router.route("/noScoreCount").get(async (req, res) => {
     const number = await BeatmapModel.countDocuments({ playerId: undefined });

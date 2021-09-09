@@ -10,7 +10,6 @@ const HiddenMenu = ({visible}: { visible: boolean }) => (
         <HeaderButton text="Leaderboard" link="/players"/>
         <HeaderButton text="Recommend" link="/recommend"/>
         <HeaderButton text="Scores" link="/noScores"/>
-        <HeaderButton text="Beatmaps" link="/beatmaps"/>
         <HeaderButton text="Activity" link="/activity"/>
         <HeaderButton text="Stats" link="/stats"/>
     </div>
@@ -27,7 +26,6 @@ export const Header = () => {
                     <HeaderButton text="Leaderboard" link="/players"/>
                     <HeaderButton text="Recommend" link="/recommend"/>
                     <HeaderButton text="Scores" link="/scores"/>
-                    <HeaderButton text="Beatmaps" link="/beatmaps"/>
                     <HeaderButton text="Activity" link="/activity"/>
                     <HeaderButton text="Stats" link="/stats"/>
                 </div>

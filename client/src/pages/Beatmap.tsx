@@ -75,9 +75,9 @@ export const BeatmapPage = (props: RouteComponentProps<{ id: string }>) => {
                         {activity.length ? activity.map((item, index) => (
                             <div className="flex space-x-1 text-base">
                                 <span className="truncate">{new Date(item.time).toLocaleDateString()}:</span>
-                                <a href={"/player/" + item.victimId} className="hover:underline truncate text-green-400">{item.victim}</a>
+                                <a href={"/player/" + item.sniperId} className="hover:underline truncate text-green-400">{item.sniper}</a>
                                 <span>sniped</span>
-                                <a href={"/player/" + item.sniperId} className="hover:underline truncate text-red-400">{item.sniper}</a>
+                                <a href={"/player/" + item.victimId} className="hover:underline truncate text-red-400">{item.victim}</a>
                             </div>
                         )) : <span>No snipes recorded!</span>}
                     </div>

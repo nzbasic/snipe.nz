@@ -27,8 +27,8 @@ router.route("/details/:id").get(async (req, res) => {
             sniperId: snipe.sniper,
             victimId: snipe.victim,
             time: new Date(snipe.time).getTime(),
-            sniper: snipe.victimFull.name,
-            victim: snipe.sniperFull.name,
+            sniper: snipe.sniperFull.name,
+            victim: snipe.victimFull.name,
             beatmapId: id, 
             beatmap: ""
         }

@@ -35,7 +35,7 @@ export const BeatmapPage = (props: RouteComponentProps<{ id: string }>) => {
             <ScrollAnimation animateIn="animate__slideInRight" className="flex flex-col bg-black text-white text-xs lg:text-lg items-center p-8">
                 <a href={"https://osu.ppy.sh/beatmaps/" + beatmap?.id} target="_blank" rel="noreferrer" className="animate-underline max-w-full truncate">{beatmap?.song} - {beatmap?.song} [{beatmap?.difficulty}]</a>
             </ScrollAnimation>
-            <ScrollAnimation animateIn="animate__slideInLeft" className="flex flex-col bg-green-400 text-white text-xl p-8">
+            <ScrollAnimation animateIn="animate__slideInLeft" className="flex flex-col bg-green-600 text-white text-xl p-8">
                 <span className="text-2xl">Map Details:</span>
                 <span>BPM: {beatmap?.bpm}</span>
                 <span>Mapper: {beatmap?.mapper}</span>

@@ -29,8 +29,8 @@ export const BeatmapPage = (props: RouteComponentProps<{ id: string }>) => {
 
     return !isLoading ? (
         <div className="flex flex-col">
-            <ScrollAnimation animateIn="animate__slideInLeft" className="bg-indigo-400 p-16 items-center flex flex-col">
-                <img className="p-4 bg-white rounded-lg border-gray-200 border-2" src={"https://assets.ppy.sh/beatmaps/" + beatmap?.setId + "/covers/cover.jpg"} alt="Beatmap Cover" />
+            <ScrollAnimation animateIn="animate__slideInLeft" className="bg-indigo-400 p-4 lg:p-16 items-center flex flex-col">
+                <img className="p-2 lg:p-4 bg-white rounded-lg border-gray-200 border-2" src={"https://assets.ppy.sh/beatmaps/" + beatmap?.setId + "/covers/cover.jpg"} alt="Beatmap Cover" />
             </ScrollAnimation>
             <ScrollAnimation animateIn="animate__slideInRight" className="flex flex-col bg-black text-white text-xs lg:text-lg items-center p-8">
                 <a href={"https://osu.ppy.sh/beatmaps/" + beatmap?.id} target="_blank" rel="noreferrer" className="animate-underline max-w-full truncate">{beatmap?.song} - {beatmap?.song} [{beatmap?.difficulty}]</a>
@@ -73,8 +73,8 @@ export const BeatmapPage = (props: RouteComponentProps<{ id: string }>) => {
                     <div className="flex flex-col text-white p-8 text-xl">
                         <span className="text-2xl">Snipe History</span>
                         {activity.length ? activity.map((item, index) => (
-                            <div className="flex space-x-1">
-                                <span className="hidden md:block truncate">{new Date(item.time).toLocaleString()}:</span>
+                            <div className="flex space-x-1 text-base">
+                                <span className="truncate">{new Date(item.time).toLocaleDateString()}:</span>
                                 <a href={"/player/" + item.sniperId} className="hover:underline truncate text-green-400">{item.sniper}</a>
                                 <span>sniped</span>
                                 <a href={"/player/" + item.victimId} className="hover:underline truncate text-red-400">{item.victim}</a>

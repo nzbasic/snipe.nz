@@ -44,7 +44,11 @@ router.route("/stats").get(async (req, res) => {
         { $unwind: "$player" },
     ])
 
-    res.json({ contested: scores, topSniperWeek, topVictimWeek });
+    const scoreCount = await ScoreModel.countDocuments()
+    const snipeCount = await SnipeModel.countDocuments()
+    const beatmapCount = await BeatmapModel.countDocuments()
+
+    res.json({ contested: scores, topSniperWeek, topVictimWeek, scoreCount, snipeCount, beatmapCount });
 })
 
 router.route("/numberScores").get(async (req, res) => {

@@ -6,12 +6,46 @@ import { BeatmapModel } from '../../models/Beatmap.model';
 import sqlite3 from 'sqlite3'
 import { Database, open } from "sqlite";
 import fs from 'fs'
+import { convertToPlay } from './beatmaps';
+import { SnipeModel } from '../../models/Snipe.model';
 sqlite3.verbose()
 
 const router = express.Router();
 export const getNumberScores = async (id: number) => {
     return ScoreModel.countDocuments({ playerId: id });
 }
+
+router.route("/stats").get(async (req, res) => {
+    const scores = await SnipeModel.aggregate([
+        { $group: { _id: "$beatmap", count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+        { $limit: 10 },
+        { $lookup: { from: "beatmaps", localField: "_id", foreignField: "id", as: "beatmap" } },
+        { $unwind: "$beatmap" },
+    ])
+
+    const timeMinusWeek = new Date(Date.now() - 1000 * 60 * 60 * 24 * 7).getTime();
+
+    const topSniperWeek = await SnipeModel.aggregate([
+        { $match: { time: { $gt: timeMinusWeek } } },
+        { $group: { _id: "$sniper", count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+        { $limit: 10 },
+        { $lookup: { from: "players", localField: "_id", foreignField: "id", as: "player" } },
+        { $unwind: "$player" },
+    ])
+
+    const topVictimWeek = await SnipeModel.aggregate([
+        { $match: { time: { $gt: timeMinusWeek } } },
+        { $group: { _id: "$victim", count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+        { $limit: 10 },
+        { $lookup: { from: "players", localField: "_id", foreignField: "id", as: "player" } },
+        { $unwind: "$player" },
+    ])
+
+    res.json({ contested: scores, topSniperWeek, topVictimWeek });
+})
 
 router.route("/numberScores").get(async (req, res) => {
     const id = req.body.id;
@@ -47,34 +81,14 @@ router.route("/").get(async (req, res) => {
 
     //const scores = await ScoreModel.find(option).sort(order).skip(pageSize * (pageNumber - 1)).limit(pageSize)
     for (const score of scores) {
-        const play: Play = { 
-            id: score.id,
-            beatmapId: score.beatmapId,
-            artist: score.beatmap?.artist??"Map",
-            song: score.beatmap?.song??"Not",
-            mapper: score.beatmap?.mapper??"Sorry",
-            difficulty: score.beatmap?.difficulty??"Found",
-            pp: score?.pp??0,
-            acc: score?.acc??0,
-            mods: score?.mods??[],
-            date: score?.date??"",
-            score: score?.score??0,
-            player: score.player?.name??"Player not found"
-        }
+        const play = await convertToPlay(score.beatmapId, score.beatmap, score, score.player)
         page.push(play)
     }
 
     res.json({ plays: page, numberPlays: count })
 })
 
-router.route("/export/:id").get(async (req, res) => {
-    const id = parseInt(req.params.id as string)
-    const path = "./" + id + ".db"
-    const scores = await ScoreModel.aggregate([
-        { $match: { playerId: id } },
-        { $lookup: { from: "beatmaps", localField: "beatmapId", foreignField: "id", as: "beatmap" } },
-        { $unwind: "$beatmap" },
-    ])
+export const scoresToDb = async (id: string, path: string, scores: any[]) => {
     const hashes = scores.map(score => score.beatmap.hash)
     const buf = Buffer.from(JSON.stringify(hashes))
 
@@ -92,6 +106,17 @@ router.route("/export/:id").get(async (req, res) => {
 
     await db.run("COMMIT")
     await db.close();
+}
+
+router.route("/export/:id").get(async (req, res) => {
+    const id = parseInt(req.params.id as string)
+    const path = "./" + id + ".db"
+    const scores = await ScoreModel.aggregate([
+        { $match: { playerId: id } },
+        { $lookup: { from: "beatmaps", localField: "beatmapId", foreignField: "id", as: "beatmap" } },
+        { $unwind: "$beatmap" },
+    ])
+    await scoresToDb(id + "", path, scores)
 
     res.download(path)
     fs.rm(path, () => {})

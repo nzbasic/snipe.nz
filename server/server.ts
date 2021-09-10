@@ -1,7 +1,7 @@
 import express from 'express';
 import scoreRouter from './routers/score';
 import playerRouter from './routers/player';
-import beatmapRouter from './routers/beatmaps'
+import beatmapRouter, { loadData } from './routers/beatmaps'
 import activityRouter from './routers/activity'
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
@@ -13,7 +13,10 @@ const app = express();
 const port = 8080;
 
 mongoose.connect(process.env.MONGO??"", {})
-mongoose.connection.on('connected', () => console.log("Mongo connected"))
+mongoose.connection.on('connected', () => {
+  loadData()
+  console.log("Mongo connected")
+})
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))

@@ -167,8 +167,8 @@ export const Home = () => {
                     
                 </div>
                 <div className="flex flex-col pr-4">
-                    <span className="text-3xl lg:text-3xl lg:text-right">Get Recommendations</span>
-                    <span className="text-2xl lg:text-lg lg:text-right">Random maps will be given to you to try snipe.</span>
+                    <span className="text-3xl lg:text-3xl lg:text-right">Query Beatmaps/Scores</span>
+                    <span className="text-2xl lg:text-lg lg:text-right">Use advanced filters to find maps to snipe.</span>
                 </div>
             </ScrollAnimation>
             <Footer />

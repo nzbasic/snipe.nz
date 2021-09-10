@@ -8,8 +8,8 @@ const HeaderButton = ({text, link}: { text: string, link: string}) => (
 const HiddenMenu = ({visible}: { visible: boolean }) => (
     <div className={`${visible ? 'pb-16' : 'h-menu-off'} xl:hidden bg-black w-full flex flex-col justify-center items-center space-y-10 z-10`}>
         <HeaderButton text="Leaderboard" link="/players"/>
-        <HeaderButton text="Recommend" link="/recommend"/>
-        <HeaderButton text="Scores" link="/noScores"/>
+        <HeaderButton text="Query" link="/query"/>
+        <HeaderButton text="Scores" link="/scores"/>
         <HeaderButton text="Activity" link="/activity"/>
         <HeaderButton text="Stats" link="/stats"/>
     </div>
@@ -24,7 +24,7 @@ export const Header = () => {
                 <a href="/" className="text-5xl font-extrabold">Snipe.nz</a>
                 <div className="hidden xl:flex space-x-8">
                     <HeaderButton text="Leaderboard" link="/players"/>
-                    <HeaderButton text="Recommend" link="/recommend"/>
+                    <HeaderButton text="Query" link="/query"/>
                     <HeaderButton text="Scores" link="/scores"/>
                     <HeaderButton text="Activity" link="/activity"/>
                     <HeaderButton text="Stats" link="/stats"/>

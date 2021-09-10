@@ -18,7 +18,7 @@ const options = [
 export const SortingDropdown = ({ setPageNumber, setSortBy, setSortOrder, sortBy, sortOrder }: SortingDropdownProps) => {
 
     return (
-        <div className="flex items-center mb-4 space-x-2">
+        <div className="flex items-center space-x-2">
             <span>Sort by:</span>
             <select onChange={(e) => {setPageNumber(1); setSortBy(e.target.value)}} value={sortBy} className="text-black border border-black">
                 {options.map(item => (

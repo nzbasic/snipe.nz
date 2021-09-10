@@ -11,6 +11,7 @@ import { Stats } from './pages/Stats'
 import { Scores } from './pages/Scores'
 import { Redirect } from './pages/Redirect'
 import { BeatmapPage } from './pages/Beatmap'
+import { Query } from './pages/Query'
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/scores" component={Scores} />
           <Route path="/redirect/:name" component={Redirect} />
           <Route path="/beatmap/:id" component={BeatmapPage} />
+          <Route path="/query" component={Query} />
         </Switch>
       </div>
     </BrowserRouter>

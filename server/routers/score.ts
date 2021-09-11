@@ -8,12 +8,10 @@ import { Database, open } from "sqlite";
 import fs from 'fs'
 import { convertToPlay } from './beatmaps';
 import { SnipeModel } from '../../models/Snipe.model';
+import { getNumberScores } from '../../shared/updatemap'
 sqlite3.verbose()
 
 const router = express.Router();
-export const getNumberScores = async (id: number) => {
-    return ScoreModel.countDocuments({ playerId: id });
-}
 
 router.route("/stats").get(async (req, res) => {
     const scores = await SnipeModel.aggregate([

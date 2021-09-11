@@ -106,10 +106,10 @@ export const Leaderboard = () => {
                 <PlayerSearch width="w-80" height="h-12" callback={(player: Player) => {window.location.href="/player/" + player.id}}/>
             </ScrollAnimation>
             <ScrollAnimation animateIn="animate__slideInRight" className="bg-black flex flex-col items-center p-8 space-y-1">
-                <div className="flex space-x-4 text-4xl">
-                    <button className={`${mode === Mode.VICTIM && 'invisible'} w-8`} onClick={() => changeMode(-1)}>🡐</button>
+                <div className="flex space-x-4 text-4xl items-center">
+                    <button className={`${mode === Mode.VICTIM && 'invisible'} w-8`} onClick={() => changeMode(-1)}>←</button>
                     <span className="w-72 text-center">{mode}</span>
-                    <button className={`${mode === Mode.SNIPER && 'invisible'} w-8`} onClick={() => changeMode(1)}>🡒</button>
+                    <button className={`${mode === Mode.SNIPER && 'invisible'} w-8`} onClick={() => changeMode(1)}>→</button>
                 </div>
                 <div className="py-4">
                     <Pagination isLoading={isLoading} number={numberPlayers} pageNumber={pageNumber} setPageNumber={setPageNumber}/> 

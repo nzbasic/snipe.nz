@@ -63,5 +63,7 @@ export const Stats = () => {
                 </div>
             ))}
         </div>
-    ) : <CircularProgress />
+    ) : <div className="w-full h-screen flex flex-col items-center justify-center">
+            <CircularProgress />
+        </div>
 }

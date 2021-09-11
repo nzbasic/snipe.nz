@@ -4,7 +4,10 @@ import { ApiScore, ScoreModel } from './../models/Score.model';
 import got from 'got'
 import { CookieJar } from 'tough-cookie';
 import { PlayerModel } from '../models/Player.model';
-import { getNumberScores } from '../server/routers/score';
+
+export const getNumberScores = async (id: number) => {
+    return ScoreModel.countDocuments({ playerId: id });
+}
 
 export const updateBeatmap = async (id: number, jar: CookieJar, beatmap: CHBeatmap | Beatmap, prev?: number) => {
     const url = "https://osu.ppy.sh/beatmaps/" + beatmap.id + "/scores?type=country&mode=osu"
@@ -29,7 +32,7 @@ export const updateBeatmap = async (id: number, jar: CookieJar, beatmap: CHBeatm
             player = await new PlayerModel({ id: firstPlace.user_id, name: firstPlace.user.username }).save()
         } else {
             player.name = firstPlace.user.username
-            player.save()
+            await player.save()
         }
 
         // if there is no found score with the maps first place id, that means there has been a snipe OR there is a new score on a map with no plays
@@ -44,7 +47,7 @@ export const updateBeatmap = async (id: number, jar: CookieJar, beatmap: CHBeatm
                     console.log(existing.playerId + " sniped themselves")
                 } else {
                     console.log("new snipe on " + beatmap.id + " by " + firstPlace.user.username + " victim " + existing.playerId)
-                    new SnipeModel({
+                    await new SnipeModel({
                         beatmap: beatmap.id,
                         sniper: firstPlace.user_id,
                         victim: existing.playerId,
@@ -55,11 +58,11 @@ export const updateBeatmap = async (id: number, jar: CookieJar, beatmap: CHBeatm
                     const oldBeatmap = await BeatmapModel.findOne({ id: beatmap.id })
                     if (oldBeatmap) {
                         oldBeatmap.playerId = firstPlace.user_id
-                        oldBeatmap.save()
+                        await oldBeatmap.save()
                     }
                 }
 
-                new ScoreModel({ 
+                await new ScoreModel({ 
                     id: firstPlace.id,
                     playerId: firstPlace.user_id,
                     beatmapId: beatmap.id,
@@ -73,20 +76,23 @@ export const updateBeatmap = async (id: number, jar: CookieJar, beatmap: CHBeatm
                 }).save()
 
                 // remove the old score
-                existing.delete();
+                await existing.delete();
 
                 player.firstCount = await getNumberScores(player.id)
-                player.save()
+                await player.save()
                 if (snipedPlayer) {
                     snipedPlayer.firstCount = await getNumberScores(snipedPlayer.id)
-                    snipedPlayer.save()
+                    await snipedPlayer.save()
                 }
 
-                // dont need to do anything else
-                return;
+                if (existing.playerId != firstPlace.user_id) {
+                    return { victim: existing.playerId, sniper: firstPlace.user_id };
+                } else {
+                    return
+                }
             } else { // there was no other score on the map, make sure to update the maps first place holder
                 console.log("first score on " + firstPlace.beatmap.id + " by " + firstPlace.user.username)
-                new ScoreModel({ 
+                await new ScoreModel({ 
                     id: firstPlace.id,
                     playerId: firstPlace.user_id,
                     beatmapId: beatmap.id,
@@ -104,13 +110,13 @@ export const updateBeatmap = async (id: number, jar: CookieJar, beatmap: CHBeatm
                     foundMap.playerId = firstPlace.user_id
                     foundMap.lastUpdated = new Date(firstPlace.beatmap.last_updated).getTime()
                     foundMap.drain = firstPlace.beatmap.drain
-                    foundMap.save()
+                    await foundMap.save()
                 }
 
                 player.firstCount = await getNumberScores(player.id)
-                player.save()
+                await player.save()
 
-                return;
+                return firstPlace.user_id;
             }
         } 
 
@@ -118,7 +124,7 @@ export const updateBeatmap = async (id: number, jar: CookieJar, beatmap: CHBeatm
 
         if (!foundMap) {
             console.log('added' + beatmap.id)
-            new BeatmapModel({
+            await new BeatmapModel({
                 artist: beatmap.artist,
                 song: beatmap.song,
                 difficulty: firstPlace.beatmap.version,
@@ -138,15 +144,15 @@ export const updateBeatmap = async (id: number, jar: CookieJar, beatmap: CHBeatm
         } else { // this probably never gets called?
             console.log("set " + firstPlace.user_id + " 1st on " + foundMap.id)
             player.firstCount = await getNumberScores(player.id)
-            player.save()
+            await player.save()
             foundMap.playerId = firstPlace.user_id
-            foundMap.save()
+            await foundMap.save()
         } 
     } else {
         const foundBeatmap = await BeatmapModel.findOne({ id: id })
 
         if (!foundBeatmap) {
-            new BeatmapModel({
+            await new BeatmapModel({
                 artist: beatmap.artist,
                 song: beatmap.song,
                 difficulty: beatmap.difficulty,

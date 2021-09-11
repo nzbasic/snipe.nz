@@ -4,7 +4,7 @@
   </a>
 
   
-  [snipe.nz](https://osutracker.com)
+  [snipe.nz](https://snipe.nz)
 </h1>
 
 <div align="center">

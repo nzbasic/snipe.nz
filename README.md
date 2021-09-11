@@ -30,7 +30,7 @@
 <summary>Table of Contents</summary>
 
 - [About](#about)
-  - [Built With](#built-with)
+  - [Mono Repo](#mono-repo)
   - [Screenshots](#screenshots)
 - [Contributing](#contributing)
 - [Support](#support)
@@ -46,7 +46,7 @@
 <tr>
 <td>
 
-snipe.nz is a website for NZ osu! players to track scores that are #1 in the country. It also features a discord bot for notifying users of snipes as they happen. 
+snipe.nz is a website for NZ osu! players to track scores that are #1 in the country. It also features a discord bot for notifying users of snipes as they happen. This project was built to give more insight on the players of New Zealand and to offer a new way for people to play the game.
 
 The key features of **osuTracker**:
 
@@ -60,6 +60,18 @@ The key features of **osuTracker**:
 </td>
 </tr>
 </table>
+
+### Mono Repo
+
+This project features four separate components and some shared models/utility code.
+
+- /client: Frontend, react typescript
+- /server: Backend, node typescript 
+- /discord: Discord bot made using overcord, typescript
+- /collection: Data collection service, node typescript
+
+- /models: Models and interfaces for MongoDB
+- /shared: Some shared utility code
 
 ### Screenshots
 

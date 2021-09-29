@@ -7,7 +7,7 @@ import React from "react"
 import Table from 'rc-table'
 
 const renderSong = (value: string, record: Play, index: number) => {
-    return renderEllipsis(<a href={"https://osu.ppy.sh/beatmaps/" + record.beatmapId} target="_blank" rel="noreferrer" className="text-blue-400 hover:underline">{record.artist} - {record.song} [{record.difficulty}]</a>);
+    return renderEllipsis(<a href={"/beatmap/" + record.beatmapId} target="_blank" rel="noreferrer" className="text-blue-400 hover:underline">{record.artist} - {record.song} [{record.difficulty}]</a>);
 }
 
 const renderEllipsis = (value: JSX.Element) => {

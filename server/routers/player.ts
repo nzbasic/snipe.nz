@@ -4,8 +4,7 @@ import { ScoreModel } from '../../models/Score.model';
 import osu from 'node-osu'
 import { Beatmap, BeatmapModel } from '../../models/Beatmap.model';
 import { getCookieJar } from '../../shared/jar';
-import { updateBeatmap } from '../../shared/updatemap';
-import { getNumberScores } from './score';
+import { updateBeatmap, getNumberScores } from '../../shared/updatemap';
 import { SnipeModel } from '../../models/Snipe.model';
 
 let osuApi: osu.Api

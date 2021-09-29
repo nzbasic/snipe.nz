@@ -18,8 +18,9 @@ import { updateBeatmap } from '../../shared/updatemap'
 import { getCookieJar } from '../../shared/jar'
 import { BeatmapModel } from '../../models/Beatmap.model'
 import { PlayerModel } from "../../models/Player.model";
+import { scoresOn } from "./ScoresOn";
 
-@Alias("!rs", "!r", "<rs", ">rs")
+@Alias("!rs", "!r", "<rs", ">rs", "<r", ">r")
 export default class Link extends Command {
     async execute(message: Message, client: Client) {
         const user = await UserModel.findOne({ discordId: message.author.id})
@@ -31,7 +32,50 @@ export default class Link extends Command {
                     const jar = await getCookieJar();
                     const id = parseInt(recent.beatmapId as string, 10)
                     const beatmap = await BeatmapModel.findOne({ id: id })
+
                     if (beatmap) {
+                        if (scoresOn) {
+
+                            let mods = "+"
+                            if (typeof recent.mods === "string") {
+                                mods += recent.mods
+                            } else {
+                                recent.mods.forEach(mod => {
+                                    if (mod === "Hidden") {
+                                        mods += "HD"
+                                    } else if (mod === "HardRock") {
+                                        mods += "HR"
+                                    } else if (mod === "DoubleTime") {
+                                        mods += "DT"
+                                    } else if (mod === "Easy") {
+                                        mods += "EZ"
+                                    } else if (mod === "HalfTime") {
+                                        mods += "HT"
+                                    } else if (mod === "Nightcore") {
+                                        mods += "NC"
+                                    } else if (mod === "NoFail") {
+                                        mods += "NF"
+                                    } else if (mod === "Perfect") {
+                                        mods += "PF"
+                                    } else if (mod === "Relax") {
+                                        mods += "RX"
+                                    } else if (mod === "SuddenDeath") {
+                                        mods += "SD"
+                                    } else if (mod === "SpunOut") {
+                                        mods += "SO"
+                                    } else if (mod === "TouchDevice") {
+                                        mods += "TD"
+                                    } else if (mod === "Flashlight") {
+                                        mods += "FL"
+                                    }
+                                })
+                            }
+
+                            const string = beatmap.artist + " - " + beatmap.song + " [" + beatmap.difficulty + "] mapped by " + beatmap.mapper + "\n"
+                                + recent.rank + " " + recent.score + " " + mods + " " + recent.maxCombo + "x " + recent.counts['300'] + "/" + recent.counts['100'] + "/" + recent.counts['50'] + "/" + recent.counts.miss + "\n";
+                            message.channel.send(string)
+                        }
+
                         const res = await updateBeatmap(id, jar, beatmap)
                         if (typeof res === "object") {
                             const sniper = await PlayerModel.findOne({ id: res.sniper })

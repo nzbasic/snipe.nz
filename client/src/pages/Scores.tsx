@@ -32,7 +32,7 @@ export const Scores = () => {
             </ScrollAnimation>
             <ScrollAnimation animateIn="animate__slideInRight" className="bg-black flex flex-col items-center justify-center w-full p-8 text-black">
                 <div className="flex flex-col bg-gray-100 p-4 rounded-sm items-center text-xs md:text-base">
-                    <ScoreTable scores={scores} />
+                    <ScoreTable scores={scores} snipe={false} />
                     <Pagination isLoading={isLoading} number={numberResults} pageSize={pageSize} setPageSize={setPageSize} pageNumber={pageNumber} setPageNumber={setPageNumber} />
                 </div>
             </ScrollAnimation>

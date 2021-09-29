@@ -193,7 +193,7 @@ export const Query = () => {
             {numberResults !== 0 && (
                 <div className="flex flex-col m-4 lg:m-8 p-4 rounded-md bg-white text-black space-y-4 items-center lg:items-start">
                     <Pagination isLoading={isPageLoading} number={numberResults} pageNumber={pageNumber} setPageNumber={setPageNumber} pageSize={pageSize} setPageSize={setPageSize} />
-                    <ScoreTable scores={data}/>
+                    <ScoreTable scores={data} snipe={false} />
                 </div>
                 
             )}

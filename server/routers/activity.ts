@@ -1,3 +1,4 @@
+import { convertToPlay } from './beatmaps';
 import express from 'express';
 import { ScoreModel } from '../../models/Score.model'
 import { PlayerModel } from '../../models/Player.model';
@@ -158,6 +159,62 @@ router.route("/sniped/:id").get(async (req, res) => {
     const page = output.sort((a, b) => b.total - a.total).slice(lowerBound, upperBound)
 
     res.json({ page, number: output.length })
+})
+
+router.route("/snipeData/:id").get(async (req, res) => {
+    const id = parseInt(req.params.id)
+    const enemyName = req.query.enemy as string
+    const playerAsSniper = JSON.parse(req.query.playerAsSniper as string)
+    const enemy = await PlayerModel.findOne({ name: enemyName })
+
+    let player = enemy;
+    if (playerAsSniper) {
+        player = await PlayerModel.findOne({ id })
+    }
+
+    if (enemy) {
+        const options = { 
+            sniper: playerAsSniper ? id : enemy.id,
+            victim: playerAsSniper ? enemy.id: id
+        }
+
+        const snipes = await SnipeModel.aggregate([
+            { $match: options },
+            {
+                $lookup: {
+                    localField: "beatmap",
+                    from: "beatmaps",
+                    foreignField: "id",
+                    as: "beatmapFull"
+                }
+            },
+            { 
+                $lookup: {
+                    localField: "beatmap", 
+                    from: "scores", 
+                    foreignField: "beatmapId",
+                    as: "score"
+                }
+            },
+            { $unwind: "$beatmapFull" },
+            { $unwind: "$score"},
+            { $sort: { "time": -1 } },
+        ])
+
+        const plays: Play[] = []
+        for (const snipe of snipes) {
+            if (player) {
+                const play = await convertToPlay(snipe.beatmap, snipe.beatmapFull, snipe.score, player)
+                play.date = snipe.time
+                plays.push(play)
+            }
+        }
+
+        res.json(plays)
+        return;
+    }
+
+    res.json(false)
 })
 
 export default router

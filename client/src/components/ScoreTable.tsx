@@ -22,58 +22,63 @@ const renderEllipsis = (value: JSX.Element) => {
     )
 }
 
-const columns = [
-    { 
-        title: 'Player',
-        dataIndex: 'player',
-        width: '10%',
-        render: (value: string, record: Play) => renderEllipsis(<a className="text-blue-400 hover:underline" href={"/redirect/" + record.player}>{value}</a>)
-    },
-    { 
-        title: 'Beatmap',
-        dataIndex: 'artist',
-        width: '30%',
-        ellipsis: true, 
-        render: renderSong
-    },
-    { 
-        title: 'pp',
-        dataIndex: 'pp',
-        width: '3%',
-        ellipsis: true, 
-        render: (value: string, record: Play) => renderEllipsis(<span>{record.pp.toFixed(0)}</span>)
-    },
-    {
-        title: 'Acc',
-        dataIndex: 'acc',
-        width: '6%',
-        ellipsis: true, 
-        render: (value: string, record: Play) => renderEllipsis(<span>{(record.acc*100).toFixed(2)}%</span>)
-    },
-    { 
-        title: 'Score',
-        dataIndex: 'score',
-        width: '8%',
-        ellipsis: true,
-        render: (value: string, record: Play) => renderEllipsis(<NumberFormat className="" value={record?.score} displayType={'text'} thousandSeparator={true}/>)
-    },
-    { 
-        title: 'Mods',
-        dataIndex: 'mods',
-        width: '6%',
-        ellipsis: true, 
-        render: (value: string, record: Play) => renderEllipsis(<span>{record.mods.join("")}</span>)
-    },
-    {
-        title: 'Age',
-        dataIndex: 'date',
-        width: '8%',
-        ellipsis: true,
-        render: (value: string, record: Play) => renderEllipsis(<span>{moment(record.date).fromNow(true)}</span>)
-    }
-]
+export const ScoreTable = ({ scores, snipe }: { scores: Play[], snipe: boolean }) => {
 
-export const ScoreTable = ({ scores }: { scores: Play[] }) => {
+    let columns = [
+        { 
+            title: 'Beatmap',
+            dataIndex: 'artist',
+            width: snipe ? 2500 : '30%',
+            ellipsis: true, 
+            render: renderSong
+        },
+        {
+            title: 'Age',
+            dataIndex: 'date',
+            width: snipe ? 500 : '8%',
+            ellipsis: true,
+            render: (value: string, record: Play) => renderEllipsis(<span>{moment(record.date).fromNow(true)}</span>)
+        },
+    ]
+
+    if (!snipe) {
+        columns.push({ 
+            title: 'pp',
+            dataIndex: 'pp',
+            width: '3%',
+            ellipsis: true, 
+            render: (value: string, record: Play) => renderEllipsis(<span>{record.pp.toFixed(0)}</span>)
+        },
+        {
+            title: 'Acc',
+            dataIndex: 'acc',
+            width: '6%',
+            ellipsis: true, 
+            render: (value: string, record: Play) => renderEllipsis(<span>{(record.acc*100).toFixed(2)}%</span>)
+        },
+        { 
+            title: 'Mods',
+            dataIndex: 'mods',
+            width: '6%',
+            ellipsis: true, 
+            render: (value: string, record: Play) => renderEllipsis(<span>{record.mods.join("")}</span>)
+        },
+        { 
+            title: 'Score',
+            dataIndex: 'score',
+            width: '8%',
+            ellipsis: true,
+            render: (value: string, record: Play) => renderEllipsis(<NumberFormat className="" value={record?.score} displayType={'text'} thousandSeparator={true}/>)
+        },
+        { 
+            title: 'Player',
+            dataIndex: 'player',
+            width: '10%',
+            ellipsis: true,
+            render: (value: string, record: Play) => renderEllipsis(<a className="text-blue-400 hover:underline" href={"/redirect/" + record.player}>{value}</a>)
+        })
+    } else {
+    }
 
     return (
         <Table columns={columns} data={scores} />

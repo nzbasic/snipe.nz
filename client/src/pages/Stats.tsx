@@ -48,14 +48,14 @@ export const Stats = () => {
                     <span>{item.count}</span>
                 </div>
             ))}
-            <span className="text-xl lg:text-4xl text-white p-4">Most Snipes This Week</span>
+            <span className="text-xl lg:text-4xl text-white p-4">Weekly Snipers</span>
             {topSnipers.map(item => (
                 <div className="flex bg-gray-200 max-w-xl w-full rounded-md p-2 space-x-2 justify-between">
                     <a href={"/players/" + item.player.id} className="text-blue-500 hover:underline">{item.player.name}</a>
                     <span>{item.count}</span>
                 </div>
             ))}
-            <span className="text-xl lg:text-4xl text-white p-4">Most Scores Sniped This Week</span>
+            <span className="text-xl lg:text-4xl text-white p-4">Weekly Victims</span>
             {topVictims.map(item => (
                 <div className="flex bg-gray-200 max-w-xl w-full rounded-md p-2 space-x-2 justify-between">
                     <a href={"/players/" + item.player.id} className="text-blue-500 hover:underline">{item.player.name}</a>

@@ -27,7 +27,11 @@ export const PlayerSniping = ({ id, playerAsSniper }: { id: string, playerAsSnip
                 data.length === 0 ? 
                     <span>{playerAsSniper ? "You haven't sniped anyone" : "You haven't been sniped"}</span> : 
                     data.map((item, index) => (
-                        <span key={index}>{item.name} - {item.total}</span> 
+                        <div key={index} className="flex items-center space-x-2">
+                            <a href={"/redirect/" + item.name} className="hover:underline">{item.name}</a>
+                            <span>- {item.total}</span> 
+                        </div>
+                        
                     ))
             : Array.from(Array(pageSize).keys()).map((_, index) => (
                 <span key={index}>Loading...</span>

@@ -12,6 +12,7 @@ import hash from 'object-hash'
 import fileDownloader from 'js-file-download'
 import { SortingDropdown } from "../components/SortingDropdown";
 import { CircularProgress, makeStyles } from "@material-ui/core";
+import { Helmet } from "react-helmet";
 
 const useStyles = makeStyles((theme) => ({
     loading: {
@@ -119,6 +120,15 @@ export const Query = () => {
 
     return (
         <div className="flex flex-col text-xs lg:text-xl">
+            <Helmet>
+                <meta property="og:title" content="NZ country #1 query page" />
+                <meta property="og:description" content="Search through NZ country #1 scores and export them to your osu! collections." />
+                <meta property="og:image" content="https://cdn.discordapp.com/attachments/627267590862929961/900962862065938472/snipe.png" />
+                <meta name="twitter:image" content="https://cdn.discordapp.com/attachments/627267590862929961/900962862065938472/snipe.png" />
+                <meta name="twitter:title" content="NZ country #1 query page" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:description" content="Search through NZ country #1 scores and export them to your osu! collections." />
+            </Helmet>
             <div className="bg-purple-700 text-white  flex flex-col p-8 w-full space-y-2">
                 <span className="text-2xl pb-2">Map Details (All inputs are optional)</span>
                 <InputText text="Artist" onChange={setArtist} />
@@ -193,7 +203,7 @@ export const Query = () => {
             {numberResults !== 0 && (
                 <div className="flex flex-col m-4 lg:m-8 p-4 rounded-md bg-white text-black space-y-4 items-center lg:items-start">
                     <Pagination isLoading={isPageLoading} number={numberResults} pageNumber={pageNumber} setPageNumber={setPageNumber} pageSize={pageSize} setPageSize={setPageSize} />
-                    <ScoreTable scores={data} snipe={false} />
+                    <ScoreTable scores={data} />
                 </div>
                 
             )}

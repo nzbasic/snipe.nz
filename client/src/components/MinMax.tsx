@@ -17,9 +17,9 @@ export const MinMax = ({ text, update }: { text: string, update: React.Dispatch<
     return (
         <div className="flex space-x-2 items-center">
             <span className="w-32">{text} Min:</span>
-            <NumericInput onChange={(value) => { setMin(value??0); setChangedMin(true) }} style={numericStyle} strict />
+            <NumericInput onChange={(value) => { setMin(value??0); setChangedMin(true) }} style={numericStyle} step={0.1} />
             <span className="pr-1">Max:</span>
-            <NumericInput onChange={(value) => { setMax(value??0); setChangedMax(true) }} style={numericStyle} strict />
+            <NumericInput onChange={(value) => { setMax(value??0); setChangedMax(true) }} style={numericStyle} step={0.1} />
         </div>
     )
 }

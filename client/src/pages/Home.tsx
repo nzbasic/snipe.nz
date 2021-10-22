@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios'
 import { Player } from '../../../models/Player.model';
 import { AiFillCrown } from 'react-icons/ai'
 import ScrollAnimation from 'react-animate-on-scroll';
-import { Beatmap } from '../../../models/Beatmap.model';
 import { Play } from '../../../models/play';
 import { TimeSeriesChart } from '../components/TimeSeriesChart';
 import { Footer } from '../components/Footer'
 import NumberFormat from 'react-number-format';
+import { Helmet } from "react-helmet";
 
 const randomNamePool = [
     "YEP",
@@ -116,6 +116,15 @@ export const Home = () => {
 
     return (
         <div className="flex flex-col text-white">
+            <Helmet>
+                <meta property="og:title" content="snipe.nz Home Page" />
+                <meta property="og:description" content="snipe.nz is a website you can use to view NZ osu! country #1's, who has the most number #1s, the latest snipes, and more." />
+                <meta property="og:image" content="https://cdn.discordapp.com/attachments/627267590862929961/900962862065938472/snipe.png" />
+                <meta name="twitter:image" content="https://cdn.discordapp.com/attachments/627267590862929961/900962862065938472/snipe.png" />
+                <meta name="twitter:title" content="snipe.nz Home Page" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:description" content="snipe.nz is a website you can use to view NZ osu! country #1's, who has the most number #1s, the latest snipes, and more." />
+            </Helmet>
             <div className="bg-blue-500 flex items-center py-12 font-extrabold flex-col">
                 <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-white text-center">Welcome to Snipe.nz</h1>
                 <h3 className="mt-2 text-xl md:text-2xl lg:text-4xl xl:text-5xl text-white text-center">Find and Snipe Country #1s in osu!</h3>

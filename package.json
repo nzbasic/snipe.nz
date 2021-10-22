@@ -35,6 +35,8 @@
     "node-osu": "^2.2.1",
     "node-schedule": "^2.0.0",
     "object-hash": "^2.2.0",
+    "prerender-node": "^3.2.5",
+    "react-helmet": "^6.1.0",
     "react-scripts": "^4.0.3",
     "sqlite": "^4.0.23",
     "sqlite3": "^5.0.2",

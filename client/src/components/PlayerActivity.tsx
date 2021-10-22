@@ -58,7 +58,7 @@ export const PlayerActivity = ({ id }: { id: string }) => {
                             <span className={`${item.victimId === parseInt(id) ? 'text-red-400' : 'text-green-400'} truncate`}>sniped {item.victimId === parseInt(id) && 'by'}</span>
                             <a className="hover:underline" href={"/player/" + (item.victimId === parseInt(id) ? item.sniperId : item.victimId)}>{item.victimId === parseInt(id) ? item.sniper : item.victim}</a>
                             <span>on</span>
-                            <a href={"https://osu.ppy.sh/beatmaps/" + item.beatmapId} target="_blank" rel="noreferrer" className="hover:underline truncate">{item.beatmap}</a>
+                            <a href={"/beatmap/" + item.beatmapId} target="_blank" rel="noreferrer" className="hover:underline truncate">{item.beatmap}</a>
                         </div>
                     ))
                 : Array.from(Array(pageSize).keys()).map((_, index) => (

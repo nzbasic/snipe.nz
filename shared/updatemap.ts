@@ -4,6 +4,7 @@ import { ApiScore, ScoreModel } from './../models/Score.model';
 import got from 'got'
 import { CookieJar } from 'tough-cookie';
 import { PlayerModel } from '../models/Player.model';
+import { BannedModel } from '../models/Banned.model';
 
 export const getNumberScores = async (id: number) => {
     return ScoreModel.countDocuments({ playerId: id });
@@ -47,13 +48,31 @@ export const updateBeatmap = async (id: number, jar: CookieJar, beatmap: CHBeatm
                     console.log(existing.playerId + " sniped themselves")
                 } else {
                     console.log("new snipe on " + beatmap.id + " by " + firstPlace.user.username + " victim " + existing.playerId)
-                    await new SnipeModel({
-                        beatmap: beatmap.id,
-                        sniper: firstPlace.user_id,
-                        victim: existing.playerId,
-                        time: new Date(firstPlace.created_at).getTime()
-                    }).save()
-    
+
+                    if (existing.score > firstPlace.score) {
+                        // case when current first place is banned.
+                        console.log("snipe is worse than current score on " + beatmap.id + " dont bother")
+
+                        // add a new banned score to check when unbanned
+                        await new BannedModel({
+                            playerId: existing.playerId,
+                            beatmapId: beatmap.id,
+                            score: existing.score
+                        }).save()
+                    } else {
+                        const bannedScore = await BannedModel.findOne({ beatmapId: beatmap.id })
+                        if (bannedScore && bannedScore.playerId == firstPlace.user_id) {
+                            await bannedScore.delete()
+                        } else {
+                            await new SnipeModel({
+                                beatmap: beatmap.id,
+                                sniper: firstPlace.user_id,
+                                victim: existing.playerId,
+                                time: new Date(firstPlace.created_at).getTime()
+                            }).save()
+                        }
+                    }
+
                     // update beatmap
                     const oldBeatmap = await BeatmapModel.findOne({ id: beatmap.id })
                     if (oldBeatmap) {
@@ -88,7 +107,7 @@ export const updateBeatmap = async (id: number, jar: CookieJar, beatmap: CHBeatm
                 if (existing.playerId != firstPlace.user_id) {
                     return { victim: existing.playerId, sniper: firstPlace.user_id };
                 } else {
-                    return
+                    return { victim: existing.playerId, sniper: existing.playerId }
                 }
             } else { // there was no other score on the map, make sure to update the maps first place holder
                 console.log("first score on " + firstPlace.beatmap.id + " by " + firstPlace.user.username)

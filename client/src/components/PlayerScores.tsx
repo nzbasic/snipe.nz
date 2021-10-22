@@ -6,6 +6,7 @@ import { Pagination } from "./Pagination"
 import fileDownloader from 'js-file-download'
 import { CircularProgress, makeStyles } from "@material-ui/core"
 import { SortingDropdown } from './SortingDropdown'
+import { ScoreTable } from "./ScoreTable"
 
 const useStyles = makeStyles((theme) => ({
     loading: {
@@ -61,25 +62,15 @@ export const PlayerScores = ({ id, name }: { id: string, name: string }) => {
                 <a href="https://github.com/nzbasic/Collection-Helper" target="_blank" rel="noreferrer" className="text-blue-400 hover:underline">Download Collection Helper</a>
             </div>
             <SortingDropdown setPageNumber={setPageNumber} sortBy={sortBy} setSortBy={setSortBy} sortOrder={sortOrder} setSortOrder={setSortOrder}/>
-            {!isLoading ? plays.map((play, index) => (
-                <div key={play.id} className="flex space-x-2">
-                    <span className="w-8">{(index+1) + ((pageNumber-1) * pageSize)}</span>
-                    <span className="w-16 lg:w-28 truncate">{play.artist}</span>
-                    <a href={"/beatmap/" + play.beatmapId} className="truncate w-32 lg:w-60 text-blue-400 hover:underline">{play.song}</a>
-                    <span className="w-20 lg:w-40 truncate">[{play.difficulty}]</span>
-                    <NumberFormat className="w-24 hidden md:block" value={play.score} displayType={'text'} thousandSeparator={true}/>
-                    <span className="hidden md:block w-12 lg:w-16">{(play.pp??0).toFixed(0)}pp</span>
-                    <span className="w-16 hidden lg:block">{(play.acc*100).toFixed(2)}%</span>
-                    <span className="w-20 hidden lg:block truncate">{play.mods.join("")}</span>
-                    <a href={"https://osu.ppy.sh/scores/osu/" + play.id} target="_blank" rel="noreferrer" className="w-8 truncate text-blue-400 hover:underline">Link</a>
-                    <button onClick={() => refreshMap(play.beatmapId)} className="hidden md:block text-blue-400 w-24 hover:underline">Refresh</button>
-                </div>
-            )) : Array.from(Array(pageSize).keys()).map((_, index) => (
-                <div key={index} className="flex space-x-2">
-                    <span className="w-8">{(index+1) + ((pageNumber-1) * pageSize)}</span>
-                    <span>Loading...</span>
-                </div>
-            ))}
+            <div className="mt-4">
+                {!isLoading ? <ScoreTable scores={plays} player={true} /> : Array.from(Array(pageSize).keys()).map((_, index) => (
+                    <div key={index} className="flex space-x-2">
+                        <span className="w-8">{(index+1) + ((pageNumber-1) * pageSize)}</span>
+                        <span>Loading...</span>
+                    </div>
+                ))}
+            </div>
+            
             <Pagination isLoading={isLoading} text="Plays" number={numberPlays} pageSize={pageSize} setPageSize={setPageSize} pageNumber={pageNumber} setPageNumber={setPageNumber}/> 
         </div>
     )

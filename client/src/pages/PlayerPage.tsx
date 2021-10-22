@@ -15,6 +15,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import { PlayerActivity } from '../components/PlayerActivity'
 import { PlayerSniping } from '../components/PlayerSniping'
 import { PlayerScores } from '../components/PlayerScores'
+import { Helmet } from 'react-helmet';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -101,13 +102,22 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
 
     return (
         <div className="flex flex-col w-full text-white">
-            <ScrollAnimation animateIn="animate__slideInRight" className="bg-green-400 flex p-8">
+            <Helmet>
+                <meta property="og:title" content={player.name + "'s snipe profile"} />
+                <meta property="og:description" content={`See ${player.name}'s country #1s, snipe history, activity, who they are sniping, and who is sniping them.`} />
+                <meta property="og:image" content={"https://a.ppy.sh/" + player.id} />
+                <meta name="twitter:image" content={"https://a.ppy.sh/" + player.id} />
+                <meta name="twitter:title" content={player.name + "'s snipe profile"} />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:description" content={`See ${player.name}'s country #1s, snipe history, activity, who they are sniping, and who is sniping them.`} />
+            </Helmet>
+            <ScrollAnimation animateIn="animate__slideInRight" className="bg-green-400 flex p-4 md:p-8">
                 <a href={"https://osu.ppy.sh/users/" + player.id} target="_blank" rel="noreferrer" className="text-4xl md:text-9xl font-semibold animate-underline">{player.name}</a>
             </ScrollAnimation>
-            <ScrollAnimation animateIn="animate__slideInLeft" className="bg-black flex p-8 w-full ">
+            <ScrollAnimation animateIn="animate__slideInLeft" className="bg-black flex p-4 md:p-8 w-full ">
                 <button disabled={isPlayerLoading} onClick={() => refreshUser()} className={`${isPlayerLoading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-800'}  text-white px-2 py-1 rounded-sm`}>Refresh using last 50 plays (1 minute)</button>
             </ScrollAnimation>
-            <ScrollAnimation animateIn="animate__slideInRight" className="bg-pink-400 text-xl md:text-4xl space-y-2 flex flex-col p-8 w-full">
+            <ScrollAnimation animateIn="animate__slideInRight" className="bg-pink-400 text-xl md:text-4xl space-y-2 flex flex-col p-4 md:p-8 w-full">
                 <span>Number #1s: {player.firstCount}</span>
                 <div className="flex items-center">
                     <span className="mr-2">Snipes this week:</span>
@@ -117,13 +127,13 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
                     }
                 </div>
             </ScrollAnimation>
-            <ScrollAnimation animateIn="animate__slideInLeft" className="bg-black flex items-center justify-center p-8 w-full h-96 text-black">
+            <ScrollAnimation animateIn="animate__slideInLeft" className="bg-black flex items-center justify-center p-4 md:p-8 w-full h-96 text-black">
                 {!isPlayerLoading ? 
                     <TimeSeriesChart chartData={rawSnipeData} brush={true} title={true}/> : 
                     <CircularProgress className={classes.loading} size="10rem"/>    
                 } 
             </ScrollAnimation>
-            <ScrollAnimation animateIn="animate__slideInRight" className="bg-blue-400 flex flex-col space-y-4 p-8">
+            <ScrollAnimation animateIn="animate__slideInRight" className="bg-blue-400 flex flex-col space-y-4 p-4 md:p-8">
                 <Accordion>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}

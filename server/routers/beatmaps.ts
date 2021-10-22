@@ -64,7 +64,7 @@ export const loadData = async () => {
         { $lookup: { from: "beatmaps", localField: "beatmapId", foreignField: "id", as: "beatmap" } },
         { $unwind: "$beatmap" },
     ]
-    scoreCache = await ScoreModel.aggregate(query);
+    scoreCache = await ScoreModel.aggregate(query, { maxTimeMS: 3600000 });
 
     schedule.scheduleJob('*/30 * * * *', async () => {
         scoreCache = await ScoreModel.aggregate(query);

@@ -18,6 +18,7 @@ mongoose.connection.on('connected', () => {
   console.log("Mongo connected")
 })
 
+app.use(require("prerender-node").set("prerenderToken", process.env.PRERENDER))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cors({ credentials: true, origin: true }))

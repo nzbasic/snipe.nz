@@ -6,6 +6,7 @@ import { Pagination } from '../components/Pagination';
 import ScrollAnimation from 'react-animate-on-scroll';
 import { PlayerSearch } from '../components/PlayerSearch';
 import { Footer } from '../components/Footer';
+import { Helmet } from 'react-helmet';
 
 enum Mode {
     NUMBER_ONES = "Number of #1s",
@@ -102,6 +103,15 @@ export const Leaderboard = () => {
 
     return (
         <div className="flex flex-col text-white">
+            <Helmet>
+                <meta property="og:title" content="NZ country #1 leaderboard" />
+                <meta property="og:description" content="See who has the most #1s, most snipes, and who is sniped the most." />
+                <meta property="og:image" content="https://cdn.discordapp.com/attachments/627267590862929961/900962862065938472/snipe.png" />
+                <meta name="twitter:image" content="https://cdn.discordapp.com/attachments/627267590862929961/900962862065938472/snipe.png" />
+                <meta name="twitter:title" content="NZ country #1 leaderboard" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:description" content="See who has the most #1s, most snipes, and who is sniped the most." />
+            </Helmet>
             <ScrollAnimation animateIn="animate__slideInLeft" className="bg-pink-400 flex items-center justify-center w-full p-8 text-black z-20">
                 <PlayerSearch width="w-80" height="h-12" callback={(player: Player) => {window.location.href="/player/" + player.id}}/>
             </ScrollAnimation>

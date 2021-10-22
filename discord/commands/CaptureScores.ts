@@ -83,7 +83,7 @@ export default class Link extends Command {
                             const victimUser = await UserModel.findOne({ osuId: res.victim.toString(10) })
                             if (sniper && victim) {
                                 let newMessage = `${sniper.name} has sniped ${victim.name} on ${beatmap.song}`
-                                if (victimUser && victimUser.ping) {
+                                if (victimUser && victimUser.ping && (victim.id != sniper.id)) {
                                     newMessage += ` <@${victimUser.discordId}>`
                                 }
                                 message.channel.send(newMessage)

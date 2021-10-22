@@ -8,6 +8,7 @@ import { Play } from "../../../models/play"
 import { CircularProgress } from "@material-ui/core"
 import { SingleActivity } from "../components/SingleActivity"
 import NumberFormat from "react-number-format"
+import { Helmet } from "react-helmet"
 
 export const BeatmapPage = (props: RouteComponentProps<{ id: string }>) => {
     const id = props.match.params.id
@@ -29,6 +30,15 @@ export const BeatmapPage = (props: RouteComponentProps<{ id: string }>) => {
 
     return !isLoading ? (
         <div className="flex flex-col">
+            <Helmet>
+                <meta property="og:title" content={"Country #1 on " + beatmap?.song} />
+                <meta property="og:description" content={`See the NZ country #1 history on ${beatmap?.artist} - ${beatmap?.song} [${beatmap?.difficulty}]`} />
+                <meta property="og:image" content={"https://assets.ppy.sh/beatmaps/" + beatmap?.setId + "/covers/cover.jpg"} />
+                <meta name="twitter:image" content={"https://assets.ppy.sh/beatmaps/" + beatmap?.setId + "/covers/cover.jpg"} />
+                <meta name="twitter:title" content={"Country #1 on " + beatmap?.song} />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:description" content={`See the NZ country #1 history on ${beatmap?.artist} - ${beatmap?.song} [${beatmap?.difficulty}]`} />
+            </Helmet>
             <ScrollAnimation animateIn="animate__slideInLeft" className="bg-indigo-400 p-4 lg:p-16 items-center flex flex-col">
                 <img className="p-2 lg:p-4 bg-white rounded-lg border-gray-200 border-2" src={"https://assets.ppy.sh/beatmaps/" + beatmap?.setId + "/covers/cover.jpg"} alt="Beatmap Cover" />
             </ScrollAnimation>

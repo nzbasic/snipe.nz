@@ -25,6 +25,7 @@ export const DailyTarget = () => {
     const [snipes, setSnipes] = useState<SnipeTotal[]>([])
 
     useEffect(() => {
+        document.title = "Daily Target"
         axios.get<TargetRes>("/api/target").then(res => {
             setTarget(res.data.target)
             setSnipes(res.data.snipes)

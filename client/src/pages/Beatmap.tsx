@@ -18,12 +18,13 @@ export const BeatmapPage = (props: RouteComponentProps<{ id: string }>) => {
     const [bestScore, setBestScore] = useState<Play>()
 
     useEffect(() => {
+        
         setLoading(true)
         axios.get("/api/beatmaps/details/" + id).then(res => {
             setBeatmap(res.data.beatmap)
             setActivity(res.data.activity)
-            console.log(res.data.activity)
             setBestScore(res.data.score)
+            document.title = res.data.beatmap.song
             setLoading(false)
         })
     }, [id])

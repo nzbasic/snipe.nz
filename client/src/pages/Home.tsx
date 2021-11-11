@@ -8,6 +8,7 @@ import { TimeSeriesChart } from '../components/TimeSeriesChart';
 import { Footer } from '../components/Footer'
 import NumberFormat from 'react-number-format';
 import { Helmet } from "react-helmet";
+import { Link } from 'react-router-dom';
 
 const randomNamePool = [
     "YEP",
@@ -140,7 +141,7 @@ export const Home = () => {
                             <div className="flex items-center space-x-4" key={user.id}>
                                 <span className="w-6">{index === 0 ? <AiFillCrown style={{color: "yellow"}}/> : null}</span>
                                 <span>#{index+1}</span>
-                                <a className="animate-underline z-0 w-24" href={"/player/" + user.id}>{user.name}:</a>
+                                <Link className="animate-underline z-0 w-24" to={"/player/" + user.id}>{user.name}:</Link>
                                 <span className="w-16">{user.firstCount}</span>
                             </div>
                         ))}
@@ -167,7 +168,7 @@ export const Home = () => {
             <ScrollAnimation animateIn="animate__slideInLeft" duration={0.5} className="bg-indigo-600 flex flex-wrap-reverse lg:flex-no-wrap justify-between p-8 px-8 2xl:px-44 items-center">
                 <div className="flex flex-col lg:max-w-xl 2xl:max-w-3xl w-full justify-center items-center mt-8 lg:mt-0">
                     <button className="px-2 py-1 text-lg bg-gray-200 rounded-sm text-black hover:bg-gray-300 transition duration-200" onClick={() => getRandomBeatmap()}>Get Random #1</button>
-                    <a href={"/beatmap/" + (randomBeatmap?.beatmapId??"2790767")} className="mt-2 animate-underline truncate text-center">{randomBeatmap?.song??"Press the button to get a random map!"}</a>
+                    <Link to={"/beatmap/" + (randomBeatmap?.beatmapId??"2790767")} className="mt-2 animate-underline truncate text-center">{randomBeatmap?.song??"Press the button to get a random map!"}</Link>
                     <span>Played by: {randomBeatmap?.player}</span>
                     <div className="flex items-center justify-center space-x-1">
                         <span>Score: </span>

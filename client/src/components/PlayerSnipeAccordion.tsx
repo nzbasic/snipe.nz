@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Play } from "../../../models/play";
 import axios from 'axios'
 import { ScoreTable } from "./ScoreTable";
+import { Link } from "react-router-dom";
 
 export const PlayerSnipeAccordion = ({ total, id, playerAsSniper }: { total: SnipeTotal, id: string, playerAsSniper: boolean }) => {
     const [isLoading, setLoading] = useState(true)
@@ -30,7 +31,7 @@ export const PlayerSnipeAccordion = ({ total, id, playerAsSniper }: { total: Sni
                 className="bg-dark01-accordion w-full "
             >
                 <div className="flex items-center text-white">
-                    <a href={"/redirect/" + total.name} className="hover:underline">{total.name}</a>
+                    <Link to={"/redirect/" + total.name} className="hover:underline">{total.name}</Link>
                     <span className="ml-1">- {total.total}</span>
                 </div>
             </AccordionSummary>

@@ -4,6 +4,7 @@ import { FormattedSnipe } from "../../../models/Snipe.model"
 import { Pagination } from "./Pagination";
 import { PlayerSearch } from "./PlayerSearch";
 import { Player } from "../../../models/Player.model";
+import { Link } from "react-router-dom";
 
 interface Option {
     value: string,
@@ -56,9 +57,9 @@ export const PlayerActivity = ({ id }: { id: string }) => {
                         <div key={index} className="flex space-x-1">
                             <span className="hidden md:block truncate">{new Date(item.time).toLocaleDateString()}</span>
                             <span className={`${item.victimId === parseInt(id) ? 'text-red-400' : 'text-green-400'} truncate`}>sniped {item.victimId === parseInt(id) && 'by'}</span>
-                            <a className="hover:underline" href={"/player/" + (item.victimId === parseInt(id) ? item.sniperId : item.victimId)}>{item.victimId === parseInt(id) ? item.sniper : item.victim}</a>
+                            <Link className="hover:underline" to={"/player/" + (item.victimId === parseInt(id) ? item.sniperId : item.victimId)}>{item.victimId === parseInt(id) ? item.sniper : item.victim}</Link>
                             <span>on</span>
-                            <a href={"/beatmap/" + item.beatmapId} target="_blank" rel="noreferrer" className="hover:underline truncate">{item.beatmap}</a>
+                            <Link to={"/beatmap/" + item.beatmapId} target="_blank" rel="noreferrer" className="hover:underline truncate">{item.beatmap}</Link>
                         </div>
                     ))
                 : Array.from(Array(pageSize).keys()).map((_, index) => (

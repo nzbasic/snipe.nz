@@ -1,6 +1,6 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
-import { RouteComponentProps } from "react-router-dom"
+import { Link, RouteComponentProps } from "react-router-dom"
 import { FormattedSnipe, Snipe } from "../../../models/Snipe.model"
 import { Beatmap } from '../../../models/Beatmap.model'
 import ScrollAnimation from "react-animate-on-scroll"
@@ -69,7 +69,7 @@ export const BeatmapPage = (props: RouteComponentProps<{ id: string }>) => {
                         <span className="text-2xl">Current Best Score:</span>
                         <div className="flex space-x-1">
                             <span>Player:</span>
-                            <a className="hover:underline" href={"/redirect/" + bestScore?.player}>{bestScore?.player}</a>
+                            <Link className="hover:underline" to={"/redirect/" + bestScore?.player}>{bestScore?.player}</Link>
                         </div>
                         <div className="flex space-x-1">
                             <span>Score:</span>
@@ -85,9 +85,9 @@ export const BeatmapPage = (props: RouteComponentProps<{ id: string }>) => {
                         {activity.length ? activity.map((item, index) => (
                             <div className="flex space-x-1 text-base">
                                 <span className="truncate">{new Date(item.time).toLocaleDateString()}:</span>
-                                <a href={"/player/" + item.sniperId} className="hover:underline truncate text-green-400">{item.sniper}</a>
+                                <Link to={"/player/" + item.sniperId} className="hover:underline truncate text-green-400">{item.sniper}</Link>
                                 <span>sniped</span>
-                                <a href={"/player/" + item.victimId} className="hover:underline truncate text-red-400">{item.victim}</a>
+                                <Link to={"/player/" + item.victimId} className="hover:underline truncate text-red-400">{item.victim}</Link>
                             </div>
                         )) : <span>No snipes recorded!</span>}
                     </div>

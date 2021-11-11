@@ -6,9 +6,10 @@ import { Play } from "../../../models/play"
 import React from "react"
 import Table from 'rc-table'
 import { v4 as uuidv4 } from 'uuid'
+import { Link } from "react-router-dom"
 
 const renderSong = (value: string, record: Play, index: number) => {
-    return renderEllipsis(<a href={"/beatmap/" + record.beatmapId} target="_blank" rel="noreferrer" className="text-blue-400 hover:underline">{record.artist} - {record.song} [{record.difficulty}]</a>);
+    return renderEllipsis(<Link to={"/beatmap/" + record.beatmapId} target="_blank" rel="noreferrer" className="text-blue-400 hover:underline">{record.artist} - {record.song} [{record.difficulty}]</Link>);
 }
 
 const renderEllipsis = (value: JSX.Element) => {
@@ -78,7 +79,7 @@ export const ScoreTable = ({ scores, snipe, player }: { scores: Play[], snipe?: 
                 dataIndex: 'player',
                 width: 400,
                 ellipsis: true,
-                render: (value: string, record: Play) => renderEllipsis(<a className="text-blue-400 hover:underline" href={"/redirect/" + record.player}>{value}</a>)
+                render: (value: string, record: Play) => renderEllipsis(<Link className="text-blue-400 hover:underline" to={"/redirect/" + record.player}>{value}</Link>)
             })
         }
     } 

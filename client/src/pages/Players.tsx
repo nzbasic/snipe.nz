@@ -7,6 +7,7 @@ import ScrollAnimation from 'react-animate-on-scroll';
 import { PlayerSearch } from '../components/PlayerSearch';
 import { Footer } from '../components/Footer';
 import { Helmet } from 'react-helmet';
+import { Link } from 'react-router-dom';
 
 enum Mode {
     NUMBER_ONES = "Number of #1s",
@@ -128,7 +129,7 @@ export const Leaderboard = () => {
                     <div key={player.id} className={`bg-gray-700 w-full max-w-3xl flex flex-row  rounded-md p-2 justify-between text-white`}>
                         <div className="flex">
                             <span className="mr-4">{(index+1) + ((pageNumber-1) * pageSize)}</span>
-                            <a href={"/player/" + player.id} className="w-40 text-blue-300 hover:underline">{player.name}</a>
+                            <Link to={"/player/" + player.id} className="w-40 text-blue-300 hover:underline">{player.name}</Link>
                         </div>
                         <span className={`${placing(index, pageNumber)} w-12 text-right`}>{player.count}</span>
                     </div>

@@ -2,6 +2,7 @@ import { CircularProgress } from '@material-ui/core';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { Link } from 'react-router-dom';
 
 export const Stats = () => {
     const [isLoading, setLoading] = useState(true)
@@ -54,21 +55,21 @@ export const Stats = () => {
             <span className="text-xl lg:text-4xl p-4">Most Contested Beatmaps</span>
             {contested.map(item => (
                 <div className="flex bg-gray-700 max-w-xl w-full rounded p-2 space-x-2 justify-between">
-                    <a href={"/beatmap/" + item.beatmap.id} className="text-blue-300 hover:underline truncate">{item.beatmap.song}</a>
+                    <Link to={"/beatmap/" + item.beatmap.id} className="text-blue-300 hover:underline truncate">{item.beatmap.song}</Link>
                     <span>{item.count}</span>
                 </div>
             ))}
             <span className="text-xl lg:text-4xl p-4">Weekly Snipers</span>
             {topSnipers.map(item => (
                 <div className="flex bg-gray-700 max-w-xl w-full rounded p-2 space-x-2 justify-between">
-                    <a href={"/player/" + item.player.id} className="text-blue-300 hover:underline">{item.player.name}</a>
+                    <Link to={"/player/" + item.player.id} className="text-blue-300 hover:underline">{item.player.name}</Link>
                     <span>{item.count}</span>
                 </div>
             ))}
             <span className="text-xl lg:text-4xl p-4">Weekly Victims</span>
             {topVictims.map(item => (
                 <div className="flex bg-gray-700 max-w-xl w-full rounded p-2 space-x-2 justify-between">
-                    <a href={"/player/" + item.player.id} className="text-blue-300 hover:underline">{item.player.name}</a>
+                    <Link to={"/player/" + item.player.id} className="text-blue-300 hover:underline">{item.player.name}</Link>
                     <span>{item.count}</span>
                 </div>
             ))}

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Hamburger from 'hamburger-react'
+import { Link } from 'react-router-dom'
 
 interface HeaderLink {
     text: string
@@ -16,7 +17,7 @@ const headers: HeaderLink[] = [
 ]
 
 const HeaderButton = ({text, link}: { text: string, link: string}) => (
-    <a className="animate-underline text-5xl xl:text-2xl" href={link}>{text}</a>
+    <Link className="animate-underline text-5xl xl:text-2xl" to={link}>{text}</Link>
 )
 
 const HiddenMenu = ({visible}: { visible: boolean }) => (
@@ -33,7 +34,7 @@ export const Header = () => {
     return (
         <div className="flex flex-col max-h-full">
             <div className="h-36 bg-black text-white flex items-center px-12 lg:px-20 justify-between">
-                <a href="/" className="text-5xl font-extrabold">Snipe.nz</a>
+                <Link to="/" className="text-5xl font-extrabold">Snipe.nz</Link>
                 <div className="hidden xl:flex space-x-8">
                     {headers.map((header, index) => (
                         <HeaderButton key={index} text={header.text} link={header.link} />

@@ -11,10 +11,12 @@
   "license": "ISC",
   "dependencies": {
     "@frasermcc/overcord": "^0.5.4",
+    "@types/jsdom": "^16.2.13",
     "@types/tough-cookie": "^4.0.1",
     "discord.js": "^13.1.0",
     "dotenv": "^10.0.0",
     "got": "^11.8.2",
+    "jsdom": "^18.0.1",
     "mongoose": "^6.0.5",
     "node-osu": "^2.2.1",
     "tough-cookie": "^4.0.0",

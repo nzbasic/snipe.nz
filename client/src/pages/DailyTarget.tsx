@@ -42,7 +42,7 @@ export const DailyTarget = () => {
                         <Countdown onComplete={() => window.location.reload()} daysInHours={true} date={target.dateEnd} />
                     </div>
                     <div className="max-w-7xl mt-4 w-full">
-                        <SimpleSummaryAccordion expanded title="Snipes Today" >
+                        <SimpleSummaryAccordion expanded title="Times Sniped Today" >
                             <TargetSnipes id={target.player.id} dateEnd={target.dateEnd} data={snipes} />
                         </SimpleSummaryAccordion>
                     </div>

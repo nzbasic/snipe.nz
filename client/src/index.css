@@ -7,6 +7,14 @@ body {
     font-family: 'Roboto', sans-serif;
 }
 
+.bg-dark00-accordion {
+  background-color: rgb(31, 31, 31) !important;
+}
+
+.bg-dark01-accordion {
+  background-color: rgb(46, 46, 46) !important;
+}
+
 .rc-table-content {
   border: 1px solid black;
   border-right: 0;

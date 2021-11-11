@@ -79,11 +79,11 @@ export const Leaderboard = () => {
     const placing = (index: number, pageNumber: number) => {
         if (pageNumber === 1) {
             if (index === 0) {
-                return 'bg-yellow-300'
+                return 'text-yellow-300'
             } else if (index === 1) {
-                return 'bg-gray-400'
+                return 'text-gray-400'
             } else if (index === 2) {
-                return 'bg-yellow-500'
+                return 'text-yellow-500'
             }
         }
     }
@@ -125,15 +125,15 @@ export const Leaderboard = () => {
                     <Pagination isLoading={isLoading} number={numberPlayers} pageNumber={pageNumber} setPageNumber={setPageNumber}/> 
                 </div>
                 {!isLoading ? players.map((player, index) => (
-                    <div key={player.id} className={`${placing(index, pageNumber)} w-full max-w-3xl flex flex-row bg-gray-100 rounded-md p-2 justify-between text-black`}>
+                    <div key={player.id} className={`bg-gray-700 w-full max-w-3xl flex flex-row  rounded-md p-2 justify-between text-white`}>
                         <div className="flex">
                             <span className="mr-4">{(index+1) + ((pageNumber-1) * pageSize)}</span>
-                            <a href={"/player/" + player.id} className="w-40 text-blue-700 hover:underline">{player.name}</a>
+                            <a href={"/player/" + player.id} className="w-40 text-blue-300 hover:underline">{player.name}</a>
                         </div>
-                        <span className="w-12">{player.count}</span>
+                        <span className={`${placing(index, pageNumber)} w-12 text-right`}>{player.count}</span>
                     </div>
                 )) : Array.from(Array(pageSize).keys()).map((item, index) => (
-                    <div key={index} className="w-full max-w-3xl flex bg-white rounded-md p-2 justify-between text-black">
+                    <div key={index} className="w-full max-w-3xl flex bg-gray-700 rounded-md p-2 justify-between text-white">
                         <div className="flex">
                             <span className="mr-4">{(index+1) + ((pageNumber-1) * pageSize)}</span>
                             <span className="w-40">Loading...</span>

@@ -41,9 +41,9 @@ export const Scores = () => {
             <ScrollAnimation animateIn="animate__slideInLeft" className="bg-green-400 flex flex-col items-center w-full p-8 text-white text-sm md:text-3xl">
                 <SortingDropdown setPageNumber={setPageNumber} sortBy={sortBy} setSortBy={setSortBy} sortOrder={sortOrder} setSortOrder={setSortOrder}/>
             </ScrollAnimation>
-            <ScrollAnimation animateIn="animate__slideInRight" className="bg-black flex flex-col items-center justify-center w-full p-8 text-black">
+            <ScrollAnimation animateIn="animate__slideInRight" className="bg-black flex flex-col items-center justify-center w-full p-8 text-white">
                 {isLoading ? <CircularProgress /> : (
-                    <div className="flex flex-col bg-gray-100 p-4 rounded-sm items-center text-xs md:text-base">
+                    <div className="flex flex-col bg-gray-800 p-4 rounded-sm items-center text-xs md:text-base">
                         <ScoreTable scores={scores} />
                         <Pagination isLoading={isLoading} number={numberResults} pageSize={pageSize} setPageSize={setPageSize} pageNumber={pageNumber} setPageNumber={setPageNumber} />
                     </div>

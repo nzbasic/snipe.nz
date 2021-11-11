@@ -38,7 +38,7 @@ export const PlayerActivity = ({ id }: { id: string }) => {
     }, [pageNumber, id, pageSize, option, player])
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col text-white">
             <div className="flex items-center mb-4 space-x-2">
                 <PlayerSearch width="w-52" height="h-8" callback={(player: Player) => {setPlayer(player)}}/>
                 {player.id !== 0 && <button onClick={() => setPlayer(defaultPlayer)} className="bg-red-500 px-2 rounded-sm text-white">{player.name} x</button>}

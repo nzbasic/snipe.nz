@@ -5,6 +5,7 @@ import moment from 'moment'
 import { Play } from "../../../models/play"
 import React from "react"
 import Table from 'rc-table'
+import { v4 as uuidv4 } from 'uuid'
 
 const renderSong = (value: string, record: Play, index: number) => {
     return renderEllipsis(<a href={"/beatmap/" + record.beatmapId} target="_blank" rel="noreferrer" className="text-blue-400 hover:underline">{record.artist} - {record.song} [{record.difficulty}]</a>);
@@ -14,7 +15,7 @@ const renderEllipsis = (value: JSX.Element) => {
     const style: any = { whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }
 
     return (
-        <div style={{ display: 'grid', placeItems: 'stretch' }}>
+        <div key={uuidv4()} style={{ display: 'grid', placeItems: 'stretch' }}>
             <div style={style}>
                 {value}
             </div>

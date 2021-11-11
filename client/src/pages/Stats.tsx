@@ -26,7 +26,7 @@ export const Stats = () => {
     }, [])
 
     return !isLoading ? (
-        <div className="flex flex-col bg-grey space-y-2 p-8 items-center">
+        <div className="flex flex-col bg-grey space-y-1 p-8 items-center text-white">
             <Helmet>
                 <meta property="og:title" content="Stats about NZ country #1s" />
                 <meta property="og:description" content="See statistics about the most contested beatmaps and the most snipes/sniped person this week." />
@@ -37,38 +37,38 @@ export const Stats = () => {
                 <meta name="twitter:description" content="See statistics about the most contested beatmaps and the most snipes/sniped person this week." />
             </Helmet>
             <span className="text-4xl text-white p-4">General Stats</span>
-            <div className="max-w-xl flex w-full justify-between ">
-                <div className="flex flex-col bg-white p-2 lg:p-4 rounded-md items-center text-xs md:text-xl w-24 lg:w-36">
-                    <span># Snipes</span>
+            <div className="max-w-xl flex w-full justify-between text-white">
+                <div className="flex flex-col p-2 lg:p-4 items-center text-xs md:text-xl w-24 lg:w-36">
                     <span>{numberSnipes}</span>
+                    <span>Snipes</span>
                 </div>
-                <div className="flex flex-col bg-white p-2 lg:p-4 rounded-md items-center text-xs md:text-xl w-24 lg:w-36">
-                    <span># Scores</span>
+                <div className="flex flex-col p-2 lg:p-4 items-center text-xs md:text-xl w-24 lg:w-36">
                     <span>{numberScores}</span>
+                    <span>Scores</span>
                 </div>
-                <div className="flex flex-col bg-white p-2 lg:p-4 rounded-md items-center text-xs md:text-xl w-24 lg:w-36">
-                    <span># Beatmaps</span>
+                <div className="flex flex-col p-2 lg:p-4 items-center text-xs md:text-xl w-24 lg:w-36">
                     <span>{numberBeatmaps}</span>
+                    <span>Beatmaps</span>
                 </div>
             </div>
-            <span className="text-xl lg:text-4xl text-white p-4">Most Contested Beatmaps</span>
+            <span className="text-xl lg:text-4xl p-4">Most Contested Beatmaps</span>
             {contested.map(item => (
-                <div className="flex bg-gray-200 max-w-xl w-full rounded-md p-2 space-x-2 justify-between">
-                    <a href={"/beatmap/" + item.beatmap.id} className="text-blue-500 hover:underline truncate">{item.beatmap.song}</a>
+                <div className="flex bg-gray-700 max-w-xl w-full rounded p-2 space-x-2 justify-between">
+                    <a href={"/beatmap/" + item.beatmap.id} className="text-blue-300 hover:underline truncate">{item.beatmap.song}</a>
                     <span>{item.count}</span>
                 </div>
             ))}
-            <span className="text-xl lg:text-4xl text-white p-4">Weekly Snipers</span>
+            <span className="text-xl lg:text-4xl p-4">Weekly Snipers</span>
             {topSnipers.map(item => (
-                <div className="flex bg-gray-200 max-w-xl w-full rounded-md p-2 space-x-2 justify-between">
-                    <a href={"/player/" + item.player.id} className="text-blue-500 hover:underline">{item.player.name}</a>
+                <div className="flex bg-gray-700 max-w-xl w-full rounded p-2 space-x-2 justify-between">
+                    <a href={"/player/" + item.player.id} className="text-blue-300 hover:underline">{item.player.name}</a>
                     <span>{item.count}</span>
                 </div>
             ))}
-            <span className="text-xl lg:text-4xl text-white p-4">Weekly Victims</span>
+            <span className="text-xl lg:text-4xl p-4">Weekly Victims</span>
             {topVictims.map(item => (
-                <div className="flex bg-gray-200 max-w-xl w-full rounded-md p-2 space-x-2 justify-between">
-                    <a href={"/player/" + item.player.id} className="text-blue-500 hover:underline">{item.player.name}</a>
+                <div className="flex bg-gray-700 max-w-xl w-full rounded p-2 space-x-2 justify-between">
+                    <a href={"/player/" + item.player.id} className="text-blue-300 hover:underline">{item.player.name}</a>
                     <span>{item.count}</span>
                 </div>
             ))}

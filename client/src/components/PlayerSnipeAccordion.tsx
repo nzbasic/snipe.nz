@@ -24,18 +24,21 @@ export const PlayerSnipeAccordion = ({ total, id, playerAsSniper }: { total: Sni
     return (
         <Accordion onChange={(event, expanded) => loadSnipes(expanded)}>
             <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
+                expandIcon={<ExpandMoreIcon className="text-white" />}
                 aria-controls="panel1a-content"
                 id="panel1a-header"
+                className="bg-dark01-accordion w-full "
             >
-                <div className="flex items-center">
+                <div className="flex items-center text-white">
                     <a href={"/redirect/" + total.name} className="hover:underline">{total.name}</a>
                     <span className="ml-1">- {total.total}</span>
                 </div>
             </AccordionSummary>
-            <AccordionDetails className="flex flex-col">
+            <AccordionDetails className="flex flex-col bg-dark01-accordion text-white">
                 {isLoading ? "Loading..." : (
-                    <ScoreTable scores={plays} snipe={true} />
+                    <div className="bg-dark00-accordion">
+                        <ScoreTable scores={plays} snipe={true} />
+                    </div>
                 )}
             </AccordionDetails>
         </Accordion>

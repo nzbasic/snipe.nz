@@ -16,6 +16,7 @@ import { PlayerActivity } from '../components/PlayerActivity'
 import { PlayerSniping } from '../components/PlayerSniping'
 import { PlayerScores } from '../components/PlayerScores'
 import { Helmet } from 'react-helmet';
+import { SimpleSummaryAccordion } from '../components/SimpleSummaryAccordion'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -134,58 +135,21 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
                 } 
             </ScrollAnimation>
             <ScrollAnimation animateIn="animate__slideInRight" className="bg-blue-400 flex flex-col space-y-4 p-4 md:p-8">
-                <Accordion>
-                    <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1a-content"
-                        id="panel1a-header"
-                    >
-                        <Typography className={classes.heading}>People you are sniping</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails className="flex flex-col">
-                        <PlayerSniping id={id} playerAsSniper={true}/>
-                    </AccordionDetails>
-                </Accordion>
+                <SimpleSummaryAccordion title="People you are sniping" >
+                    <PlayerSniping id={id} playerAsSniper={true}/>
+                </SimpleSummaryAccordion>
 
-                <Accordion>
-                    <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1a-content"
-                        id="panel1a-header"
-                    >
-                        <Typography className={classes.heading}>People who are sniping you</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails className="flex flex-col">
-                        <PlayerSniping id={id} playerAsSniper={false}/>
-                    </AccordionDetails>
-                </Accordion>
+                <SimpleSummaryAccordion title="People who are sniping you" >
+                    <PlayerSniping id={id} playerAsSniper={false}/>
+                </SimpleSummaryAccordion>
 
-                <Accordion >
-                    <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1a-content"
-                        id="panel1a-header"
-                    >
-                        <Typography className={classes.heading}>Activity</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails className="flex flex-col">
-                        <PlayerActivity id={id} />
-                    </AccordionDetails>
-                </Accordion>
+                <SimpleSummaryAccordion title="Activity" >
+                    <PlayerActivity id={id} />
+                </SimpleSummaryAccordion>
 
-                <Accordion defaultExpanded={true}>
-                    <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1a-content"
-                        id="panel1a-header"
-                    >
-                        <Typography className={classes.heading}>Your #1s</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails className="flex flex-col text-xs lg:text-base">
-                        <PlayerScores id={id} name={player.name} />
-                    </AccordionDetails>
-                </Accordion>
-                
+                <SimpleSummaryAccordion title="Your #1s" >
+                    <PlayerScores id={id} name={player.name} />
+                </SimpleSummaryAccordion>
             </ScrollAnimation>
         </div>
     )

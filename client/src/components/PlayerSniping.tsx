@@ -23,7 +23,7 @@ export const PlayerSniping = ({ id, playerAsSniper }: { id: string, playerAsSnip
     }, [id, pageSize, pageNumber, playerAsSniper])
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col text-white w-full">
             {!isLoading ? 
                 data.length === 0 ? 
                     <span>{playerAsSniper ? "You haven't sniped anyone" : "You haven't been sniped"}</span> : 

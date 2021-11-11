@@ -29,15 +29,16 @@ const CustomTooltip = ({ payload, label, active }: any) => {
 
 export const TimeSeriesChart = ({ chartData, brush, title }: { chartData: any[], brush: boolean, title: boolean }) => {
   return (
-    <div className="w-full h-full flex flex-col items-center bg-white justify-center pt-6 pb-6 pr-6 rounded-md">
+    <div className="w-full h-full flex flex-col items-center justify-center pt-6 pb-6 pr-6 rounded bg-dark00-accordion text-white">
       {title && <span className="relative top-2">Relative snipes over time</span>}
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={chartData} margin={{ top: 25 }}>
-          <CartesianGrid strokeDasharray="3 3" />
+          <CartesianGrid strokeDasharray="3 3" stroke="white" />
           <XAxis
             dataKey="time"
             domain={["dataMin", "dataMax"]}
             name="Date"
+            stroke="white"
             tickFormatter={(unixTime) => moment(unixTime).format("MMM Do YY")}
             type="number"
           />
@@ -45,6 +46,7 @@ export const TimeSeriesChart = ({ chartData, brush, title }: { chartData: any[],
             dataKey="total"
             name="pp"
             domain={["auto", "auto"]}
+            stroke="white"
             tickFormatter={(item) => Math.floor(item) + ""}
           />
           {brush &&
@@ -58,7 +60,7 @@ export const TimeSeriesChart = ({ chartData, brush, title }: { chartData: any[],
           }
           <Tooltip content={<CustomTooltip />} />
           <Line
-            strokeWidth={2}
+            strokeWidth={3}
             dataKey="total"
             type="monotone"
             stroke="#c91a34"

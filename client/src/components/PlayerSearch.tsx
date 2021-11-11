@@ -21,7 +21,7 @@ export const PlayerSearch = ({ width, height, callback }: { width: string, heigh
             {focus &&
                 <div className={`${width} absolute mt-2 flex flex-col z-50 bg-white rounded-md p-2 space-y-1 border-gray-600 border-2`}>
                     {players.map(item => (
-                        <button onClick={() => callback(item)} className="hover:bg-blue-400 hover:text-white p-1 rounded-sm hover:cursor-pointer">
+                        <button onClick={() => callback(item)} className="hover:bg-blue-400 hover:text-white p-1 rounded-sm hover:cursor-pointer text-black">
                             {item.name}
                         </button>
                     ))}

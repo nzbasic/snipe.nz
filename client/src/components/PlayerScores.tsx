@@ -51,7 +51,7 @@ export const PlayerScores = ({ id, name }: { id: string, name: string }) => {
     }
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col text-white">
             <div className="hidden lg:flex items-center mb-4 space-x-2">
                 <button disabled={exportLoading} className={`${exportLoading ? 'bg-blue-400 cursor-default' : 'bg-blue-600 hover:bg-blue-700'} px-2 py-1 w-72 text-white rounded-sm `} onClick={() => exportCollection()}>
                     {!exportLoading ? 
@@ -62,7 +62,7 @@ export const PlayerScores = ({ id, name }: { id: string, name: string }) => {
                 <a href="https://github.com/nzbasic/Collection-Helper" target="_blank" rel="noreferrer" className="text-blue-400 hover:underline">Download Collection Helper</a>
             </div>
             <SortingDropdown setPageNumber={setPageNumber} sortBy={sortBy} setSortBy={setSortBy} sortOrder={sortOrder} setSortOrder={setSortOrder}/>
-            <div className="mt-4">
+            <div className="mt-4 bg-dark01-accordion">
                 {!isLoading ? <ScoreTable scores={plays} player={true} /> : Array.from(Array(pageSize).keys()).map((_, index) => (
                     <div key={index} className="flex space-x-2">
                         <span className="w-8">{(index+1) + ((pageNumber-1) * pageSize)}</span>

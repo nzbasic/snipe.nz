@@ -33,7 +33,7 @@ export const DailyTarget = () => {
     }, [])
 
     return (
-        <div className="text-white flex flex-col items-center gap-2">
+        <div className="text-white flex flex-col items-center gap-2 px-4">
             {target ? (
                 <div className="flex flex-col gap-1 items-center mt-8">
                     <Link to={"/players/" + target.player.id} className="hover:underline text-5xl">{target.player.name}</Link>
@@ -46,7 +46,7 @@ export const DailyTarget = () => {
                             <TargetSnipes id={target.player.id} dateEnd={target.dateEnd} data={snipes} />
                         </SimpleSummaryAccordion>
                     </div>
-                    <div className="max-w-7xl mt-4">
+                    <div className="max-w-7xl mt-4 w-full">
                         <SimpleSummaryAccordion title="#1s" >
                             <PlayerScores id={target.player.id.toString()} name={target.player.name} />
                         </SimpleSummaryAccordion>

@@ -15,7 +15,6 @@ export const Stats = () => {
 
     useEffect(() => {
         axios.get("/api/scores/stats").then(res => {
-            console.log(res)
             setLoading(false)
             setTopSnipers(res.data.topSniperWeek)
             setTopVictims(res.data.topVictimWeek)

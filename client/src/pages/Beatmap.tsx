@@ -9,6 +9,8 @@ import { CircularProgress } from "@material-ui/core"
 import { SingleActivity } from "../components/SingleActivity"
 import NumberFormat from "react-number-format"
 import { Helmet } from "react-helmet"
+import CopyIcon from '@material-ui/icons/FileCopy';
+import { CopyToClipboard } from "react-copy-to-clipboard"
 
 export const BeatmapPage = (props: RouteComponentProps<{ id: string }>) => {
     const id = props.match.params.id
@@ -44,7 +46,13 @@ export const BeatmapPage = (props: RouteComponentProps<{ id: string }>) => {
                 <img className="p-2 lg:p-4 bg-white rounded-lg border-gray-200 border-2" src={"https://assets.ppy.sh/beatmaps/" + beatmap?.setId + "/covers/cover.jpg"} alt="Beatmap Cover" />
             </ScrollAnimation>
             <ScrollAnimation animateIn="animate__slideInRight" className="flex flex-col bg-black text-white text-xs lg:text-lg items-center p-8">
-                <a href={"https://osu.ppy.sh/beatmaps/" + beatmap?.id} target="_blank" rel="noreferrer" className="animate-underline max-w-full truncate">{beatmap?.song} - {beatmap?.song} [{beatmap?.difficulty}]</a>
+                <div className="flex gap-2">
+                    <CopyToClipboard text={"https://osu.ppy.sh/beatmaps/" + beatmap?.id}>
+                        <CopyIcon className="cursor-pointer" />
+                    </CopyToClipboard>
+                    <a href={"https://osu.ppy.sh/beatmaps/" + beatmap?.id} target="_blank" rel="noreferrer" className="animate-underline max-w-full truncate">{beatmap?.song} - {beatmap?.song} [{beatmap?.difficulty}]</a>
+                </div>
+                
             </ScrollAnimation>
             <ScrollAnimation animateIn="animate__slideInLeft" className="flex flex-col bg-green-600 text-white text-xl p-8">
                 <span className="text-2xl">Map Details:</span>

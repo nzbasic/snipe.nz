@@ -8,8 +8,6 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import path from 'path'
-import { Player, PlayerModel } from '../models/Player.model';
-import { Target, TargetModel } from '../models/Target.model';
 dotenv.config();
 
 const app = express();
@@ -18,25 +16,6 @@ const port = 8080;
 mongoose.connect(process.env.MONGO??"", {})
 mongoose.connection.on('connected', async () => {
   loadData()
-
-  // const players = await PlayerModel.find({ firstCount: { $gt: 50 }})
-  // const randomOrder = players.sort(() => Math.random() - 0.5)
-
-  // const firstTime = 1636585200000
-  // const increment = 8.64e7
-
-  // for (let i = 0; i < players.length; i++) {
-  //   const player: Player = randomOrder[i]
-    
-  //   const target: Target = {
-  //     targetId: player.id,
-  //     dateBegin: firstTime + (i * increment),
-  //     dateEnd: firstTime + ((i + 1) * increment),
-  //   }
-
-  //   await TargetModel.create(target)
-  // }
-
   console.log("Mongo connected")
 })
 

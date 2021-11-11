@@ -12,6 +12,7 @@ import { Scores } from './pages/Scores'
 import { Redirect } from './pages/Redirect'
 import { BeatmapPage } from './pages/Beatmap'
 import { Query } from './pages/Query'
+import { DailyTarget } from './pages/DailyTarget'
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/redirect/:name" component={Redirect} />
           <Route path="/beatmap/:id" component={BeatmapPage} />
           <Route path="/query" component={Query} />
+          <Route path="/daily" component={DailyTarget} />
         </Switch>
       </div>
     </BrowserRouter>

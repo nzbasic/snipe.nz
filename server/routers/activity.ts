@@ -166,6 +166,7 @@ router.route("/snipeData/:id").get(async (req, res) => {
     const enemyName = req.query.enemy as string
     const playerAsSniper = JSON.parse(req.query.playerAsSniper as string)
     const enemy = await PlayerModel.findOne({ name: enemyName })
+    const dateEnd = parseInt(req.query.dateEnd as string)
 
     let player = enemy;
     if (playerAsSniper) {
@@ -173,12 +174,16 @@ router.route("/snipeData/:id").get(async (req, res) => {
     }
 
     if (enemy) {
-        const options = { 
+        const options: any = { 
             sniper: playerAsSniper ? id : enemy.id,
             victim: playerAsSniper ? enemy.id: id
         }
 
-        const snipes = await SnipeModel.aggregate([
+        if (dateEnd !== 0) {
+            options.time = { $lte: dateEnd, $gt: dateEnd - 8.64e7 }
+        }
+
+        const aggregation = [
             { $match: options },
             {
                 $lookup: {
@@ -199,7 +204,9 @@ router.route("/snipeData/:id").get(async (req, res) => {
             { $unwind: "$beatmapFull" },
             { $unwind: "$score"},
             { $sort: { "time": -1 } },
-        ])
+        ]
+
+        const snipes = await SnipeModel.aggregate(aggregation)
 
         const plays: Play[] = []
         for (const snipe of snipes) {

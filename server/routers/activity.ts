@@ -167,6 +167,7 @@ router.route("/snipeData/:id").get(async (req, res) => {
     const playerAsSniper = JSON.parse(req.query.playerAsSniper as string)
     const enemy = await PlayerModel.findOne({ name: enemyName })
     const dateEnd = parseInt(req.query.dateEnd as string)
+    const dateBegin = parseInt(req.query.dateBegin as string)
 
     let player = enemy;
     if (playerAsSniper) {
@@ -179,8 +180,8 @@ router.route("/snipeData/:id").get(async (req, res) => {
             victim: playerAsSniper ? enemy.id: id
         }
 
-        if (dateEnd !== 0) {
-            options.time = { $lte: dateEnd, $gt: dateEnd - 8.64e7 }
+        if (dateEnd !== 0 && dateBegin !== 0) {
+            options.time = { $lte: dateEnd, $gt: dateBegin }
         }
 
         const aggregation = [

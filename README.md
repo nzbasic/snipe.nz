@@ -48,7 +48,7 @@
 
 snipe.nz is a website for NZ osu! players to track scores that are #1 in the country. It also features a discord bot for notifying users of snipes as they happen. This project was built to give more insight on the players of New Zealand and to offer a new way for people to play the game.
 
-The key features of **osuTracker**:
+The key features of **snipe.nz**:
 
 - Tracking snipes
 - Query beatmaps/scores and export to a collection file

@@ -7,7 +7,7 @@ import axios from 'axios'
 import { ScoreTable } from "./ScoreTable";
 import { Link } from "react-router-dom";
 
-export const PlayerSnipeAccordion = ({ total, id, playerAsSniper, dateEnd }: { total: SnipeTotal, id: string, playerAsSniper: boolean, dateEnd?: number }) => {
+export const PlayerSnipeAccordion = ({ total, id, playerAsSniper, dateBegin, dateEnd }: { total: SnipeTotal, id: string, playerAsSniper: boolean, dateBegin?: number, dateEnd?: number }) => {
     const [isLoading, setLoading] = useState(true)
     const [scoresLoaded, setScoresLoaded] = useState(false)
     const [plays, setPlays] = useState<Play[]>([])
@@ -15,7 +15,7 @@ export const PlayerSnipeAccordion = ({ total, id, playerAsSniper, dateEnd }: { t
     const loadSnipes = async (expanded: boolean) => {
         if (expanded && !scoresLoaded) {
             const uri = "/api/activity/snipeData/" + id
-            const res = await axios.get(uri, { params: { playerAsSniper: playerAsSniper, enemy: total.name, dateEnd: dateEnd ? dateEnd : 0 } })
+            const res = await axios.get(uri, { params: { playerAsSniper: playerAsSniper, enemy: total.name, dateBegin: dateBegin??0, dateEnd: dateEnd??0 } })
             setPlays(res.data)
             setScoresLoaded(true)
             setLoading(false)

@@ -9,14 +9,14 @@ interface Props {
 export const SimpleSummaryAccordion: React.FC<Props>= ({ title, expanded, children }) => {
 
     return (
-        <Accordion defaultExpanded={expanded} >
+        <Accordion defaultExpanded={expanded} className="w-full" >
             <AccordionSummary
                 expandIcon={<ExpandMoreIcon className="text-white" />}
                 aria-controls="panel1a-content"
                 id="panel1a-header"
                 className="bg-dark00-accordion"
             >
-                <span className="text-white">{title}</span>
+                <span className="text-white w-full">{title}</span>
             </AccordionSummary>
             <AccordionDetails className="bg-dark00-accordion">
                 {children}

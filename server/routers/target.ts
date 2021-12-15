@@ -20,8 +20,6 @@ router.route("/").get(async (req, res) => {
         { $unwind: "$sniper" }
     ])
 
-    console.log(snipes)
-
     const temp = new Map<string, number>()
     for (const snipe of snipes) {
         const name = snipe.sniper.name??""
@@ -36,14 +34,8 @@ router.route("/").get(async (req, res) => {
         }
         output.push(total)
     }
-
     
     res.json({ target, snipes: output })
-})
-
-router.route("/snipes").get(async (req, res) => {
-    const date = new Date().getTime()
-
 })
 
 export default router

@@ -73,7 +73,7 @@ router.route("/refresh/:id").post(async (req, res) => {
 
             if (beatmap) {
                 try {
-                    await updateBeatmap(id, await getCookieJar(), beatmap, prev)
+                    await updateBeatmap(id, await getCookieJar(), prev)
                 } catch(err) {
                     const difference = 2000 - (new Date().getTime() - prev)
                     // ensure no more than 2 requests per second

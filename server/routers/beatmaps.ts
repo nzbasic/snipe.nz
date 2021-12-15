@@ -201,7 +201,7 @@ router.route("/refresh/:id").post(async (req, res) => {
         const jar = new CookieJar();
         const setCookie = promisify(jar.setCookie.bind(jar))
         await setCookie(process.env.COOKIE??"", 'https://osu.ppy.sh')
-        await updateBeatmap(id, jar, beatmap)
+        await updateBeatmap(id, jar)
     }
 
     res.json()

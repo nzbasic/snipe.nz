@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { Link } from "react-router-dom"
 
 const renderSong = (value: string, record: Play, index: number) => {
-    return renderEllipsis(<Link to={"/beatmap/" + record.beatmapId} target="_blank" rel="noreferrer" className="text-blue-400 hover:underline">{record.artist} - {record.song} [{record.difficulty}]</Link>);
+    return renderEllipsis(<Link to={"/beatmap/" + record.beatmapId} target="_blank" rel="noreferrer" className=" text-blue-400 hover:underline">{record.artist} - {record.song} [{record.difficulty}]</Link>);
 }
 
 const renderEllipsis = (value: JSX.Element) => {
@@ -17,7 +17,7 @@ const renderEllipsis = (value: JSX.Element) => {
 
     return (
         <div key={uuidv4()} style={{ display: 'grid', placeItems: 'stretch' }}>
-            <div style={style}>
+            <div style={style} className="text-xs md:text-base">
                 {value}
             </div>
         </div>
@@ -70,7 +70,7 @@ export const ScoreTable = ({ scores, snipe, player }: { scores: Play[], snipe?: 
             dataIndex: 'score',
             width: 300,
             ellipsis: true,
-            render: (value: string, record: Play) => renderEllipsis(<NumberFormat className="" value={record?.score} displayType={'text'} thousandSeparator={true}/>)
+            render: (value: string, record: Play) => renderEllipsis(<NumberFormat value={record?.score} displayType={'text'} thousandSeparator={true}/>)
         })
 
         if (!player) {

@@ -30,7 +30,7 @@ export default class Refresh extends Command {
             const jar = await getCookieJar();
             const beatmap = await BeatmapModel.findOne({ id: this.id })
             if (beatmap) {
-                const res = await updateBeatmap(this.id, jar, beatmap)
+                const res = await updateBeatmap(this.id, jar)
                 console.log(res)
                 if (typeof res === "object") {
                     const sniper = await PlayerModel.findOne({ id: res.sniper })

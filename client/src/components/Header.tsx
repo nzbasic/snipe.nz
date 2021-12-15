@@ -34,7 +34,7 @@ export const Header = () => {
     return (
         <div className="flex flex-col max-h-full">
             <div className="h-36 bg-black text-white flex items-center px-12 lg:px-20 justify-between">
-                <Link to="/" className="text-5xl font-extrabold">Snipe.nz</Link>
+                <Link to="/" className="text-5xl font-extrabold">{process.env.NAME??"Snipe.nz"}</Link>
                 <div className="hidden xl:flex space-x-8">
                     {headers.map((header, index) => (
                         <HeaderButton key={index} text={header.text} link={header.link} />

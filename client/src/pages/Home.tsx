@@ -9,39 +9,7 @@ import { Footer } from '../components/Footer'
 import NumberFormat from 'react-number-format';
 import { Helmet } from "react-helmet";
 import { Link } from 'react-router-dom';
-
-const randomNamePool = [
-    "YEP",
-    "cd36",
-    "Prendar",
-    "ningalu",
-    "DTJump",
-    "HRJump",
-    "BobStevenson",
-    "jaminclaw",
-    "bluetayden",
-    "yumi",
-    "catcat",
-    "dogdog",
-    "bestyLMAO",
-    "Ayachi Nene",
-    "Zoomer"
-]
-
-const randomMapPool = [
-    "Freedom Dive",
-    "Plasma Gun",
-    "Scarlet Rose",
-    "Chika Chika",
-    "Daidai Genome",
-    "Gay Bar",
-    "Blue Zenith",
-    "Padoru",
-    "Kimi no Bouken",
-    "Santa San",
-    "Sunglow",
-    "Sidetracked Kids",
-]
+import { FormattedSnipe } from '../../../models/Snipe.model';
 
 const initialTop: Player[] = [
     { name: "jiantz", firstCount: 2441, id: 1 },
@@ -51,17 +19,6 @@ const initialTop: Player[] = [
     { name: "Big Z", firstCount: 1117, id: 5 }
 ]
 
-const getRandomSnipe = (): string => {
-    const map = Math.floor(Math.random() * randomMapPool.length)
-    const firstPlayer = Math.floor(Math.random() * randomNamePool.length)
-    let secondPlayer = firstPlayer;
-    do { 
-        secondPlayer = Math.floor(Math.random() * randomNamePool.length)
-    } while(firstPlayer === secondPlayer)
-
-    return randomNamePool[firstPlayer] + " has sniped " + randomNamePool[secondPlayer] + " on " + randomMapPool[map]
-}
-
 interface Data {
     time: number,
     total: number
@@ -69,20 +26,20 @@ interface Data {
 
 export const Home = () => {
     const [top5, setTop5] = useState<Player[]>(initialTop)
-    const [carousel, setCarousel] = useState<string[]>([])
     const [randomBeatmap, setRandomBeatmap] = useState<Play>()
     const [chartData, setChartData] = useState<Data[]>([])
+    const [snipes, setSnipes] = useState<FormattedSnipe[]>([])
 
     useEffect(() => {
+        document.title = process.env.NAME??"Snipe.nz"
+
         axios.get("/api/players", { params: { pageSize: 5, pageNumber: 1, order: -1 }}).then((res => {
             setTop5(res.data.players)
         }))
 
-        const randomCarousel: string[] = []
-        for (let i = 0; i < 6; i++) {
-            randomCarousel.push(getRandomSnipe())
-        }
-        setCarousel(randomCarousel)
+        axios.get("/api/activity/latest/" + 6).then(res => {
+            setSnipes(res.data)
+        })
 
         const data: Data[] = []
         for (let i = 0; i < 20; i++) {
@@ -99,15 +56,6 @@ export const Home = () => {
         setChartData(data)
         getRandomBeatmap()
     }, [])
-
-    useEffect(() => {
-        setTimeout(() => {
-            const clone: string[] = JSON.parse(JSON.stringify(carousel))
-            clone.pop()
-            clone.unshift(getRandomSnipe())
-            setCarousel(clone)
-        }, 5000)
-    }, [carousel])
 
     const getRandomBeatmap = () => {
         axios.get("/api/beatmaps/random").then((res => {
@@ -127,7 +75,7 @@ export const Home = () => {
                 <meta name="twitter:description" content="snipe.nz is a website you can use to view NZ osu! country #1's, who has the most number #1s, the latest snipes, and more." />
             </Helmet>
             <div className="bg-blue-500 flex items-center py-12 font-extrabold flex-col">
-                <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-white text-center">Welcome to Snipe.nz</h1>
+                <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-white text-center">Welcome to {process.env.NAME??"Snipe.nz"}</h1>
                 <h3 className="mt-2 text-xl md:text-2xl lg:text-4xl xl:text-5xl text-white text-center">Find and Snipe Country #1s in osu!</h3>
             </div>
             <ScrollAnimation animateIn="animate__slideInRight" className="bg-black flex py-12 px-8 2xl:px-44 w-full lg:flex-nowrap flex-wrap justify-around sm:justify-between items-center">
@@ -160,8 +108,8 @@ export const Home = () => {
                     <span className="text-2xl lg:text-xl max-w-sm">New snipes will show up in the live feed on the activity page.</span>
                 </div>
                 <div className="flex flex-col p-4 w-full text-xs md:text-sm lg:text-2xl space-y-1 h-44 lg:h-64 text-center lg:text-right mt-8 lg:mt-0">
-                    {carousel.map((item, index) => (
-                        <span key={index}>{item}</span>
+                    {snipes.map((item, index) => (
+                        <span key={index}>{item.sniper} has sniped {item.victim} on {item.beatmap}</span>
                     ))}
                 </div>
             </ScrollAnimation> 

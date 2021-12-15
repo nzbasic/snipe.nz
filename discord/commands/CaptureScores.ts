@@ -20,15 +20,35 @@ import { BeatmapModel } from '../../models/Beatmap.model'
 import { PlayerModel } from "../../models/Player.model";
 import { scoresOn } from "./ScoresOn";
 
-@Alias("!rs", "!r", "<rs", ">rs", "<r", ">r")
+const regex = "[<>!](rs|r)\\d*"
+
+@Alias(regex)
 export default class Link extends Command {
+    @Argument({ type: new StringType(), optional: true })
+    name!: string;
+    
     async execute(message: Message, client: Client) {
-        const user = await UserModel.findOne({ discordId: message.author.id})
-        if (user) {
+        const command = (message.content.match(regex)??[""])[0]
+        const endNumber = command.match(/\d+$/g)
+        let number = 1
+        let id = false
+
+        await new Promise((resolve, reject) => setTimeout(resolve, 1000))
+
+        if (endNumber) {
+            number = parseInt(endNumber[0])
+        }
+
+        if (!this.name) {
+            this.name = (await UserModel.findOne({ discordId: message.author.id }))?.osuId??""
+            id = true
+        }
+
+        if (this.name) {
             try {
-                const scores = await osuApi.getUserRecent({ u: user.osuId, type: "id", limit: 1 })
+                const scores = await osuApi.getUserRecent({ u: this.name, type: id ? "id" : "string", limit: number })
                 if (scores.length) {
-                    const recent = scores[0];
+                    const recent = scores[number-1];
                     const jar = await getCookieJar();
                     const id = parseInt(recent.beatmapId as string, 10)
                     const beatmap = await BeatmapModel.findOne({ id: id })
@@ -76,7 +96,7 @@ export default class Link extends Command {
                             message.channel.send(string)
                         }
 
-                        const res = await updateBeatmap(id, jar, beatmap)
+                        const res = await updateBeatmap(id, jar)
                         if (typeof res === "object") {
                             const sniper = await PlayerModel.findOne({ id: res.sniper })
                             const victim = await PlayerModel.findOne({ id: res.victim })

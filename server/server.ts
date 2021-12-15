@@ -8,6 +8,9 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import path from 'path'
+import { Target, TargetModel } from '../models/Target.model';
+import { PlayerModel } from '../models/Player.model';
+import { ScoreModel } from '../models/Score.model';
 dotenv.config();
 
 const app = express();
@@ -16,6 +19,60 @@ const port = 8080;
 mongoose.connect(process.env.MONGO??"", {})
 mongoose.connection.on('connected', async () => {
   loadData()
+
+  // const players = await PlayerModel.find({ firstCount: { $gt: 200 }})
+  // console.log(players.length)
+
+  // const targets = await TargetModel.find({})
+  // for (const target of targets) {
+  //   await target.remove()
+  // }
+
+  // const random = players.sort((a,b) => Math.random() - 0.5)
+  // let i = 0;
+  // const base = 1636758000000
+  // const increment = 8.64e7
+  // for (const player of random) {
+  //   if (player.name === "ningalu") continue;
+
+  //   const highest = await ScoreModel.find({ playerId: player.id })
+  //   const sorted = highest.sort((a,b) => b.pp - a.pp)
+  //   if (sorted.length) {
+  //     if (sorted[0].pp < 300) {
+  //       continue;
+  //     }
+  //   }
+
+  //   const target = new TargetModel({
+  //     targetId: player.id,
+  //     dateBegin: base + (i * increment),
+  //     dateEnd: base + ((i + 1) * increment),
+  //   })
+
+  //   i++
+
+  //   await target.save()
+  // }
+
+  // const targets = await TargetModel.find()
+  // const sorted = targets.sort((a, b) => a.dateBegin - b.dateBegin)
+  
+  // for (let i = 0; i < sorted.length; i++) {
+  //   const target = sorted[i]
+  //   const base = 1636758000000
+  //   const increment = 8.64e7
+    
+  //   if (i == 0) {
+  //     target.dateEnd = 1636758000000
+  //   } else {
+  //     target.dateBegin = sorted[i - 1].dateEnd
+  //     target.dateEnd = sorted[i - 1].dateEnd + increment
+  //   }
+
+  //   await target.save()
+
+  // }
+
   console.log("Mongo connected")
 })
 

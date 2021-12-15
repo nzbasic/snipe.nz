@@ -8,7 +8,7 @@ dotenv.config();
 export let osuApi: osu.Api;
 
 (async () => {
-    osuApi = new osu.Api(process.env.OSU??"", {
+    osuApi = new osu.Api(process.env.OSU_KEY??"", {
         notFoundAsError: true,
         completeScores: false, 
         parseNumeric: true

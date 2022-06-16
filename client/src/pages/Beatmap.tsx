@@ -1,9 +1,8 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
-import { Link, RouteComponentProps } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import { FormattedSnipe, Snipe } from "../../../models/Snipe.model"
 import { Beatmap } from '../../../models/Beatmap.model'
-import ScrollAnimation from "react-animate-on-scroll"
 import { Play } from "../../../models/play"
 import { CircularProgress } from "@material-ui/core"
 import { SingleActivity } from "../components/SingleActivity"
@@ -12,15 +11,14 @@ import { Helmet } from "react-helmet"
 import CopyIcon from '@material-ui/icons/FileCopy';
 import { CopyToClipboard } from "react-copy-to-clipboard"
 
-export const BeatmapPage = (props: RouteComponentProps<{ id: string }>) => {
-    const id = props.match.params.id
+export const BeatmapPage = () => {
+    const { id } = useParams()
     const [beatmap, setBeatmap] = useState<Beatmap>()
     const [activity, setActivity] = useState<FormattedSnipe[]>([])
     const [isLoading, setLoading] = useState(true)
     const [bestScore, setBestScore] = useState<Play>()
 
     useEffect(() => {
-        
         setLoading(true)
         axios.get("/api/beatmaps/details/" + id).then(res => {
             setBeatmap(res.data.beatmap)
@@ -42,10 +40,10 @@ export const BeatmapPage = (props: RouteComponentProps<{ id: string }>) => {
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:description" content={`See the NZ country #1 history on ${beatmap?.artist} - ${beatmap?.song} [${beatmap?.difficulty}]`} />
             </Helmet>
-            <ScrollAnimation animateIn="animate__slideInLeft" className="bg-indigo-400 p-4 lg:p-16 items-center flex flex-col">
+            <div className=" p-4 lg:p-16 items-center flex flex-col">
                 <img className="p-2 lg:p-4 bg-white rounded-lg border-gray-200 border-2" src={"https://assets.ppy.sh/beatmaps/" + beatmap?.setId + "/covers/cover.jpg"} alt="Beatmap Cover" />
-            </ScrollAnimation>
-            <ScrollAnimation animateIn="animate__slideInRight" className="flex flex-col bg-black text-white text-xs lg:text-lg items-center p-8">
+            </div>
+            <div className="flex flex-col bg-black text-white text-xs lg:text-lg items-center p-8">
                 <div className="flex gap-2">
                     <CopyToClipboard text={"https://osu.ppy.sh/beatmaps/" + beatmap?.id}>
                         <CopyIcon className="cursor-pointer" />
@@ -53,8 +51,8 @@ export const BeatmapPage = (props: RouteComponentProps<{ id: string }>) => {
                     <a href={"https://osu.ppy.sh/beatmaps/" + beatmap?.id} target="_blank" rel="noreferrer" className="animate-underline max-w-full truncate">{beatmap?.song} - {beatmap?.song} [{beatmap?.difficulty}]</a>
                 </div>
                 
-            </ScrollAnimation>
-            <ScrollAnimation animateIn="animate__slideInLeft" className="flex flex-col bg-green-600 text-white text-xl p-8">
+            </div>
+            <div className="flex flex-col bg-green-600 text-white text-xl p-8">
                 <span className="text-2xl">Map Details:</span>
                 <span>BPM: {beatmap?.bpm}</span>
                 <span>Mapper: {beatmap?.mapper}</span>
@@ -71,10 +69,10 @@ export const BeatmapPage = (props: RouteComponentProps<{ id: string }>) => {
                 ) : ( null )}
                 
                 <span>Has Spinner: {beatmap?.hasSpinner ? "Yes" : "No"}</span>
-            </ScrollAnimation>
+            </div>
             {bestScore?.id ? (
                 <div className="flex flex-col">
-                    <ScrollAnimation animateIn="animate__slideInRight" className="flex flex-col bg-black text-white p-8 text-xl">
+                    <div className="flex flex-col bg-black text-white p-8 text-xl">
                         <span className="text-2xl">Current Best Score:</span>
                         <div className="flex space-x-1">
                             <span>Player:</span>
@@ -88,7 +86,7 @@ export const BeatmapPage = (props: RouteComponentProps<{ id: string }>) => {
                         <span>Acc: {(bestScore?.acc*100).toFixed(2)}%</span>
                         <span>Mods: {bestScore?.mods.join("")}</span>
                         <span>Date: {new Date(bestScore?.date??"").toLocaleDateString()}</span>
-                    </ScrollAnimation>
+                    </div>
                     <div className="flex flex-col text-white p-8 text-xl">
                         <span className="text-2xl">Snipe History</span>
                         {activity.length ? activity.map((item, index) => (

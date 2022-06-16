@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@frasermcc/overcord": "^0.5.6",
+    "@frasermcc/overcord": "^0.5.8",
     "@types/jsdom": "^16.2.13",
     "@types/tough-cookie": "^4.0.1",
     "axios": "^0.24.0",
@@ -18,7 +18,7 @@
     "dotenv": "^10.0.0",
     "got": "^11.8.2",
     "jsdom": "^18.0.1",
-    "mongoose": "^6.0.5",
+    "mongoose": "^6.2.3",
     "node-osu": "^2.2.1",
     "tough-cookie": "^4.0.0",
     "ts-node": "^10.2.1",

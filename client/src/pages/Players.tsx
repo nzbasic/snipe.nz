@@ -143,7 +143,6 @@ export const Leaderboard = () => {
                     </div>
                 ))}
             </ScrollAnimation>
-            <Footer />
         </div>
     );
 }

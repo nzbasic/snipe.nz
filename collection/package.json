@@ -11,12 +11,15 @@
   "license": "ISC",
   "dependencies": {
     "@types/jsdom": "^16.2.13",
+    "@types/sqlite3": "^3.1.8",
     "@types/tough-cookie": "^4.0.1",
     "dotenv": "^10.0.0",
     "fast-glob": "^3.2.7",
     "got": "^11.8.2",
     "jsdom": "^18.0.1",
     "mongoose": "^6.0.12",
+    "sqlite": "^4.0.23",
+    "sqlite3": "^5.0.2",
     "tough-cookie": "^4.0.0",
     "typescript": "^4.4.4"
   },

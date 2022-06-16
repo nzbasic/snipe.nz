@@ -1,10 +1,12 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
 import './index.css'
 import 'animate.css/animate.min.css'
+import { Router } from './Router';
+import React from 'react';
 
 ReactDOM.render(
-  <App />,
+  <React.StrictMode>
+    <Router />
+  </React.StrictMode>,
   document.getElementById('root')
 );

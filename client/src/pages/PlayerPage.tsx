@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { RouteComponentProps } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { Play } from '../../../models/play'
 import axios from 'axios'
 import { Player } from '../../../models/Player.model';
@@ -45,15 +45,17 @@ for (let i = 0; i < 500; i++) {
     loadingData.push({ any: "-"})
 }
 
-export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
+export const PlayerPage = () => {
     const [isPlayerLoading, setPlayerLoading] = useState(true)
     const [numberThisWeek, setNumberThisWeek] = useState(0)
     const [player, setPlayer] = useState<Player>({ id: 0, name: "", firstCount: 0})
     const [rawSnipeData, setRawSnipeData] = useState<GraphData[]>([])
-    const id = props.match.params.id
+    const { id } = useParams()
     const classes = useStyles();
 
     useEffect(() => {
+        if (!id) return
+
         axios.get("/api/players/" + id).then(res => {
             setPlayer(res.data)
             window.document.title = res.data.name
@@ -134,23 +136,26 @@ export const PlayerPage = (props: RouteComponentProps<{ id: string }>) => {
                     <CircularProgress className={classes.loading} size="10rem"/>    
                 } 
             </ScrollAnimation>
-            <ScrollAnimation animateIn="animate__slideInRight" className="bg-blue-400 flex flex-col space-y-4 p-4 md:p-8">
-                <SimpleSummaryAccordion title="People you are sniping" >
-                    <PlayerSniping id={id} playerAsSniper={true}/>
-                </SimpleSummaryAccordion>
 
-                <SimpleSummaryAccordion title="People who are sniping you" >
-                    <PlayerSniping id={id} playerAsSniper={false}/>
-                </SimpleSummaryAccordion>
+            {id && (
+                <ScrollAnimation animateIn="animate__slideInRight" className="bg-blue-400 flex flex-col space-y-4 p-4 md:p-8">
+                    <SimpleSummaryAccordion title="People you are sniping" >
+                        <PlayerSniping id={id} playerAsSniper={true}/>
+                    </SimpleSummaryAccordion>
 
-                <SimpleSummaryAccordion title="Activity" >
-                    <PlayerActivity id={id} />
-                </SimpleSummaryAccordion>
+                    <SimpleSummaryAccordion title="People who are sniping you" >
+                        <PlayerSniping id={id} playerAsSniper={false}/>
+                    </SimpleSummaryAccordion>
 
-                <SimpleSummaryAccordion title="Your #1s" >
-                    <PlayerScores id={id} name={player.name} />
-                </SimpleSummaryAccordion>
-            </ScrollAnimation>
+                    <SimpleSummaryAccordion title="Activity" >
+                        <PlayerActivity id={id} />
+                    </SimpleSummaryAccordion>
+
+                    <SimpleSummaryAccordion title="Your #1s" >
+                        <PlayerScores id={id} name={player.name} />
+                    </SimpleSummaryAccordion>
+                </ScrollAnimation>
+            )}
         </div>
     )
 }

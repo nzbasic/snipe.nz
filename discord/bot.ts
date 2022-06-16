@@ -3,7 +3,10 @@ import path from "path";
 import dotenv from 'dotenv'
 import osu from 'node-osu'
 import mongoose from 'mongoose'
-dotenv.config();
+import { BeatmapModel } from "../models/Beatmap.model";
+//dotenv.config();
+
+dotenv.config()
 
 export let osuApi: osu.Api;
 
@@ -13,13 +16,22 @@ export let osuApi: osu.Api;
         completeScores: false, 
         parseNumeric: true
     });
+    console.log("api initialized")
 
-    mongoose.connect(process.env.MONGO??"", {})
-    mongoose.connection.on("connected", async () => {
-        console.log("mongo connected")
+    console.log("mongoose loading")
+    await mongoose.connect(process.env.MONGO??"")
+    console.log("mongoose loaded")
+
+    mongoose.connection.on("error", (err) => {
+        console.error(err)
     })
 
+    console.log("creating client")
     const client = new Client({ intents: 32509, defaultCommandPrefix: "", owners: [] });
     await client.registry.recursivelyRegisterCommands(path.join(__dirname, "/commands"));
-    client.login(process.env.BOT_TOKEN??"");
+    console.log("client created")
+
+    console.log("logging in")
+    await client.login(process.env.BOT_TOKEN??"");
+    console.log("logged in")
 })();

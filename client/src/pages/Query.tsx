@@ -129,7 +129,7 @@ export const Query = () => {
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:description" content="Search through NZ country #1 scores and export them to your osu! collections." />
             </Helmet>
-            <div className="bg-purple-700 text-white  flex flex-col p-8 w-full space-y-2">
+            <div className="text-white flex flex-col px-8 pt-8 w-full space-y-2">
                 <span className="text-2xl pb-2">Map Details (All inputs are optional)</span>
                 <InputText text="Artist" onChange={setArtist} />
                 <InputText text="Title" onChange={setTitle} />
@@ -155,7 +155,7 @@ export const Query = () => {
                     <input checked={noSpinners} type="checkbox" onChange={e => setNoSpinners(e.target.checked)} />
                 </div>
             </div>
-            <div className="bg-black text-white flex flex-col p-8 w-full space-y-2">
+            <div className="text-white flex flex-col px-8 py-4 w-full space-y-2">
             <span className="text-2xl py-2">Score Details (All inputs are optional)</span>
                 <InputText text="Player" onChange={setPlayer}/>
                 <div className="flex items-center space-x-2">

@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.route("/nameToId/:name").get(async (req, res) => {
     const name = req.params.name;
-    const player = await PlayerModel.findOne({ name: name });
+    const player = await PlayerModel.findOne({ name: { $regex: name, $options: 'i' } });
     if (player) {
         res.json(player.id);
     } else {

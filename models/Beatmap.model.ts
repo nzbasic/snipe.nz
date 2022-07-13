@@ -19,7 +19,9 @@ export interface Beatmap {
   playerId: number,
   lastUpdated: number,
   hasSpinner?: boolean,
-  hash?: string
+  hash?: string,
+  unranked: boolean,
+  maxCombo?: number
 }
 
 export interface CHBeatmap {
@@ -57,7 +59,9 @@ const schema = new Schema<Beatmap>({
   mapper: String,
   playerId: Number,
   hasSpinner: Boolean,
-  hash: String
+  hash: String,
+  unranked: Boolean,
+  maxCombo: Number,
 });
 
 // 3. Create a Model.

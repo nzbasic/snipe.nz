@@ -58,7 +58,7 @@ export default class Target extends Command {
     }
 }
 
-const who = async (id: number): Promise<[Score | null, Player | null]> => {
+export const who = async (id: number): Promise<[Score | null, Player | null]> => {
     const score = await ScoreModel.findOne({ beatmapId: id })
     if (score) {
         const player = await PlayerModel.findOne({ id: score.playerId })

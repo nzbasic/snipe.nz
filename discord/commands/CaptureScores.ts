@@ -1,3 +1,4 @@
+import { User } from '../models/User.model';
 import {
     Alias,
     Inhibit,
@@ -17,8 +18,10 @@ import { UserModel } from '../models/User.model'
 import { updateBeatmap } from '../../shared/updatemap'
 import { getCookieJar } from '../../shared/jar'
 import { BeatmapModel } from '../../models/Beatmap.model'
-import { PlayerModel } from "../../models/Player.model";
+import { Player, PlayerModel } from "../../models/Player.model";
 import { scoresOn } from "./ScoresOn";
+import { DiscordScore } from '../../models/play'
+import { Document } from 'mongoose'
 
 const regex = "[<>!](rs|r)\\d*"
 
@@ -32,42 +35,56 @@ export default class Link extends Command {
         const endNumber = command.match(/\d+$/g)
         let number = 1
         let id = false
-
-        await new Promise((resolve, reject) => setTimeout(resolve, 1000))
+        let user: (Document<any, any, User> & User) | null
 
         if (endNumber) {
             number = parseInt(endNumber[0])
         }
 
         if (!this.name) {
-            this.name = (await UserModel.findOne({ discordId: message.author.id }))?.osuId??""
+            user = await UserModel.findOne({ discordId: message.author.id })
+            this.name = user?.osuId??""
             id = true
         }
-
+    
         if (this.name) {
             try {
-                const scores = await osuApi.getUserRecent({ u: this.name, type: id ? "id" : "string", limit: number })
+                let userId: number
+                if (!id) {
+                    const user = await osuApi.getUser(this.name, { key: "username", fromCache: true })
+                    if (!user) return message.channel.send("Couldn't find user")
+                    userId = user.id
+                } else {
+                    userId = parseInt(this.name)
+                }
+
+                const scores = await osuApi.getUserScores(userId, "recent", { include_fails: 1, mode: "osu", calculateUnrankedPerformance: true, limit: number, fullBeatmaps: true })
+                if (!scores) return
+
                 if (scores.length) {
                     const recent = scores[number-1];
+                    if (recent.rank === "F") return 
+
                     const jar = await getCookieJar();
-                    const id = parseInt(recent.beatmapId as string, 10)
-                    let beatmap = await BeatmapModel.findOne({ id: id })
 
-                    if (!beatmap) message.channel.send("Beatmap not found, adding to db")
-                    const res = await updateBeatmap(id, jar)
+                    let player = await PlayerModel.findOne({ id: userId })
+                    if (!player) {
+                        player = await new PlayerModel({ id: userId, name: recent.user.username, firstCount: 0 }).save()
+                    } 
 
-                    beatmap = await BeatmapModel.findOne({ id: id })
-                    if (!beatmap) {
-                        message.channel.send("Error adding beatmap to db")
-                        return
+                    const discordScore: DiscordScore = {
+                        player,
+                        score: recent
                     }
+
+                    const res = await updateBeatmap(recent.beatmap.id, jar, undefined, discordScore)
 
                     if (typeof res === "object") {
                         const sniper = await PlayerModel.findOne({ id: res.sniper })
                         const victim = await PlayerModel.findOne({ id: res.victim })
                         const victimUser = await UserModel.findOne({ osuId: res.victim.toString(10) })
                         if (sniper && victim) {
-                            let newMessage = `${sniper.name} has sniped ${victim.name} on ${beatmap.song}`
+                            let newMessage = `${sniper.name} has sniped ${victim.name} on ${recent.beatmap.beatmapset.title}`
                             if (victimUser && victimUser.ping && (victim.id != sniper.id)) {
                                 newMessage += ` <@${victimUser.discordId}>`
                             }
@@ -76,7 +93,7 @@ export default class Link extends Command {
                     } else if (typeof res === "number") {
                         const sniper = await PlayerModel.findOne({ id: res })
                         if (sniper) {
-                            message.channel.send(`${sniper.name} got the first score on ${beatmap.song}`)
+                            message.channel.send(`${sniper.name} got the first score on ${recent.beatmap.beatmapset.title}`)
                         }
                     }
 
@@ -116,9 +133,9 @@ export default class Link extends Command {
                             })
                         }
 
-                        const string = beatmap.artist + " - " + beatmap.song + " [" + beatmap.difficulty + "] mapped by " + beatmap.mapper + "\n"
-                            + recent.rank + " " + recent.score + " " + mods + " " + recent.maxCombo + "x " + recent.counts['300'] + "/" + recent.counts['100'] + "/" + recent.counts['50'] + "/" + recent.counts.miss + "\n";
-                        message.channel.send(string)
+                        // const string = beatmap.artist + " - " + beatmap.song + " [" + beatmap.difficulty + "] mapped by " + beatmap.mapper + "\n"
+                        //     + recent.rank + " " + recent.score + " " + mods + " " + recent.maxCombo + "x " + recent.counts['300'] + "/" + recent.counts['100'] + "/" + recent.counts['50'] + "/" + recent.counts.miss + "\n";
+                        //message.channel.send(string)
                     }
                 }
             } catch (err: unknown) {

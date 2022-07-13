@@ -4,18 +4,16 @@ import dotenv from 'dotenv'
 import osu from 'node-osu'
 import mongoose from 'mongoose'
 import { BeatmapModel } from "../models/Beatmap.model";
+import { Client as OsuClient } from '@nzbasic/osu-proxy-wrapper'
+
 //dotenv.config();
 
 dotenv.config()
 
-export let osuApi: osu.Api;
+export let osuApi: OsuClient
 
 (async () => {
-    osuApi = new osu.Api(process.env.OSU_KEY??"", {
-        notFoundAsError: true,
-        completeScores: false, 
-        parseNumeric: true
-    });
+    osuApi = new OsuClient(process.env.PROXY_URL??"", "discord-snipe.nz")
     console.log("api initialized")
 
     console.log("mongoose loading")

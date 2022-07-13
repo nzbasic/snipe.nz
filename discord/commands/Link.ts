@@ -22,19 +22,20 @@ export default class Link extends Command {
 
     async execute(message: Message, client: Client) {
         try {
-            const osuUser = await osuApi.getUser({ u: this.name, type: "string" })
+            const user = await osuApi.getUser(this.name)
+            if (!user) return message.channel.send("Could not find user via API")
+
             const found = await UserModel.findOne({ discordId: message.author.id })
             if (found) {
-                found.osuId = osuUser.id.toString(10)
+                found.osuId = user.id.toString(10)
                 found.save()
             } else {
-                const user = new UserModel({
+                await new UserModel({
                     discordId: message.author.id,
-                    osuId: osuUser.id
-                })
-                await user.save()
+                    osuId: user.id
+                }).save()
             }
-            message.channel.send(`You are now linked to ${osuUser.name}`)
+            message.channel.send(`You are now linked to ${user.username}`)
         } catch (err: unknown) {
             message.channel.send((err as Error).message)
         }

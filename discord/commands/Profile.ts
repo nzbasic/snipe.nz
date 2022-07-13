@@ -32,7 +32,7 @@ export default class Leaderboard extends Command {
         }
 
         if (!id) {
-            message.channel.send("Could not find snipe profile")
+            message.channel.send("You need to do !snipe-link <username>")
             return
         }
 
@@ -47,7 +47,7 @@ export default class Leaderboard extends Command {
 
         const embed = new MessageEmbed()
         embed.setTitle(`${playerData.name}'s Snipe Profile`)
-        embed.setDescription(`[osu!](https://osu.ppy.sh/users/${id}) [snipe.nz](https://snipe.nz/player/${id})`)
+        embed.setDescription(`[osu!](https://osu.ppy.sh/users/${id}) | [snipe.nz](https://snipe.nz/player/${id})`)
         embed.setColor("#192227")
         embed.setThumbnail("https://a.ppy.sh/" + id)
         embed.addField("Total #1s", playerData.firstCount.toString());
@@ -68,8 +68,12 @@ export default class Leaderboard extends Command {
             activity += `${snipe.sniper} sniped ${snipe.victim} - ${snipe.beatmap} - <t:${~~(snipe.time / 1000)}:R>\n`
         }
 
+        if (activity === '') activity = 'No recent activity'
+        if (sniping === '') sniping = `${playerData.name} has not sniped anyone`
+        if (victiming === '') victiming = `${playerData.name} has not been sniped by anyone`
+
         embed.addField("Has sniped", sniping)
-        embed.addField("Gets sniped by", victiming)
+        embed.addField("Sniped by", victiming)
         embed.addField("Recent Activity", activity)
 
         message.channel.send({ embeds: [embed] })

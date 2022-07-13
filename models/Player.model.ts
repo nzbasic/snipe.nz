@@ -9,9 +9,9 @@ export interface Player {
 
 // 2. Create a Schema corresponding to the document interface.
 const schema = new Schema<Player>({
-    name: String,
-    id: Number,
-    firstCount: Number
+  name: String,
+  id: Number,
+  firstCount: Number
 });
 
 // 3. Create a Model.

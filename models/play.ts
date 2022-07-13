@@ -1,3 +1,7 @@
+import { Player } from './Player.model';
+import { Score } from 'node-osu'
+import { GetUserScoresFullBeatmapResponse } from '@nzbasic/osu-proxy-wrapper'
+
 export interface Play {
     id: number,
     beatmapId: number,
@@ -11,4 +15,9 @@ export interface Play {
     date: string,
     score: number,
     player: string
+}
+
+export interface DiscordScore {
+    player: Player,
+    score: GetUserScoresFullBeatmapResponse
 }

@@ -1,202 +1,262 @@
+import { DiscordScore } from './../models/play';
 import { SnipeModel } from './../models/Snipe.model';
-import { Beatmap, BeatmapModel, CHBeatmap } from './../models/Beatmap.model';
+import { BeatmapModel } from './../models/Beatmap.model';
+import { Beatmap, RootObject } from './../models/set'
 import { ApiScore, ScoreModel } from './../models/Score.model';
-import got from 'got'
+import got, { HTTPError } from 'got'
 import { CookieJar } from 'tough-cookie';
 import { PlayerModel } from '../models/Player.model';
 import { BannedModel } from '../models/Banned.model';
 import jsdom from 'jsdom';
+import { UnrankedScoreModel } from '../models/Unranked.model'
+import { UnrankedSnipeModel } from '../models/UnrankedSnipe.model'
 const { JSDOM } = jsdom
 
 export const getNumberScores = async (id: number) => {
     return ScoreModel.countDocuments({ playerId: id });
 }
 
-const addBeatmap = async (id: number, beatmapData: any, beatmapSetData: any, playerId?: number) => {
-    await new BeatmapModel({
-        artist: beatmapData.artist,
-        song: beatmapData.title,
+const addBeatmap = async (beatmapData: Beatmap, beatmapSetData: RootObject, playerId?: number) => {
+    const newBeatmap = new BeatmapModel({
+        artist: beatmapSetData.artist,
+        song: beatmapSetData.title,
         difficulty: beatmapData.version,
         sr: beatmapData.difficulty_rating,
         setId: beatmapSetData.id,
-        id: id,
+        id: beatmapData.id,
         ar: beatmapData.ar,
-        od: beatmapData.od,
+        od: beatmapData.accuracy,
         bpm: beatmapData.bpm,
         cs: beatmapData.cs,
-        hp: beatmapData.hp,
+        hp: beatmapData.drain,
         rankedDate: beatmapData.last_updated,
         drain: beatmapData.total_length,
-        mapper: beatmapData.creator,
+        mapper: beatmapSetData.creator,
         playerId: playerId??null,
         hash: beatmapData.checksum,
-        hasSpinner: beatmapData.count_spinners > 0
-    }).save()
-    console.log("added " + id)
+        hasSpinner: beatmapData.count_spinners > 0,
+        unranked: isUnranked(beatmapSetData),
+        maxCombo: beatmapData.max_combo
+    })
+
+    await newBeatmap.save();
+    return newBeatmap;
 }
 
-export const updateBeatmap = async (id: number, jar: CookieJar, prev?: number) => {
-    await new Promise(resolve => setTimeout(resolve, 3000))
-    const url = "https://osu.ppy.sh/beatmaps/" + id + "/scores?type=country&mode=osu"
-    let response = await got(url, {cookieJar: jar, timeout: 5000})
-    const scores: ApiScore[] = JSON.parse(response.body).scores
+const getBeatmap = async (setData: RootObject, beatmapData: Beatmap) => {
+    const oldBeatmap = await BeatmapModel.findOne({ id: beatmapData.id })
+    if (oldBeatmap) {
+        oldBeatmap.artist = setData.artist;
+        oldBeatmap.song = setData.title;
+        oldBeatmap.difficulty = beatmapData.version;
+        oldBeatmap.sr = beatmapData.difficulty_rating;
+        oldBeatmap.setId = setData.id;
+        oldBeatmap.id = beatmapData.id;
+        oldBeatmap.ar = beatmapData.ar;
+        oldBeatmap.od = beatmapData.accuracy;
+        oldBeatmap.bpm = setData.bpm;
+        oldBeatmap.cs = beatmapData.cs;
+        oldBeatmap.hp = beatmapData.drain;
+        oldBeatmap.mapper = setData.creator;
+        oldBeatmap.hasSpinner = beatmapData.count_spinners > 0
+        oldBeatmap.hash = beatmapData.checksum
+        oldBeatmap.unranked = isUnranked(setData)
+        oldBeatmap.maxCombo = beatmapData.max_combo
+        await oldBeatmap.save()
+        return oldBeatmap
+    } else {
+        return await addBeatmap(beatmapData, setData)
+    }
+}
 
-    let beatmapSetData: any
-    let beatmapData: any
-    const oldBeatmap = await BeatmapModel.findOne({ id: id })
-    if (!oldBeatmap) {
-
-        await new Promise(resolve => setTimeout(resolve, 3000))
-
-        const beatmapDataUrl = "https://osu.ppy.sh/beatmaps/" + id
-        response = await got(beatmapDataUrl)
-        const dom = new JSDOM(response.body)
-
-        try {
-            const data = dom.window.document.getElementById("json-beatmapset")
-            if (data) {
-                beatmapSetData = JSON.parse(data.innerHTML)
-                beatmapData = beatmapSetData.beatmaps.find((x: any) => x.id == id)
-            }
-        } catch(err) {
-            return
-        }
+const getPlayer = async (id: number, name: string) => {
+    let player = await PlayerModel.findOne({ id })
+    if (!player) {
+        player = await new PlayerModel({ id, name }).save()
+    } else {
+        player.name = name
+        await player.save()
     }
 
-    if (scores.length > 0) {
-        const firstPlace = scores[0]
-        const foundScore = await ScoreModel.findOne({ id: firstPlace.id })
-        let player = await PlayerModel.findOne({ id: firstPlace.user_id})
+    return player
+}
 
-        if (!player) {
-            player = await new PlayerModel({ id: firstPlace.user_id, name: firstPlace.user.username }).save()
-        } else {
-            player.name = firstPlace.user.username
-            await player.save()
-        }
+const sleep = async (ms: number) => await new Promise(res => setTimeout(res, ms))
 
-        // if there is no found score with the maps first place id, that means there has been a snipe OR there is a new score on a map with no plays
-        if (!foundScore) {
-            // does another score exist on this map? 
-            const existing = await ScoreModel.findOne({ beatmapId: id })
+const getBeatmapData = async (id: number): Promise<RootObject | undefined> => {
+    const beatmapDataUrl = "https://osu.ppy.sh/beatmaps/" + id
+    const response = await got(beatmapDataUrl)
+    const dom = new JSDOM(response.body)
+    const data = dom.window.document.getElementById("json-beatmapset")
+    if (data) {
+        return JSON.parse(data.innerHTML)
+    }
 
-            if (existing) {
-                const snipedPlayer = await PlayerModel.findOne({ id: existing.playerId })
-                if (existing.playerId == firstPlace.user_id) {
-                    // sniped themselves, still need to update the score 
-                    console.log(existing.playerId + " sniped themselves")
-                } else {
-                    console.log("new snipe on " + id + " by " + firstPlace.user.username + " victim " + existing.playerId)
+    return undefined;
+}
 
-                    if (existing.score > firstPlace.score) {
-                        // case when current first place is banned.
-                        console.log("snipe is worse than current score on " + id + " dont bother")
+const getScores = async (id: number, jar: CookieJar): Promise<ApiScore[] | undefined> => {
+    const url = "https://osu.ppy.sh/beatmaps/" + id + "/scores?type=country&mode=osu"
+    const response = await got(url, {cookieJar: jar, timeout: 5000}).catch(err => console.log((err as HTTPError).response.body))
+    if (!response) return undefined
+    const scores: ApiScore[] = JSON.parse(response.body??"[]").scores
+    return scores
+}
 
-                        // add a new banned score to check when unbanned
-                        await new BannedModel({
-                            playerId: existing.playerId,
-                            beatmapId: id,
-                            score: existing.score
-                        }).save()
-                    } else {
-                        const bannedScore = await BannedModel.findOne({ beatmapId: id })
-                        if (bannedScore && bannedScore.playerId == firstPlace.user_id) {
-                            await bannedScore.delete()
-                        } else {
-                            await new SnipeModel({
-                                beatmap: id,
-                                sniper: firstPlace.user_id,
-                                victim: existing.playerId,
-                                time: new Date(firstPlace.created_at).getTime()
-                            }).save()
-                        }
-                    }
+const isUnranked = (setData: RootObject) => setData.status === "graveyard" || setData.status === "wip" || setData.status === "pending"
 
-                    // update beatmap
-                    if (oldBeatmap) {
-                        oldBeatmap.playerId = firstPlace.user_id
-                        await oldBeatmap.save()
-                    }
-                }
+export const updateBeatmap = async (id: number, jar: CookieJar, prev?: number, score?: DiscordScore) => {
+    await sleep(2000)
 
-                await new ScoreModel({ 
-                    id: firstPlace.id,
-                    playerId: firstPlace.user_id,
-                    beatmapId: id,
-                    score: firstPlace.score,
-                    acc: firstPlace.accuracy,
-                    mods: firstPlace.mods,
-                    date: firstPlace.created_at,
-                    pp: firstPlace.pp,
-                    missCount: firstPlace.statistics.count_miss,
-                    maxCombo: firstPlace.max_combo
-                }).save()
+    const setData = await getBeatmapData(id)
+    if (!setData) return
 
-                // remove the old score
-                await existing.delete();
+    const beatmapData = setData.beatmaps.find(x => x.id === id)
+    if (!beatmapData) return
+    
+    await sleep(2000) 
 
-                player.firstCount = await getNumberScores(player.id)
-                await player.save()
-                if (snipedPlayer) {
-                    snipedPlayer.firstCount = await getNumberScores(snipedPlayer.id)
-                    await snipedPlayer.save()
-                }
+    const beatmapModel = await getBeatmap(setData, beatmapData)
 
-                if (existing.playerId != firstPlace.user_id) {
-                    return { victim: existing.playerId, sniper: firstPlace.user_id };
-                } else {
-                    return { victim: existing.playerId, sniper: existing.playerId }
-                }
-            } else { // there was no other score on the map, make sure to update the maps first place holder
-                console.log("first score on " + id + " by " + firstPlace.user.username)
-                await new ScoreModel({ 
-                    id: firstPlace.id,
-                    playerId: firstPlace.user_id,
-                    beatmapId: id,
-                    score: firstPlace.score,
-                    acc: firstPlace.accuracy,
-                    mods: firstPlace.mods,
-                    date: firstPlace.created_at,
-                    pp: firstPlace.pp,
-                    missCount: firstPlace.statistics.count_miss,
-                    maxCombo: firstPlace.max_combo
-                }).save()
-
-                if (oldBeatmap) {
-                    oldBeatmap.playerId = firstPlace.user_id
-                    await oldBeatmap.save()
-                } else {
-                    if (beatmapData) {
-                        await addBeatmap(id, beatmapData, beatmapSetData, firstPlace.user_id)
-                    } else {
-                        console.log('no map found for ' + id)
-                    }
-                }
-
-                player.firstCount = await getNumberScores(player.id)
-                await player.save()
-
-                return firstPlace.user_id;
-            }
+    if (isUnranked(setData)) {
+        if (!score) return
+        const existing = await UnrankedScoreModel.find({ beatmapId: id })
+        if (existing.some(x => {
+            if (score.player.id !== x.playerId) return false
+            const date1 = new Date(x.date).getTime()
+            const date2 = new Date(score.score.created_at).getTime()
+            
+            return date1 === date2
+        })) {
+            return
         } 
 
-        if (oldBeatmap) {
-            console.log("set " + firstPlace.user_id + " 1st on " + oldBeatmap.id)
-            oldBeatmap.playerId = firstPlace.user_id
-            player.firstCount = await getNumberScores(player.id)
-            await player.save()
-            await oldBeatmap.save()
+        const unrankedScore = new UnrankedScoreModel({
+            playerId: score.player.id,
+            beatmapId: score.score.beatmap.id,
+            score: score.score.score,
+            acc: score.score.accuracy,
+            mods: [...score.score.mods],
+            date: score.score.created_at,
+            missCount: score.score.statistics.count_miss,
+            maxCombo: score.score.max_combo,
+            rank: score.score.rank,
+            count50: score.score.statistics.count_50,
+            count100: score.score.statistics.count_100,
+            count300: score.score.statistics.count_300,
+        })
+
+        await unrankedScore.save()
+
+        if (existing.length === 0) {
+            beatmapModel.playerId = score.player.id
+            await beatmapModel.save()
+            return score.player.id;
         } else {
-            if (beatmapData) {
-                await addBeatmap(id, beatmapData, beatmapSetData, firstPlace.user_id)
-            } else {
-                console.log('no map found for ' + id)
+            const best = existing.sort((a, b) => b.score - a.score)[0]
+            if (best.score < unrankedScore.score) {
+                if (best.playerId !== score.player.id) {
+                    await new UnrankedSnipeModel({
+                        beatmap: id,
+                        sniper: score.player.id,
+                        victim: best.playerId,
+                        time: new Date(score.score.created_at).getTime()
+                    }).save()
+                }
+                
+                beatmapModel.playerId = score.player.id
+                await beatmapModel.save()
+                return { victim: best.playerId, sniper: score.player.id }
             }
+            return
         }
     } else {
-        if (!oldBeatmap && beatmapData) {
-            await addBeatmap(id, beatmapData, beatmapSetData)
+        const scores = await getScores(id, jar)
+        if (!scores || scores.length < 1) {
+            console.log("no scores found") 
+            return 
+        }
+        const first = scores[0];
+
+        const foundScore = await ScoreModel.findOne({ id: first.id })
+        if (foundScore) {
+            console.log("found matching score") 
+            return
+        }
+
+        const player = await getPlayer(first.user_id, first.user.username)
+        const existingScore = await ScoreModel.findOne({ beatmapId: id })
+
+        if (!existingScore) {
+            console.log("no existing score")
+            await new ScoreModel({ 
+                id: first.id,
+                playerId: first.user_id,
+                beatmapId: id,
+                score: first.total_score,
+                acc: first.accuracy,
+                mods: first.mods.map(mod => mod.acronym),
+                date: first.ended_at,
+                pp: first.pp,
+                missCount: first.statistics.miss??0,
+                maxCombo: first.max_combo
+            }).save()
+
+            beatmapModel.playerId = player.id
+            await beatmapModel.save()
+
+            player.firstCount = await getNumberScores(player.id)
+            await player.save()
+
+            return first.user_id;
+        }
+
+        if (existingScore.score < first.total_score) {
+            console.log("better score found")
+            const snipedPlayer = await PlayerModel.findOne({ id: existingScore.playerId })
+
+            if (existingScore.playerId !== player.id) {
+                console.log("better score found different player")
+
+                await new SnipeModel({
+                    beatmap: id,
+                    sniper: player.id,
+                    victim: existingScore.playerId,
+                    time: new Date(first.ended_at).getTime()
+                }).save()
+
+                beatmapModel.playerId = player.id    
+                await beatmapModel.save()
+            }
+
+            await new ScoreModel({ 
+                id: first.id,
+                playerId: first.user_id,
+                beatmapId: id,
+                score: first.total_score,
+                acc: first.accuracy,
+                mods: first.mods.map(mod => mod.acronym),
+                date: first.ended_at,
+                pp: first.pp,
+                missCount: first.statistics.miss??0,
+                maxCombo: first.max_combo
+            }).save()
+
+            await existingScore.delete()
+
+            player.firstCount = await getNumberScores(player.id)
+            await player.save()
+
+            if (snipedPlayer) {
+                snipedPlayer.firstCount = await getNumberScores(snipedPlayer.id)
+                await snipedPlayer.save()
+            }
+
+            if (existingScore.playerId != first.user_id) {
+                return { victim: existingScore.playerId, sniper: first.user_id };
+            } else {
+                return { victim: existingScore.playerId, sniper: existingScore.playerId }
+            }
         }
     }
 }
-

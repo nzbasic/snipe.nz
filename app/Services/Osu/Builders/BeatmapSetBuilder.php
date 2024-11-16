@@ -43,11 +43,8 @@ class BeatmapSetBuilder
 
     private function fetchSearch(array $params)
     {
-        $url = Str::of('beatmapsets/')
-            ->append('search')
-            ->append('?')
-            ->append(http_build_query($params));
+        $url = Str::of('beatmapsets/search');
 
-        return $this->client->get($url);
+        return $this->client->get($url, $params);
     }
 }

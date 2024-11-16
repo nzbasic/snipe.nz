@@ -109,4 +109,11 @@ return [
         'table' => 'failed_jobs',
     ],
 
+    'rateLimits' => [
+        'osu' => [ // queue name
+            'allows' => 2,
+            'every' => 1
+        ]
+    ]
+
 ];

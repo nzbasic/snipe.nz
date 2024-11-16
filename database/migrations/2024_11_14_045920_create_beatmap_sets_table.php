@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up()
     {
         Schema::create('beatmap_sets', function (Blueprint $table) {
-            $table->integer('id')->primary();
+            $table->bigInteger('id')->primary();
             $table->string('artist');
             $table->string('artist_unicode');
             $table->string('cover');
@@ -17,12 +17,12 @@ return new class extends Migration {
             $table->string('cover_slimcover');
             $table->string('creator');
             $table->integer('favourite_count');
-            $table->integer('play_count');
+            $table->bigInteger('play_count');
             $table->string('preview_url');
             $table->string('status');
             $table->string('title');
             $table->string('title_unicode');
-            $table->integer('user_id');
+            $table->bigInteger('user_id');
             $table->decimal('bpm');
             $table->dateTime('ranked_date');
             $table->dateTime('last_updated');

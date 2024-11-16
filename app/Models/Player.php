@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Player extends Model
 {
@@ -13,4 +14,9 @@ class Player extends Model
         'username',
         'avatar_url',
     ];
+
+    public function scores(): HasMany
+    {
+        return $this->hasMany(LazerScore::class, 'user_id', 'id');
+    }
 }

@@ -9,31 +9,54 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Spatie\RateLimitedMiddleware\RateLimited;
+use DateTime;
 
 class SearchJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public function __construct(private ?string $cursor = null)
+    protected $tries = 10;
+
+    public function __construct(private ?string $cursor = null) {}
+
+    public function retryUntil(): DateTime
     {
+        return now()->addMinutes(10);
+    }
+
+    public function middleware()
+    {
+        return [
+            (new RateLimited())
+                ->allow(1)
+                ->everySeconds(1)
+                ->releaseAfterSeconds(3)
+                ->key('osu-api')
+        ];
     }
 
     public function handle()
     {
-        $params = ['s' => 'ranked', 'm' => 0, 'limit' => 50];
+        $params = ['m' => 0, 'limit' => 50];
         if ($this->cursor) {
             $params['cursor_string'] = $this->cursor;
         }
 
         $res = osu()->beatmapset()->search($params)->get();
-
         $beatmapsets = $res['beatmapsets'];
         $cursor = $res['cursor_string'];
+
+        \DB::table('track_beatmap_search_progress')->insert([
+            'cursor' => $cursor,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         foreach ($beatmapsets as $beatmapset) {
             $found = BeatmapSet::query()->where('id', $beatmapset['id'])->first();
             if ($found) {
-                return;
+                continue;
             }
 
             BeatmapSet::create([
@@ -64,6 +87,11 @@ class SearchJob implements ShouldQueue
                     continue;
                 }
 
+                $found = Beatmap::query()->where('id', $beatmap['id'])->first();
+                if ($found) {
+                    continue;
+                }
+
                 Beatmap::create([
                     'id' => $beatmap['id'],
                     'beatmapset_id' => $beatmapset['id'],
@@ -89,22 +117,7 @@ class SearchJob implements ShouldQueue
                 ]);
             }
         }
-//
-//        if ($res['beatmapsets']) {
-//            $cursor = $res['cursor_string'];
-//            $beatmapsets = $res['beatmapsets'];
-//
-//            foreach ($beatmapsets as $beatmapset) {
-//                $beatmapset = osu()->beatmapset($beatmapset['id'])->get();
-//                $beatmaps = $beatmapset['beatmaps'];
-//
-//                foreach ($beatmaps as $beatmap) {
-//                    $beatmap = osu()->beatmap($beatmap['id'])->get();
-//                    $beatmap = osu()->beatmap($beatmap['id'])->store($beatmap);
-//                }
-//            }
-//
-//            SearchJob::dispatch($cursor);
-//        }
+
+        dispatch(new SearchJob($cursor));
     }
 }

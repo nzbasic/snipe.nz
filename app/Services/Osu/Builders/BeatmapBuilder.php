@@ -9,14 +9,14 @@ class BeatmapBuilder
 {
     private Osu $client;
     private array $result;
-    private int|null $id;
+    private int $id;
 
-    public function __construct(Osu $client, int|null $id = null)
+    public function __construct(Osu $client, int $id, bool $fetchBeatmap = true)
     {
         $this->client = $client;
         $this->id = $id;
 
-        if ($this->id) {
+        if ($fetchBeatmap) {
             $this->result['beatmap'] = $this->fetchBeatmap();
         }
     }
@@ -49,13 +49,9 @@ class BeatmapBuilder
     {
         $url = Str::of('beatmaps/')
             ->append($this->id)
-            ->append('/scores')
-            ->append('?')
-            ->append(http_build_query([
-                'type' => $type,
-            ]));
+            ->append('/solo-scores');
 
-        $res = $this->client->get($url);
+        $res = $this->client->get($url, ['type' => $type]);
         return $res['scores'];
     }
 }

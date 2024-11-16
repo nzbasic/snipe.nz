@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', \App\Http\Controllers\HomeController::class)->name('home');
-//Route::get('/authorize', \App\Http\Controllers\AuthorizeController::class)->name('authorize');
+
+Route::resource('players', \App\Http\Controllers\PlayersController::class)->only(['index', 'show']);
 
 Route::group(['prefix' => 'auth'], function() {
     Route::group(['prefix' => 'osu'], function() {

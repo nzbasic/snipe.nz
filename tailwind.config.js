@@ -1,11 +1,20 @@
+const preset = require('./vendor/filament/support/tailwind.config.preset');
 const defaultTheme = require('tailwindcss/defaultTheme')
+const colors = require('tailwindcss/colors')
 
 module.exports = {
+    darkMode: 'media',
+    presets: [
+        preset,
+    ],
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Inter var', ...defaultTheme.fontFamily.sans],
+                sans: ['Comfortaa', ...defaultTheme.fontFamily.sans],
             },
+            colors: {
+                gray: colors.gray,
+            }
         },
     },
     variants: {
@@ -23,9 +32,12 @@ module.exports = {
         './resources/**/*.php',
         './resources/**/*.vue',
         './resources/**/*.twig',
+        './app/Filament/**/*.php',
+        './resources/views/filament/**/*.blade.php',
+        './vendor/filament/**/*.blade.php',
     ],
     plugins: [
-        require('@tailwindcss/forms'),
+        // require('@tailwindcss/forms'),
         require('@tailwindcss/typography'),
     ],
 }

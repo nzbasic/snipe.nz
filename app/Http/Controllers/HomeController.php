@@ -2,19 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Leaderboard;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function __invoke()
     {
-//        dd(osu()->get('/beatmaps/4637583/scores?type=country'));
+        $top = Leaderboard::query()->limit(10)->get();
 
-//        $res = osu()->beatmap(1583228)->scores(type: 'country')->get();
-
-//        $res = osu()->get('beatmapsets/search', ['s' => 'ranked', 'sort' => ]);
-//        dd($res);
-
-        return view('welcome');
+        return view('pages.home', [
+            'top' => $top,
+        ]);
     }
 }

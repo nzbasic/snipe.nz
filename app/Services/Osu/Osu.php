@@ -47,9 +47,9 @@ class Osu implements ApiClient
         return $this->parentCall($method, $endpoint, $data);
     }
 
-    public function beatmap(int|null $id = null): BeatmapBuilder
+    public function beatmap(int|null $id = null, bool $fetchBeatmap = true): BeatmapBuilder
     {
-        return new BeatmapBuilder($this, $id);
+        return new BeatmapBuilder($this, $id, $fetchBeatmap);
     }
 
     public function beatmapset(int|null $id = null): BeatmapSetBuilder

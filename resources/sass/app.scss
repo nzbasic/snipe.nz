@@ -50,6 +50,27 @@
  * .skew-45 { ... }
  */
 
+@tailwind variants;
+
 [x-cloak] {
     display: none;
 }
+
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    text-indent: 1px;
+    text-overflow: '';
+}
+
+@font-face {
+    // Comfortaa
+    font-family: 'Comfortaa';
+    font-style: normal;
+    src: url('/public/fonts/Comfortaa-VariableFont_wght.ttf') format('truetype');
+}
+
+:root {
+    --font-family-sans: 'Comfortaa', sans-serif;
+}
+

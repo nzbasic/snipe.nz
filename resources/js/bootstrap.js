@@ -15,3 +15,10 @@
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     forceTLS: true
 // });
+
+import { Livewire, Alpine } from '../../vendor/livewire/livewire/dist/livewire.esm';
+import focus from '@alpinejs/focus'
+
+Alpine.plugin(focus)
+
+Livewire.start()

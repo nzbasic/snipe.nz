@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up()
     {
         Schema::create('players', function (Blueprint $table) {
-            $table->integer('id')->primary();
+            $table->bigInteger('id')->primary();
             $table->string('username');
             $table->string('avatar_url');
             $table->timestamps();

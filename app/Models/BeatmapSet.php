@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class BeatmapSet extends Model
 {
@@ -35,5 +36,10 @@ class BeatmapSet extends Model
             'ranked_date' => 'datetime',
             'last_updated' => 'datetime',
         ];
+    }
+
+    public function beatmaps(): HasMany
+    {
+        return $this->hasMany(Beatmap::class, 'beatmapset_id', 'id');
     }
 }

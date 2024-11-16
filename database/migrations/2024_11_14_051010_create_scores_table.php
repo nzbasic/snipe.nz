@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up()
     {
         Schema::create('scores', function (Blueprint $table) {
-            $table->integer('id')->primary();
+            $table->bigInteger('id')->primary();
             $table->decimal('accuracy');
             $table->integer('max_combo');
             $table->string('mode');
@@ -16,15 +16,15 @@ return new class extends Migration {
             $table->boolean('perfect');
             $table->decimal('pp');
             $table->string('rank');
-            $table->integer('score');
+            $table->bigInteger('score');
             $table->integer('count_50');
             $table->integer('count_100');
             $table->integer('count_300');
             $table->integer('count_miss');
-            $table->integer('user_id');
+            $table->bigInteger('user_id');
             $table->json('mods')->nullable();
-            $table->integer('beatmap_id');
-            $table->integer('beatmapset_id');
+            $table->bigInteger('beatmap_id');
+            $table->bigInteger('beatmapset_id');
             $table->timestamps();
         });
     }

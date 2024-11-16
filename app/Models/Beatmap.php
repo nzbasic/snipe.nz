@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Beatmap extends Model
 {
@@ -31,4 +33,14 @@ class Beatmap extends Model
         'checksum',
         'max_combo',
     ];
+
+    public function beatmapset(): HasOne
+    {
+        return $this->hasOne(BeatmapSet::class, 'id', 'beatmapset_id');
+    }
+
+    public function top(): HasOne
+    {
+        return $this->hasOne(LazerScore::class, 'beatmap_id', 'id');
+    }
 }

@@ -19,10 +19,10 @@
         <div class="flex flex-col gap-16 mx-auto w-full py-24 px-6 flex-grow">
             <div class="flex justify-center pb-8">
                 <a href="/" class="flex items-center gap-4">
-                    <img alt="logo" width="100" height="100" src="{{ asset(url('/icon.png')) }}" />
+                    <img alt="logo" class="w-20 md:w-24 aspect-square" src="{{ asset(url('/icon.png')) }}" />
 
                     <div class="flex flex-col gap-1">
-                        <h1 class="text-4xl font-bold">snipe.nz</h1>
+                        <h1 class="text-2xl md:text-4xl font-bold">snipe.nz</h1>
                         <p class="text-sm font-bold text-center">Country #1 Tracker</p>
                     </div>
                 </a>

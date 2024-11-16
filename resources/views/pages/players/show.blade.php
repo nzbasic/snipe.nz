@@ -27,7 +27,7 @@
                     <img alt="profile" class="rounded-md h-full aspect-square" src="{{ $player['avatar_url'] }}" />
                 </x-layout.card>
 
-                <x-layout.card class="!p-3.5 w-full h-44">
+                <x-layout.card class="!p-3.5 w-full sm:h-44">
                     <div class="text-sm sm:text-base grid grid-cols-[auto_1fr] gap-x-4 gap-y-0">
                         <span>Rank</span>
                         <span>#{{ $stats['rank'] }}</span>

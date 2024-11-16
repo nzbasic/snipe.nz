@@ -21,4 +21,4 @@
     };
 @endphp
 
-<span class="{{ $color }} text-xl md:text-2xl w-7 text-center font-bold">{{ $text }}</span>
+<span class="{{ $color }} text-xl md:text-2xl w-7 text-center font-bold shrink-0">{{ $text }}</span>

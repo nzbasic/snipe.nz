@@ -16,8 +16,8 @@
     </style>
 
     <div class="flex flex-col relative min-h-screen bg-gray-100 bg-center sm:flex sm:justify-center sm:items-center bg-dots dark:bg-gray-900 dark:text-white selection:bg-[#283349] selection:text-white">
-        <div class="flex flex-col gap-16 mx-auto w-full py-24 px-6 flex-grow">
-            <div class="flex justify-center pb-8">
+        <div class="flex flex-col gap-12 md:gap-16 mx-auto w-full pt-12 md:py-24 px-6 flex-grow">
+            <div class="flex md:justify-center md:pb-8">
                 <a href="/" class="flex items-center gap-4">
                     <img alt="logo" class="w-20 md:w-24 aspect-square" src="{{ asset(url('/icon.png')) }}" />
 
@@ -29,7 +29,7 @@
             </div>
 
             <div class="flex flex-col gap-8 flex-grow">
-                <div class="flex flex-col flex-grow gap-12">
+                <div class="flex flex-col flex-grow gap-8 md:gap-12">
                     @yield('content')
 
                     @isset($slot)

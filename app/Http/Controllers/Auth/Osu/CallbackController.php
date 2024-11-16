@@ -12,9 +12,7 @@ class CallbackController
         $code = request('code');
 
         try {
-            $token = osu()->getOAuthToken($code);
-
-            dd($token);
+            osu()->getOAuthToken($code);
         } catch (\Exception $e) {
             dump($e->getMessage());
         }

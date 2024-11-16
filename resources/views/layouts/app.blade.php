@@ -19,7 +19,7 @@
         <div class="flex flex-col gap-16 mx-auto w-full py-24 px-6 flex-grow">
             <div class="flex justify-center pb-8">
                 <a href="/" class="flex items-center gap-4">
-                    <img alt="logo" width="100" height="100" src="https://cdn.discordapp.com/attachments/810444323896033341/1306876456588021800/1.png?ex=6738430b&is=6736f18b&hm=566673a33e0b7865413b0b0651892b3e77c438eb277072d011ad6a56576dcde0&" />
+                    <img alt="logo" width="100" height="100" src="{{ asset(url('/icon.png')) }}" />
 
                     <div class="flex flex-col gap-1">
                         <h1 class="text-4xl font-bold">snipe.nz</h1>

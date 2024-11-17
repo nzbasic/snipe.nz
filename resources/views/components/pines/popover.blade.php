@@ -57,7 +57,7 @@
         :class="{
             'top-0 mt-10' : popoverPosition == 'bottom',
             'bottom-0 mb-10' : popoverPosition == 'top',
-            '-left-[160px] -translate-y-[calc(50%+0.5rem)]' : popoverPosition == 'left',
+            '!-left-[160px] -translate-y-[calc(50%+0.5rem)]' : popoverPosition == 'left',
         }"
         class="absolute w-[300px] max-w-lg -translate-x-1/2 left-1/2 z-10"
         x-cloak

@@ -113,7 +113,7 @@
 
                     <div class="flex items-center gap-1">
                         @if ($sort !== 'pp' && $sort !== 'score')
-                            <p class="bg-gray-800 text-xs p-1 rounded text-white">
+                            <p class="bg-gray-800 dark:bg-gray-700 text-xs px-2 p-1 rounded text-white">
                                 @switch($sort)
                                     @case('date')
                                         {{ \Carbon\Carbon::parse($score['ended_at'])->format('Y-m-d') }}

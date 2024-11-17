@@ -15,7 +15,7 @@ class PlayerScores extends Component
     public $id;
 
     #[Url]
-    #[Validate('in:pp,score,max_combo,beatmap_playcount,beatmap_stars,beatmap_length,beatmap_bpm,beatmap_max_combo')]
+    #[Validate('in:pp,score,max_combo,beatmap_playcount,beatmap_stars,beatmap_length,beatmap_bpm,beatmap_max_combo,date')]
     public $sort = 'pp';
 
     #[Url]
@@ -57,6 +57,10 @@ class PlayerScores extends Component
 
         if ($sort === 'accuracy') {
             $sort = 'lazer_scores.accuracy';
+        }
+
+        if ($sort === 'date') {
+            $sort = 'lazer_scores.ended_at';
         }
 
         $q = LazerScore::query()

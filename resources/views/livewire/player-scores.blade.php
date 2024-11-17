@@ -46,6 +46,7 @@
                             <option value="pp">PP</option>
                             <option value="score">Score</option>
                             <option value="max_combo">Combo</option>
+                            <option value="date">Date</option>
                             <option value="beatmap_playcount">Playcount</option>
                             <option value="beatmap_stars">Stars</option>
                             <option value="beatmap_length">Song Length</option>
@@ -90,26 +91,47 @@
                 </div>
 
                 <div class="flex flex-col items-end shrink-0">
-                    <p>
-                        @switch($scoring)
-                            @case('classic')
-                                {{ number_format($score['classic_total_score']) }}
-                                @break
-                            @case('lazer')
-                                {{ number_format($score['total_score']) }}
-                                @break
-                            @case('legacy')
-                                @if ($score['legacy_total_score'] === null || $score['legacy_total_score'] === 0)
-                                    N/A
-                                @else
-                                    {{ number_format($score['legacy_total_score']) }}
-                                @endif
-                                @break
-                        @endswitch
-                    </p>
+                    <div class="flex items-center gap-1 ">
+                        <p>
+                            @switch($scoring)
+                                @case('classic')
+                                    {{ number_format($score['classic_total_score']) }}
+                                    @break
+                                @case('lazer')
+                                    {{ number_format($score['total_score']) }}
+                                    @break
+                                @case('legacy')
+                                    @if ($score['legacy_total_score'] === null || $score['legacy_total_score'] === 0)
+                                        N/A
+                                    @else
+                                        {{ number_format($score['legacy_total_score']) }}
+                                    @endif
+                                    @break
+                            @endswitch
+                        </p>
+                    </div>
 
                     <div class="flex items-center gap-1">
-                        <p>{{ number_format($score['pp']) }}pp</p>
+                        @if ($sort !== 'pp' && $sort !== 'score')
+                            <p class="bg-gray-800 text-xs p-1 rounded text-white">
+                                @switch($sort)
+                                    @case('date')
+                                        {{ \Carbon\Carbon::parse($score['ended_at'])->format('Y-m-d') }}
+                                        @break
+                                    @case('pp')
+                                        {{ number_format($score['pp']) }}pp
+                                        @break
+                                    @case('beatmap_length')
+                                        {{ gmdate('i:s', $score['beatmap_length']) }}
+                                        @break
+                                    @default
+                                        {{ $score[$sort] }}
+                                        @break
+                                @endswitch
+                            </p>
+                        @else
+                            <p>{{ number_format($score['pp']) }}pp</p>
+                        @endif
                     </div>
                 </div>
             </x-layout.card>

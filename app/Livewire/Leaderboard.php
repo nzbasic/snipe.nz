@@ -49,6 +49,7 @@ class Leaderboard extends Component implements HasForms, HasTable
         return $table
             ->query(LeaderboardView::query())
             ->defaultSort('total_firsts', 'desc')
+            ->paginationPageOptions([10, 25, 50])
             ->recordUrl(
                 fn (LeaderboardView $record): string => route('players.show', ['player' => $record->user_id]),
             )

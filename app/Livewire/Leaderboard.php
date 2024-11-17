@@ -66,7 +66,7 @@ class Leaderboard extends Component implements HasForms, HasTable
                 TextColumn::make('weighted_total_pp')
                     ->label('Weighted PP')
                     ->alignRight()
-                    ->visibleFrom('lg')
+                    ->visibleFrom('sm')
                     ->sortable(),
                 TextColumn::make('avg_pp')
                     ->label('Average PP')

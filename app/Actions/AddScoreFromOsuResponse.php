@@ -6,6 +6,7 @@ use App\Models\Activity;
 use App\Models\Beatmap;
 use App\Models\BeatmapSet;
 use App\Models\LazerScore;
+use App\Models\Leaderboard;
 use App\Models\Player;
 
 class AddScoreFromOsuResponse
@@ -91,5 +92,7 @@ class AddScoreFromOsuResponse
                 'total_score' => $top['total_score'],
             ]);
         }
+
+        Leaderboard::refreshView();
     }
 }

@@ -42,6 +42,14 @@ trait Auth
             throw new Exception('Failed to get access token');
         }
 
+        $jwt = $json['access_token'];
+        list($header, $payload, $signature) = explode('.', $jwt);
+        $jsonToken = base64_decode($payload);
+        $arrayToken = json_decode($jsonToken, true);
+        if (($arrayToken['sub'] ?? false) === config('services.osu.user_id')) {
+            throw new Exception('Invalid user');
+        }
+
         $found = OsuApiCredentials::first();
         if ($found) {
             $found->update([

@@ -12,8 +12,12 @@
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5",
         "mallardduck/blade-lucide-icons": "^1.23",
+        "mongodb/laravel-mongodb": "^5.1",
         "mxl/laravel-queue-rate-limit": "^3.5",
-        "spatie/laravel-rate-limited-job-middleware": "^2.7"
+        "react/http": "^1.10.0",
+        "react/promise": "^2.3.0",
+        "spatie/laravel-rate-limited-job-middleware": "^2.7",
+        "team-reflex/discord-php": "^10.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

@@ -35,6 +35,9 @@ class LazerScore extends Model
         'ruleset_id',
         'total_score',
         'user_id',
+        'sniped_at',
+        'sniped_by_user_id',
+        'sniped_by_score_id',
     ];
 
     protected function casts()

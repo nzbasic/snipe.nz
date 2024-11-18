@@ -5,6 +5,7 @@ namespace App\Services\Osu;
 use App\Contracts\ApiClient;
 use App\Services\Osu\Builders\BeatmapBuilder;
 use App\Services\Osu\Builders\BeatmapSetBuilder;
+use App\Services\Osu\Builders\UserBuilder;
 use App\Services\Osu\Traits\Auth;
 use App\Traits\HasEndpoints;
 use Illuminate\Http\Client\PendingRequest;
@@ -55,5 +56,10 @@ class Osu implements ApiClient
     public function beatmapset(int|null $id = null): BeatmapSetBuilder
     {
         return new BeatmapSetBuilder($this, $id);
+    }
+
+    public function user(int $id): UserBuilder
+    {
+        return new UserBuilder($this, $id);
     }
 }

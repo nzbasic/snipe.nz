@@ -43,4 +43,12 @@ return [
         'client_secret' => env('OSU_CLIENT_SECRET'),
     ],
 
+    'discord' => [
+        'token' => env('DISCORD_TOKEN'),
+    ],
+
+    'mongodb' => [
+        'url' => env('MONGODB_URL'),
+    ]
+
 ];

@@ -18,8 +18,7 @@ class UpdateBeatmaps extends Command
     {
         $beatmaps = Beatmap::query()
             ->select('id')
-            ->whereNull('checked_at')
-            ->orderBy('playcount', 'desc')
+            ->orderBy('playcount', 'asc')
             ->get();
 
         // dispatch job for each beatmap

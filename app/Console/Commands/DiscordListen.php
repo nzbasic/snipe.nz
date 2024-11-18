@@ -93,6 +93,7 @@ class DiscordListen extends Command
 
         // Example command processing
         $command = explode(' ', substr($message->content, 1))[0];
+        $command = strtolower($command);
 
         // everything after the command
         $args = trim(substr($message->content, strlen($command) + 1));

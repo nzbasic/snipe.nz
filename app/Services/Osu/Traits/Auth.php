@@ -46,7 +46,7 @@ trait Auth
         list($header, $payload, $signature) = explode('.', $jwt);
         $jsonToken = base64_decode($payload);
         $arrayToken = json_decode($jsonToken, true);
-        if (($arrayToken['sub'] ?? false) === config('services.osu.user_id')) {
+        if (($arrayToken['sub'] ?? false) !== config('services.osu.user_id')) {
             throw new Exception('Invalid user');
         }
 

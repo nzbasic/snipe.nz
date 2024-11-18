@@ -29,7 +29,7 @@ class RecentScoreJob implements ShouldQueue
     public function handle(): void
     {
         if ($this->name) {
-            $player = Player::where('username', $this->name)->first();
+            $player = Player::where('username', 'ilike', '%' . $this->name . '%')->first();
             if (! $player) {
                 return;
             }
@@ -42,6 +42,10 @@ class RecentScoreJob implements ShouldQueue
             }
 
             $osuId = $found->osuId;
+        }
+
+        if (! $osuId) {
+            throw new Error("No id found for input name: " . $this->name, ', discordId: ' . $this->discordId);
         }
 
         $res = osu()->user($osuId)->scores()->get();

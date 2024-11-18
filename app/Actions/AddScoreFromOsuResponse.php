@@ -4,10 +4,11 @@ namespace App\Actions;
 
 use App\Models\Activity;
 use App\Models\Beatmap;
-use App\Models\BeatmapSet;
 use App\Models\LazerScore;
 use App\Models\Leaderboard;
 use App\Models\Player;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
 
 class AddScoreFromOsuResponse
 {
@@ -16,6 +17,9 @@ class AddScoreFromOsuResponse
         if (!$beatmap) {
             return;
         }
+
+        $beatmap->load('beatmapset');
+        $beatmapSet = $beatmap->beatmapset;
 
         $player = $top['user'];
 
@@ -94,5 +98,78 @@ class AddScoreFromOsuResponse
         }
 
         Leaderboard::refreshView();
+
+        if ($currentScore) {
+            $id = $beatmap->id;
+            $version = $beatmap->version;
+
+            $artist = $beatmap->artist;
+            $title = $beatmapSet->title;
+            $url = "https://osu.ppy.sh/beatmaps/$id";
+            $beatmapTitle = "$artist - $title [$version]";
+            $snipedUsername = $currentScore->player->username;
+
+            $rank = $top['rank'];
+            $score = number_format($top['classic_total_score']);
+
+            $mods = "";
+            if (count($top['mods']) !== 0) {
+                $mods .= "+";
+                foreach ($top['mods'] as $mod) {
+                    $mods .= $mod['acronym'];
+                }
+            }
+
+            $acc = number_format($top['accuracy'] * 100, 2);
+            $scoreLine1 = "$rank    $score    ";
+            if ($mods) {
+                $scoreLine1 .= "$mods    ";
+            }
+            $unix = Carbon::parse($top['ended_at'])->getTimestamp();
+            $timeString = "<t:$unix:R>";
+            $scoreLine1 .= "$acc%    $timeString";
+
+            $pp = number_format($top['pp']);
+            $combo = $top['max_combo'];
+            $maxCombo = $beatmap->max_combo;
+            $missCount = $top['statistics']['miss'] ?? 0;
+            $scoreLine2 = "{$pp}pp    $combo/$maxCombo    {$missCount}x";
+
+            $message = "**$scoreLine1**\n**$scoreLine2**";
+
+            $player = Leaderboard::query()->where('user_id', $top['user_id'])->first();
+            $rankFormatted = number_format($player->rank);
+            $firstsFormatted = number_format($player->total_firsts);
+            $ppFormatted = number_format($player->raw_total_pp);
+
+            $playerTitle = "$player->username #$rankFormatted ({$ppFormatted}pp — $firstsFormatted #1s)";
+            $playerUrl = "https://snipe.nz/players/$player->user_id";
+            $playerAvatar = $top['user']['avatar_url'];
+
+            Http::post(config('services.discord.webhook'), [
+                'avatar_url' => "https://snipe.nz/icon.png",
+                'username' => 'snipe.nz',
+                'embeds' => [
+                    [
+                        'author' => [
+                            'name' => $playerTitle,
+                            'url' => $playerUrl,
+                            'icon_url' => $playerAvatar,
+                        ],
+                        'title' => $beatmapTitle,
+                        'url' => $url,
+                        'description' => $message,
+                        'timestamp' => Carbon::parse($top['ended_at'])->toIso8601String(),
+                        'thumbnail' => [
+                            'url' => $beatmapSet->cover_list,
+                        ],
+                        'footer' => [
+                            'text' => "Victim: $snipedUsername",
+                            'icon_url' => $currentScore->player->avatar_url,
+                        ]
+                    ],
+                ],
+            ]);
+        }
     }
 }

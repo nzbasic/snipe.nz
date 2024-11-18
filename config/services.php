@@ -45,6 +45,7 @@ return [
 
     'discord' => [
         'token' => env('DISCORD_TOKEN'),
+        'webhook' => env('DISCORD_WEBHOOK'),
     ],
 
     'mongodb' => [

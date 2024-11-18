@@ -8,7 +8,7 @@ use App\Jobs\UpdateLazerBeatmapJob;
 use App\Models\Beatmap;
 use Illuminate\Console\Command;
 
-class UpdateBeatmapsCommand extends Command
+class UpdateBeatmaps extends Command
 {
     protected $signature = 'update:beatmaps';
 

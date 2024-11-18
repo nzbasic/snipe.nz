@@ -5,6 +5,7 @@ namespace App\Services\Osu;
 use App\Contracts\ApiClient;
 use App\Services\Osu\Builders\BeatmapBuilder;
 use App\Services\Osu\Builders\BeatmapSetBuilder;
+use App\Services\Osu\Builders\RankingBuilder;
 use App\Services\Osu\Builders\UserBuilder;
 use App\Services\Osu\Traits\Auth;
 use App\Traits\HasEndpoints;
@@ -61,5 +62,10 @@ class Osu implements ApiClient
     public function user(int $id): UserBuilder
     {
         return new UserBuilder($this, $id);
+    }
+
+    public function ranking(string $mode = 'osu'): RankingBuilder
+    {
+        return new RankingBuilder($this, $mode);
     }
 }

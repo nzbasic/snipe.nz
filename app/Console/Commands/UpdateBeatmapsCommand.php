@@ -24,7 +24,7 @@ class UpdateBeatmapsCommand extends Command
 
         // dispatch job for each beatmap
         $beatmaps->each(function ($beatmap) {
-            dispatch(new UpdateLazerBeatmapJob($beatmap->id))->onQueue('osu');
+            dispatch(new UpdateLazerBeatmapJob($beatmap->id))->onQueue('osu-background');
         });
     }
 }

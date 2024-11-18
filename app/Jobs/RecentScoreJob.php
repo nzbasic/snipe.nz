@@ -18,7 +18,7 @@ class RecentScoreJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public string $discordId, public ?string $name)
+    public function __construct(public string $discordId = '', public string $name = '')
     {
 
     }
@@ -35,7 +35,7 @@ class RecentScoreJob implements ShouldQueue
             }
 
             $osuId = $player->id;
-        } else {
+        } else if ($this->discordId) {
             $found = DiscordUserLink::query()->where('discordId', $this->discordId)->first();
             if (! $found) {
                 return;
@@ -45,13 +45,13 @@ class RecentScoreJob implements ShouldQueue
         }
 
         if (! $osuId) {
-            throw new Error("No id found for input name: " . $this->name, ', discordId: ' . $this->discordId);
+            return;
         }
 
         $res = osu()->user($osuId)->scores()->get();
 
         foreach ($res['scores'] as $score) {
-//             sometimes type is not an array?
+            // sometimes type is not an array?
             if (! ($score['id'] ?? false)) {
                 continue;
             }
@@ -62,17 +62,17 @@ class RecentScoreJob implements ShouldQueue
             }
 
             $beatmap = $score['beatmap'];
-            (new AddBeatmapFromOsuResponse)($beatmap);
-
-            $beatmapset = $score['beatmapset'];
-            (new AddBeatmapSetFromOsuResponse)($beatmapset);
+            // (new AddBeatmapFromOsuResponse)($beatmap);
+            //
+            // $beatmapset = $score['beatmapset'];
+            // (new AddBeatmapSetFromOsuResponse)($beatmapset);
 
             $existing = LazerScore::query()->where('beatmap_id', $beatmap['id'])->whereNull('sniped_at')->first();
             if ((! $existing) || ($existing->id !== $score['id'])) {
                 dispatch(new UpdateLazerBeatmapJob($beatmap['id']))->onQueue('osu');
             }
 
-            \Cache::put("recent_score_{$score['id']}", true);
+            \Cache::put("recent_score_{$score['id']}", true, now()->addDay());
         }
     }
 }

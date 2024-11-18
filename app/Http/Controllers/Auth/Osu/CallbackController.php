@@ -16,5 +16,7 @@ class CallbackController
         } catch (\Exception $e) {
             dump($e->getMessage());
         }
+
+        return redirect()->route('home');
     }
 }

@@ -113,7 +113,11 @@ return [
         'osu' => [ // queue name
             'allows' => 2,
             'every' => 1
-        ]
+        ],
+        'osu-background' => [
+            'allows' => 1,
+            'every' => 1
+        ],
     ]
 
 ];

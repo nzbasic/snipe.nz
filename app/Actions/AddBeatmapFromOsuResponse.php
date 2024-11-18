@@ -31,6 +31,11 @@ class AddBeatmapFromOsuResponse
             (new AddBeatmapSetFromOsuResponse)($beatmap['beatmapset']);
         }
 
+        // if no max_combo, skip, its not full response
+        if (! $beatmap['max_combo']) {
+            return;
+        }
+
         Beatmap::create([
             'id' => $beatmap['id'],
             'beatmapset_id' => $beatmap['id'],

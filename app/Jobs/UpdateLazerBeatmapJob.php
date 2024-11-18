@@ -29,7 +29,7 @@ class UpdateLazerBeatmapJob implements ShouldQueue
         $beatmap = Beatmap::find($this->id);
         if (!$beatmap) {
             $res = osu()->beatmap($this->id)->get();
-            (new AddBeatmapFromOsuResponse)($res);
+            (new AddBeatmapFromOsuResponse)($res['beatmap']);
         }
 
         $res = osu()->beatmap($this->id, false)->scores(type: 'country')->get();

@@ -4,6 +4,7 @@ namespace App\Actions;
 
 use App\Models\Activity;
 use App\Models\Beatmap;
+use App\Models\DiscordUserLink;
 use App\Models\LazerScore;
 use App\Models\Leaderboard;
 use App\Models\Player;
@@ -146,7 +147,7 @@ class AddScoreFromOsuResponse
             $playerUrl = "https://snipe.nz/players/$player->user_id";
             $playerAvatar = $top['user']['avatar_url'];
 
-            Http::post(config('services.discord.webhook'), [
+            $body = [
                 'avatar_url' => "https://snipe.nz/icon.png",
                 'username' => 'snipe.nz',
                 'embeds' => [
@@ -169,7 +170,14 @@ class AddScoreFromOsuResponse
                         ]
                     ],
                 ],
-            ]);
+            ];
+
+            $targetModel = DiscordUserLink::query()->where('osuId', $currentScore->player->id)->first();
+            if ($targetModel && $targetModel->ping) {
+                $body['content'] = "<@$targetModel->discordId>";
+            }
+
+            Http::post(config('services.discord.webhook'), $body);
         }
     }
 }

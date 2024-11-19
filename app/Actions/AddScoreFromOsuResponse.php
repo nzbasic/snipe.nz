@@ -104,7 +104,7 @@ class AddScoreFromOsuResponse
             $id = $beatmap->id;
             $version = $beatmap->version;
 
-            $artist = $beatmap->artist;
+            $artist = $beatmapSet->artist;
             $title = $beatmapSet->title;
             $url = "https://osu.ppy.sh/beatmaps/$id";
             $beatmapTitle = "$artist - $title [$version]";

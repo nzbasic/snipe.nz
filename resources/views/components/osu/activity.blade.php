@@ -11,7 +11,7 @@
             <x-layout.card class="p-3 text-xs md:text-sm">
                 <div class="min-w-0">
                     <div class="flex justify-between gap-2">
-                        <p class="truncate">
+                        <p class="truncate whitespace-nowrap">
                             <a href="/players/{{ $snipe['newUser']['id'] }}" class="font-bold hover:underline">{{ $snipe['newUser']['username'] }}</a>
                             <span class="font-thin">sniped</span>
                             <a href="/players/{{ $snipe['oldUser']['id'] }}" class="font-bold hover:underline">{{ $snipe['oldUser']['username'] }}</a>
@@ -21,8 +21,8 @@
                     </div>
 
                     <div class="flex justify-between gap-2">
-                        <a href="/beatmaps/{{ $snipe['beatmap']['id'] }}" class="font-bold hover:underline truncate">{{ $snipe['beatmap']['beatmapset']['artist'] }} - {{ $snipe['beatmap']['beatmapset']['title'] }}</a>
-                        <a href="/beatmaps/{{ $snipe['beatmap']['id'] }}" class="font-bold hover:underline">[{{ $snipe['beatmap']['version'] }}]</a>
+                        <a href="/beatmaps/{{ $snipe['beatmap']['id'] }}" class="font-bold hover:underline truncate whitespace-nowrap">{{ $snipe['beatmap']['beatmapset']['artist'] }} - {{ $snipe['beatmap']['beatmapset']['title'] }}</a>
+                        <a href="/beatmaps/{{ $snipe['beatmap']['id'] }}" class="font-bold hover:underline whitespace-nowrap">[{{ $snipe['beatmap']['version'] }}]</a>
                     </div>
                 </div>
             </x-layout.card>

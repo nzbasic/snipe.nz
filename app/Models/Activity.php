@@ -19,12 +19,12 @@ class Activity extends Model
 
     public function oldUser(): HasOne
     {
-        return $this->hasOne(User::class, 'id', 'old_user_id');
+        return $this->hasOne(Player::class, 'id', 'old_user_id');
     }
 
     public function newUser(): HasOne
     {
-        return $this->hasOne(User::class, 'id', 'new_user_id');
+        return $this->hasOne(Player::class, 'id', 'new_user_id');
     }
 
     public function oldScore(): HasOne

@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\LazerScore;
+use App\Models\Activity;
 use App\Models\Leaderboard;
 use App\Models\Player;
-use Illuminate\Http\Request;
 
 class PlayersController extends Controller
 {
@@ -18,14 +17,22 @@ class PlayersController extends Controller
         ]);
     }
 
-    public function show($id)
+    public function show(Player $player)
     {
-        $player = Player::query()->findOrFail($id);
-        $stats = Leaderboard::query()->find($id);
+        $stats = Leaderboard::query()->find($player->id);
+
+        $recent = Activity::query()
+            ->with(['oldUser', 'newUser', 'oldScore', 'newScore', 'beatmap', 'beatmap.beatmapset'])
+            ->where('new_user_id', $player->id)
+            ->orWhere('old_user_id', $player->id)
+            ->limit(6)
+            ->orderByDesc('created_at')
+            ->get();
 
         return view('pages.players.show', [
             'stats' => $stats,
             'player' => $player,
+            'recent' => $recent,
         ]);
     }
 }

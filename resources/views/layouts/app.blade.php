@@ -40,6 +40,8 @@
                                 Beatmaps
                             </x-form.button>
                         </div>
+
+                        <livewire:search-modal />
                     </div>
                 </div>
             </header>

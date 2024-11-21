@@ -18,8 +18,7 @@
         "react/http": "^1.10.0",
         "react/promise": "^2.3.0",
         "spatie/laravel-rate-limited-job-middleware": "^2.7",
-        "team-reflex/discord-php": "^10.0",
-        "wire-elements/modal": "^2.0"
+        "team-reflex/discord-php": "^10.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

@@ -1,21 +1,16 @@
-<div class="flex flex-col gap-4">
-    <div class="flex items-end justify-between">
-        <div class="flex items-end gap-2">
-            @livewire('search')
-        </div>
+<x-layout.block class="flex flex-col gap-4">
+    <x-slot:title>
+        Leaderboard
+    </x-slot:title>
 
+    <x-slot:actions>
         <div class="flex items-end gap-1">
-            <x-form.button as="a" href="/players" class="flex items-center gap-1 text-sm">
-                <span class="whitespace-nowrap">View all</span>
-                <x-lucide-arrow-right class="h-4 w-4 md:hidden"/>
-            </x-form.button>
-
             <div class="hidden md:flex justify-end w-full gap-1 text-sm">
                 <x-form.button :active="$sort === 'count'" wire:click="set('sort', 'count')">Total Count</x-form.button>
                 <x-form.button :active="$sort === 'pp'" wire:click="set('sort', 'pp')">Total PP</x-form.button>
             </div>
         </div>
-    </div>
+    </x-slot:actions>
 
     <div class="flex flex-col gap-2">
         @foreach($top as $index => $player)
@@ -62,4 +57,4 @@
             </a>
         @endforeach
     </div>
-</div>
+</x-layout.block>

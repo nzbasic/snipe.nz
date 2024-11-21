@@ -17,16 +17,38 @@
 
     <div class="flex flex-col relative min-h-screen bg-gray-100 bg-center sm:flex sm:justify-center sm:items-center bg-dots dark:bg-gray-900 dark:text-white selection:bg-[#283349] selection:text-white">
         <div class="flex flex-col gap-16 md:gap-16 mx-auto w-full pt-12 md:pt-24 px-6 flex-grow">
-            <div class="flex justify-center md:pb-8">
-                <a href="/" class="flex items-center gap-4">
-                    <img alt="logo" class="w-20 md:w-24 aspect-square" src="{{ asset(url('/icon.png')) }}" />
+            <header class="flex items-end gap-4 justify-between max-w-2xl mx-auto w-full">
+                <div class="flex justify-center">
+                    <a href="/" class="flex items-center gap-4">
+                        <img alt="logo" class="size-12" src="{{ asset(url('/icon.png')) }}" />
 
-                    <div class="flex flex-col gap-1">
-                        <h1 class="text-2xl md:text-4xl font-bold">snipe.nz</h1>
-                        <p class="text-sm font-bold text-center">Country #1 Tracker</p>
+                        <div class="hidden md:flex flex-col gap-0">
+                            <h1 class="text-xl font-bold">snipe.nz</h1>
+                            <p class="text-xs whitespace-nowrap font-medium">Country #1 Tracker</p>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="flex flex-col items-end gap-1">
+                    <div class="flex items-center gap-1">
+                        <div class="flex items-center gap-1 font-bold">
+                            <x-form.button as="a" href="/players">
+                                Players
+                            </x-form.button>
+
+                            <x-form.button as="a" href="/beatmaps">
+                                Beatmaps
+                            </x-form.button>
+                        </div>
+
+                        <x-form.button
+                            onclick="Livewire.dispatch('openModal', { component: 'search-modal' })"
+                        >
+                            <x-lucide-search class="size-5"/>
+                        </x-form.button>
                     </div>
-                </a>
-            </div>
+                </div>
+            </header>
 
             <div class="flex flex-col gap-16 flex-grow">
                 <div class="flex flex-col flex-grow gap-8 md:gap-12">

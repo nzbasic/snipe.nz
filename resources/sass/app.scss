@@ -74,6 +74,11 @@ select {
     --font-family-sans: 'Comfortaa', sans-serif;
 }
 
+* {
+    -webkit-font-smoothing: antialiased;
+    font-synthesis: none !important;
+}
+
 .fi-section {
     @apply border ring-0 border-gray-200 dark:border-gray-700 shadow-sm rounded-lg;
 }

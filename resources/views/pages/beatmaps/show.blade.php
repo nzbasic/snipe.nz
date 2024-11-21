@@ -6,18 +6,25 @@
             <x-slot:title class="min-w-0">
                 <a
                     href="https://osu.ppy.sh/beatmaps/{{ $beatmap['id'] }}"
-                    class="hover:underline flex flex-col max-w-2xl"
+                    class="block hover:underline w-[42rem] overflow-hidden"
                     target="_blank"
                     rel="noreferrer"
                 >
-                    <span class="truncate">{{ $set['title'] }}</span>
-                    <span class="truncate">[{{ $beatmap['version'] }}]</span>
+                    <div class="flex items-center gap-1">
+                        <p class="truncate">{{ $set['title'] }}</p>
+                        <p class="whitespace-nowrap">[{{ $beatmap['version'] }}]</p>
+                    </div>
                 </a>
             </x-slot:title>
 
-            <x-layout.card class="!p-3 shrink-0">
-                <img alt="profile" class="rounded-md" src="{{ $set->cover }}" />
-            </x-layout.card>
+            <img alt="profile" class="rounded-md border dark:border-gray-700 shadow-sm" src="{{ $set->cover }}" />
+
+            <div class="flex justify-start pt-2">
+                <x-form.button as="a" href="/sets/{{ $set['id'] }}">
+                    View set
+                    <x-lucide-arrow-right class="size-4" />
+                </x-form.button>
+            </div>
         </x-layout.block>
 
         <livewire:beatmap-scores :beatmap="$beatmap" />

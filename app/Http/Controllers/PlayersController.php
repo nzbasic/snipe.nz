@@ -25,14 +25,34 @@ class PlayersController extends Controller
             ->with(['oldUser', 'newUser', 'oldScore', 'newScore', 'beatmap', 'beatmap.beatmapset'])
             ->where('new_user_id', $player->id)
             ->orWhere('old_user_id', $player->id)
-            ->limit(6)
+            ->limit(5)
             ->orderByDesc('created_at')
+            ->get();
+
+        $targets = Activity::query()
+            ->where('new_user_id', $player->id)
+            ->join('players', 'players.id', '=', 'activity.old_user_id')
+            ->groupBy('old_user_id', 'players.username')
+            ->select('old_user_id as user_id', 'username', \DB::raw('COUNT(*) as beat_count'))
+            ->orderBy('beat_count', 'desc')
+            ->limit(5)
+            ->get();
+
+        $targeted_by = Activity::query()
+            ->where('old_user_id', $player->id)
+            ->join('players', 'players.id', '=', 'activity.new_user_id')
+            ->groupBy('new_user_id', 'players.username')
+            ->select('new_user_id as user_id', 'username', \DB::raw('COUNT(*) as beat_count'))
+            ->orderBy('beat_count', 'desc')
+            ->limit(5)
             ->get();
 
         return view('pages.players.show', [
             'stats' => $stats,
             'player' => $player,
             'recent' => $recent,
+            'targets' => $targets,
+            'targeted_by' => $targeted_by,
         ]);
     }
 }

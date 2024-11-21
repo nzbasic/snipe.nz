@@ -11,6 +11,11 @@ use App\Models\Player;
 
 class BeatmapController extends Controller
 {
+    public function index()
+    {
+        return view('pages.beatmaps.index');
+    }
+
     public function show(Beatmap $beatmap)
     {
         $set = BeatmapSet::query()

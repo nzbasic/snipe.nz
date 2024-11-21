@@ -54,6 +54,33 @@
             </div>
         </x-layout.block>
 
+        <div class="grid md:grid-cols-2 gap-6">
+            <x-layout.card title="Targets" class="p-3">
+                <div class="grid grid-cols-[1fr_auto]">
+                    @foreach($targets as $target)
+                        <a class="font-bold hover:underline truncate" href="/players/{{ $target['user_id'] }}">{{ $target['username'] }}</a>
+                        <span>{{ $target['beat_count'] }}</span>
+                    @endforeach
+
+                    @if($targets->isEmpty())
+                        <p class="text-gray-400">Has not sniped anyone</p>
+                    @endif
+                </div>
+            </x-layout.card>
+
+            <x-layout.card title="Sniped By" class="p-3">
+                <div class="grid grid-cols-[1fr_auto]">
+                    @foreach($targeted_by as $target)
+                        <a class="font-bold hover:underline truncate" href="/players/{{ $target['user_id'] }}">{{ $target['username'] }}</a>
+                        <span>{{ $target['beat_count'] }}</span>
+                    @endforeach
+
+                    @if($targeted_by->isEmpty())
+                        <p class="text-gray-400">Has not been sniped</p>
+                    @endif
+                </div>
+            </x-layout.card>
+        </div>
 
         <x-osu.activity :recent="$recent" />
 

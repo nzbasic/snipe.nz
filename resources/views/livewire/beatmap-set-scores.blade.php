@@ -1,6 +1,6 @@
 <x-layout.block>
     <x-slot:title>
-        #1 History
+        Difficulties
     </x-slot:title>
 
     <x-slot:actions>
@@ -30,6 +30,13 @@
                     <x-osu.rank :rank="$score['rank']" />
 
                     <div class="flex flex-col min-w-0">
+                        <a
+                            href="/beatmaps/{{ $score['beatmap']['id'] }}"
+                            class="truncate hover:underline font-bold"
+                        >
+                            {{ $score['beatmap']['version'] }}
+                        </a>
+
                         <div class="flex items-center gap-1 min-w-0">
                             <a
                                 href="/players/{{ $score['user_id'] }}"
@@ -39,10 +46,7 @@
                             </a>
 
                             <x-osu.mods :mods="$score['mods']" />
-                        </div>
 
-                        <div class="flex items-center gap-1">
-                            <p class="truncate">{{ $score['created_at'] }}</p>
                             <p>{{ $score['max_combo'] }}/{{ $score['beatmap']['max_combo'] }}</p>
                         </div>
                     </div>

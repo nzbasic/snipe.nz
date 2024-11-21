@@ -16,7 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', \App\Http\Controllers\HomeController::class)->name('home');
 
 Route::resource('players', \App\Http\Controllers\PlayersController::class)->only(['index', 'show']);
-Route::resource('beatmaps', \App\Http\Controllers\BeatmapController::class)->only(['show']);
+Route::resource('beatmaps', \App\Http\Controllers\BeatmapController::class)->only(['index', 'show']);
+Route::resource('sets', \App\Http\Controllers\BeatmapSetController::class)->only(['show']);
 
 Route::group(['prefix' => 'auth'], function() {
     Route::group(['prefix' => 'osu'], function() {

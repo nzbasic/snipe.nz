@@ -26,7 +26,13 @@
 
         <div class="flex flex-col px-3 py-2">
             @foreach($users as $user)
-                <a href="/players/{{ $user['user_id'] }}" class="hover:bg-gray-50 p-1 px-2 rounded border border-transparent hover:border-gray-100">{{ $user['username'] }}</a>
+                <a
+                    wire:key="{{ $user['user_id'] }}"
+                    href="/players/{{ $user['user_id'] }}"
+                    class="hover:bg-gray-50 p-1 px-2 rounded border border-transparent hover:border-gray-100"
+                >
+                    {{ $user['username'] }}
+                </a>
             @endforeach
 
             @if($users->isEmpty())
@@ -55,7 +61,13 @@
 
         <div class="flex flex-col px-3 py-2">
             @foreach($beatmaps as $beatmap)
-                <a href="/sets/{{ $beatmap['id'] }}" class="truncate hover:bg-gray-50 p-1 px-2 rounded border border-transparent hover:border-gray-100">{{ $beatmap['creator'] }} - {{ $beatmap['artist'] }} - {{ $beatmap['title'] }}</a>
+                <a
+                    wire:key="{{ $beatmap['id'] }}"
+                    href="/sets/{{ $beatmap['id'] }}"
+                    class="truncate hover:bg-gray-50 p-1 px-2 rounded border border-transparent hover:border-gray-100"
+                >
+                    {{ $beatmap['creator'] }} - {{ $beatmap['artist'] }} - {{ $beatmap['title'] }}
+                </a>
             @endforeach
 
             @if($beatmaps->isEmpty())

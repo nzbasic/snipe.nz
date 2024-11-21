@@ -8,7 +8,7 @@
 
     <div class="flex flex-col gap-2">
         @foreach ($recent as $snipe)
-            <x-layout.card class="p-3 text-xs md:text-sm">
+            <x-layout.card wire:key="{{ $snipe['id'] }}" class="p-3 text-xs md:text-sm">
                 <div class="min-w-0">
                     <div class="flex justify-between gap-2">
                         <p class="truncate whitespace-nowrap">

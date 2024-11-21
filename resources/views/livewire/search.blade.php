@@ -19,6 +19,7 @@
                 @if(count($players) > 0)
                     @foreach($players as $i => $player)
                         <a
+                            wire:key="{{ $player['user_id'] }}"
                             href="/players/{{ $player['user_id'] }}"
                             class="text-black flex items-center justify-between p-2 rounded-md border dark:border-0 bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:brightness-110 dark:hover:bg-gray-700 transition-colors dark:text-white"
                         >

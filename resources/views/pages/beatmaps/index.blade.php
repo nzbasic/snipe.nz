@@ -2,7 +2,7 @@
 
 @section('content')
     <x-layout.width.full class="md:text-base">
-        <div class="pr-4">
+        <div class="">
             <x-layout.block>
                 <x-slot:title>Beatmaps</x-slot:title>
 

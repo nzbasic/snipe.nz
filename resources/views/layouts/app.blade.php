@@ -40,6 +40,12 @@
                                 Beatmaps
                             </x-form.button>
                         </div>
+
+                        <x-form.button
+                            onclick="Livewire.dispatch('openModal', { component: 'search-modal' })"
+                        >
+                            <x-lucide-search class="size-5"/>
+                        </x-form.button>
                     </div>
                 </div>
             </header>

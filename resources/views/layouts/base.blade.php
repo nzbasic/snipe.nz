@@ -29,7 +29,5 @@
 
     <body>
         @yield('body')
-
-        @livewire('wire-elements-modal')
     </body>
 </html>

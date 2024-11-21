@@ -42,14 +42,14 @@
                                     Players
                                 </strong>
 
-                                <span wire:loading>
-                            <x-lucide-loader-circle class="size-4 animate-spin" />
-                        </span>
+                                <div wire:loading>
+                                    <x-lucide-loader-circle class="size-4 animate-spin"/>
+                                </div>
                             </div>
 
                             <x-form.button as="a" href="/players">
                                 <span class="text-sm">View all</span>
-                                <x-lucide-arrow-right class="w-4 h-4" />
+                                <x-lucide-arrow-right class="w-4 h-4"/>
                             </x-form.button>
                         </div>
 
@@ -77,14 +77,14 @@
                                     Beatmaps
                                 </strong>
 
-                                <span wire:loading>
-                            <x-lucide-loader-circle class="size-4 animate-spin" />
-                        </span>
+                                <div wire:loading>
+                                    <x-lucide-loader-circle class="size-4 animate-spin"/>
+                                </div>
                             </div>
 
                             <x-form.button as="a" href="/beatmaps">
                                 <span class="text-sm">View all</span>
-                                <x-lucide-arrow-right class="w-4 h-4" />
+                                <x-lucide-arrow-right class="w-4 h-4"/>
                             </x-form.button>
                         </div>
 

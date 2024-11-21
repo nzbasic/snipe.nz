@@ -2,6 +2,12 @@
 
 @section('content')
     <x-layout.width.default>
+        <livewire:mini-leaderboard :top="$top" />
+
+        <x-osu.activity :recent="$recent" />
+    </x-layout.width.default>
+@endsection
+
 {{--        <div class="grid md:grid-cols-2 gap-y-12 gap-6">--}}
 {{--            <x-layout.card title="Daily Beatmap">--}}
 {{--                <x-slot:actions>--}}
@@ -49,9 +55,3 @@
 {{--                </div>--}}
 {{--            </x-layout.card>--}}
 {{--        </div>--}}
-
-        <livewire:mini-leaderboard :top="$top" />
-
-        <x-osu.activity :recent="$recent" />
-    </x-layout.width.default>
-@endsection

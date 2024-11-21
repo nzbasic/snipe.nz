@@ -17,7 +17,7 @@
                             <a href="/players/{{ $snipe['oldUser']['id'] }}" class="font-bold hover:underline">{{ $snipe['oldUser']['username'] }}</a>
                         </p>
 
-                        <span class="">{{ \Carbon\Carbon::parse($snipe['created_at'])->format('d/m/y H:i') }}</span>
+                        <x-date :date="$snipe['created_at']" />
                     </div>
 
                     <div class="flex justify-between gap-2">

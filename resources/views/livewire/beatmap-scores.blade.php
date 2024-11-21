@@ -42,7 +42,7 @@
                         </div>
 
                         <div class="flex items-center gap-1">
-                            <p class="truncate">{{ $score['created_at'] }}</p>
+                            <p class="truncate"><x-date :date="$score['created_at']" /></p>
                             <p>{{ $score['max_combo'] }}/{{ $score['beatmap']['max_combo'] }}</p>
                         </div>
                     </div>

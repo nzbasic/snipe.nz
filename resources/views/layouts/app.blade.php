@@ -41,7 +41,7 @@
                             </x-form.button>
                         </div>
 
-                        @livewire('search-modal')
+                        <livewire:search-modal />
                     </div>
                 </div>
             </header>

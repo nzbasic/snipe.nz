@@ -41,11 +41,7 @@
                             </x-form.button>
                         </div>
 
-{{--                        <x-form.button--}}
-{{--                            onclick="Livewire.dispatch('openModal', { component: 'search-modal' })"--}}
-{{--                        >--}}
-{{--                            <x-lucide-search class="size-5"/>--}}
-{{--                        </x-form.button>--}}
+                        @livewire('search-modal')
                     </div>
                 </div>
             </header>

@@ -2,19 +2,11 @@
 
 namespace App\Livewire;
 
-use LivewireUI\Modal\ModalComponent;
+use Livewire\Component;
 
-class SearchModal extends ModalComponent
+class SearchModal extends Component
 {
     public $q = '';
-
-    /**
-     * Supported: 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl', '7xl'
-     */
-    public static function modalMaxWidth(): string
-    {
-        return 'lg';
-    }
 
     public function render()
     {

@@ -1,4 +1,5 @@
 <span
+    class="whitespace-nowrap"
     x-data="{
         formatDate(dateString) {
             return new Date(dateString).toLocaleString('default', {

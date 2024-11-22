@@ -11,6 +11,8 @@ class RefreshBeatmap extends Component
 {
     public $beatmap;
 
+    public $shouldReload = false;
+
     public function mount($id)
     {
         $beatmap = Beatmap::findOrFail($id);
@@ -27,6 +29,8 @@ class RefreshBeatmap extends Component
         dispatch_sync(new UpdateLazerBeatmapJob($this->beatmap->id));
 
         Cache::put('refresh_' . $this->beatmap->id, true, 60);
+
+        $this->shouldReload = true;
     }
 
     public function render()

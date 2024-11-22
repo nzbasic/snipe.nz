@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Beatmap;
 use App\Models\LazerScore;
 use Livewire\Attributes\Url;
 use Livewire\Attributes\Validate;
@@ -22,8 +23,10 @@ class BeatmapScores extends Component
     #[Validate('numeric|min:1|max:50')]
     public $pageSize = 10;
 
-    public function mount($beatmap)
+    public function mount($id)
     {
+        $beatmap = Beatmap::findOrFail($id);
+
         $this->beatmap = $beatmap;
     }
 

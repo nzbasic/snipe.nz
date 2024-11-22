@@ -39,5 +39,11 @@
         <x-layout.block>
             <x-osu.activity :recent="$challenge->activity" />
         </x-layout.block>
+
+        @if ($challenge->type === 'player')
+            <livewire:player-scores :id="$challenge->type_id" />
+        @else
+            <livewire:beatmap-scores :id="$challenge->type_id" />
+        @endif
     </x-layout.width.default>
 @endsection

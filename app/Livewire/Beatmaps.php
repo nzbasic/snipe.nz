@@ -143,7 +143,7 @@ class Beatmaps extends Component implements HasForms, HasTable
                     ->sortable(),
                 TextColumn::make('favourite_count')
                     ->toggleable(true, true)
-                    ->label('Length')
+                    ->label('Favourites')
                     ->alignRight()
                     ->sortable(),
                 TextColumn::make('ranked_date')

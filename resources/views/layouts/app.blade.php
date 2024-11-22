@@ -32,7 +32,7 @@
                 <div class="flex flex-col items-end gap-1">
                     <div class="flex items-center gap-1">
                         <div class="flex items-center gap-1 font-bold">
-                            <x-form.button as="a" href="/challenges">
+                            <x-form.button class="hidden md:block" as="a" href="/challenges">
                                 Challenges
                             </x-form.button>
 

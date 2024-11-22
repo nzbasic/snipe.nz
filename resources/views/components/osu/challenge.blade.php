@@ -4,14 +4,14 @@
         class="grid grid-cols-subgrid col-span-full"
     >
         <x-layout.card class="grid col-span-full grid-cols-subgrid text-sm" link>
-            <div class="p-3 rounded-r-none border-r-0 shadow-none">
-            <span>
-                @if ($type === 'beatmap')
-                    Map
-                @else
-                    Player
-                @endif
-            </span>
+            <div class="p-3 rounded-r-none border-r-0 shadow-none hidden md:block">
+                <span>
+                    @if ($type === 'beatmap')
+                        Map
+                    @else
+                        Player
+                    @endif
+                </span>
             </div>
 
             <div class="flex gap-1 p-3 border-x dark:border-gray-700 min-w-0">
@@ -30,12 +30,15 @@
 
             <div class="p-3 border-r dark:border-gray-700">
                 @if ($challenge->status === 'completed')
-                    <div class="flex items-center gap-1">
-                        Ended on
-                        <p>{{ $challenge->ends_at->format('d/m/Y') }}</p>
+                    <div class="flex items-center gap-1 whitespace-nowrap">
+                        <span class="hidden md:block">Ended on</span>
+                        <p>{{ $challenge->ends_at->format('d/m/y') }}</p>
                     </div>
                 @else
-                    Ends in {{ $challenge->ends_at->diffForHumans(now(), \Carbon\CarbonInterface::DIFF_ABSOLUTE) }}
+                    <div class="flex items-center gap-1 whitespace-nowrap">
+                        <span class="hidden md:block">Ends in</span>
+                        {{ $challenge->ends_at->diffForHumans(now(), \Carbon\CarbonInterface::DIFF_ABSOLUTE) }}
+                    </div>
                 @endif
             </div>
 

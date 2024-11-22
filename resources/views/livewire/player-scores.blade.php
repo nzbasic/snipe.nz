@@ -72,10 +72,8 @@
                     <div class="flex flex-col min-w-0">
                         <div class="flex items-center gap-1 min-w-0">
                             <a
-                                href="https://osu.ppy.sh/beatmaps/{{ $score['beatmap_id'] }}"
-                                class="truncate hover:underline"
-                                target="_blank"
-                                rel="noreferrer"
+                                href="/beatmaps/{{ $score['beatmap_id'] }}"
+                                class="truncate hover:underline font-bold"
                             >
                                 {{ $score['title'] }}
                             </a>

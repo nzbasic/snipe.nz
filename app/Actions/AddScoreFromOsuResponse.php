@@ -4,6 +4,7 @@ namespace App\Actions;
 
 use App\Models\Activity;
 use App\Models\Beatmap;
+use App\Models\Challenge;
 use App\Models\DiscordUserLink;
 use App\Models\LazerScore;
 use App\Models\Leaderboard;
@@ -65,6 +66,15 @@ class AddScoreFromOsuResponse
 
                 'beatmap_id' => $currentScore->beatmap_id,
             ]);
+
+            // Challenge check
+            $activeChallenges = Challenge::query()
+                ->status('active');
+
+            $activeChallenges->each(function ($challenge) use ($currentScore, $top) {
+                $challenge->check($currentScore, $top);
+            });
+
         }
 
         $foundScore = LazerScore::find($top['id']);

@@ -54,7 +54,7 @@
             </div>
         </x-layout.block>
 
-        <div class="grid md:grid-cols-2 gap-6">
+        <div class="grid md:grid-cols-2 gap-12 md:gap-6">
             <x-layout.card title="Targets" class="p-3">
                 <div class="grid grid-cols-[1fr_auto]">
                     @foreach($targets as $target)

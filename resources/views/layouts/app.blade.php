@@ -32,6 +32,10 @@
                 <div class="flex flex-col items-end gap-1">
                     <div class="flex items-center gap-1">
                         <div class="flex items-center gap-1 font-bold">
+                            <x-form.button as="a" href="/challenges">
+                                Challenges
+                            </x-form.button>
+
                             <x-form.button as="a" href="/players">
                                 Players
                             </x-form.button>

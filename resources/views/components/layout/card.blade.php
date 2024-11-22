@@ -1,7 +1,7 @@
 @php
     $merged = $attributes->class([
         'bg-white border border-gray-200 dark:border-gray-700 dark:bg-gray-800 rounded-lg shadow-sm',
-        'hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:brightness-110 transition-colors' => $attributes->get('link'),
+        'hover:bg-gray-50 hover:border-gray-300 dark:hover:bg-gray-800 dark:hover:brightness-110 transition-colors' => $attributes->get('link'),
     ]);
 @endphp
 

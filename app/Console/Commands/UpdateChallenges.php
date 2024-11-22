@@ -74,7 +74,7 @@ class UpdateChallenges extends Command
             ->whereNot('lazer_scores.rank', 'X')
             ->whereNot('lazer_scores.rank', 'XH')
             ->whereNotIn('beatmaps.id', $past)
-            ->where('total_length', '>', 120)
+            ->where('total_length', '>', 60)
             ->inRandomOrder()
             ->first();
     }

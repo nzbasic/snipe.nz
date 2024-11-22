@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Challenge extends Model
 {
-    protected $appends = ['status', 'leader', 'activity'];
+    protected $appends = ['status', 'leader', 'activity', 'leaderboard'];
 
     protected $fillable = [
         'starts_at',
@@ -19,6 +19,20 @@ class Challenge extends Model
         'starts_at' => 'datetime',
         'ends_at' => 'datetime',
     ];
+
+    public function getLeaderboardAttribute()
+    {
+        return $this->activity->groupBy('new_user_id')
+            ->map(function ($activity) {
+                $user = Player::find($activity->first()->new_user_id);
+
+                return [
+                    'user' => $user,
+                    'count' => $activity->count()
+                ];
+            })
+            ->sortDesc();
+    }
 
     public function getActivityAttribute()
     {
@@ -72,11 +86,18 @@ class Challenge extends Model
 
     public function getLeaderAttribute()
     {
-        // find the challenge leader
-        $activity = $this->activity
-            ->sortByDesc('created_at')
-            ->first();
+        if ($this->type === 'beatmap') {
+            $activity = $this->activity
+                ->sortByDesc('created_at')
+                ->first();
 
-        return $activity?->newUser;
+            return $activity?->newUser;
+        }
+
+        if ($this->type === 'player') {
+            $activity = $this->leaderboard->first();
+
+            return $activity['user'];
+        }
     }
 }

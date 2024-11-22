@@ -2,7 +2,7 @@
 
 @section('content')
     <x-layout.width.default>
-        <x-layout.block class="">
+        <x-layout.block>
             <x-slot:title class="min-w-0">
                 <a
                     href="https://osu.ppy.sh/beatmaps/{{ $beatmap['id'] }}"

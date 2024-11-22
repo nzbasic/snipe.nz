@@ -58,6 +58,8 @@ class AddScoreFromOsuResponse
             ]);
 
             Activity::create([
+                'created_at' => $top['ended_at'],
+
                 'old_user_id' => $currentScore->user_id,
                 'new_user_id' => $top['user_id'],
 

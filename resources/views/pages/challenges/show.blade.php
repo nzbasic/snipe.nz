@@ -38,15 +38,17 @@
 
         @if ($challenge->type === 'player' && count($challenge->leaderboard) > 0)
             <x-layout.block title="Leaderboard">
-                @foreach ($challenge->leaderboard as $player)
-                    <x-layout.card class="p-3 flex justify-between">
-                        <a class="font-bold hover:underline" href="/players/{{ $player['user']['id'] }}">
-                            {{ $player['user']['username'] }}
-                        </a>
+                <div class="flex flex-col gap-2">
+                    @foreach ($challenge->leaderboard as $player)
+                        <x-layout.card class="p-3 flex justify-between">
+                            <a class="font-bold hover:underline" href="/players/{{ $player['user']['id'] }}">
+                                {{ $player['user']['username'] }}
+                            </a>
 
-                        <p>{{ $player['count'] }}</p>
-                    </x-layout.card>
-                @endforeach
+                            <p>{{ $player['count'] }}</p>
+                        </x-layout.card>
+                    @endforeach
+                </div>
             </x-layout.block>
         @endif
 

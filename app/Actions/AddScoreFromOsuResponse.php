@@ -68,15 +68,6 @@ class AddScoreFromOsuResponse
 
                 'beatmap_id' => $currentScore->beatmap_id,
             ]);
-
-            // Challenge check
-            $activeChallenges = Challenge::query()
-                ->status('active');
-
-            $activeChallenges->each(function ($challenge) use ($currentScore, $top) {
-                $challenge->check($currentScore, $top);
-            });
-
         }
 
         $foundScore = LazerScore::find($top['id']);

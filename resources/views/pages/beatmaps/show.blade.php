@@ -32,6 +32,6 @@
             </div>
         </x-layout.block>
 
-        <livewire:beatmap-scores :beatmap="$beatmap" />
+        <livewire:beatmap-scores :id="$beatmap['id']" />
     </x-layout.width.default>
 @endsection

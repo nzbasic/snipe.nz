@@ -22,7 +22,7 @@ class Challenge extends Model
 
     public function getLeaderboardAttribute()
     {
-        return $this->activity->groupBy('new_user_id')
+        $leaderboard = $this->activity->groupBy('new_user_id')
             ->map(function ($activity) {
                 $user = Player::find($activity->first()->new_user_id);
 
@@ -30,8 +30,9 @@ class Challenge extends Model
                     'user' => $user,
                     'count' => $activity->count()
                 ];
-            })
-            ->sortDesc();
+            });
+
+        return collect($leaderboard)->sortByDesc('count');
     }
 
     public function getActivityAttribute()

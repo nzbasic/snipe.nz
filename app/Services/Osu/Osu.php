@@ -12,12 +12,6 @@ use App\Traits\HasEndpoints;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 
-/**
- * The InfoAgent API client
- *
- * Swagger UI: https://api.dev.infoagent.com.au/open-api/v1/ivds/specs/ui/
- * Open API spec in JSON format: https://api.dev.infoagent.com.au/open-api/v1/ivds/nz/specs/json
- */
 class Osu implements ApiClient
 {
     use HasEndpoints {

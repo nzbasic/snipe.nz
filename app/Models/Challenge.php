@@ -45,6 +45,7 @@ class Challenge extends Model
                 $query->where('old_user_id', $this->type_id);
             })
             ->whereBetween('created_at', [$this->starts_at, $this->ends_at])
+            ->orderByDesc('created_at')
             ->get();
     }
 

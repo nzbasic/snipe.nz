@@ -99,6 +99,10 @@ class Challenge extends Model
         if ($this->type === 'player') {
             $activity = $this->leaderboard->first();
 
+            if (! $activity) {
+                return null;
+            }
+
             return $activity['user'];
         }
     }

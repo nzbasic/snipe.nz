@@ -74,6 +74,7 @@ class PlayerScores extends Component
                 'beatmaps.bpm as beatmap_bpm',
                 'beatmaps.max_combo as beatmap_max_combo',
             ])
+            ->whereNull('sniped_at')
             ->where('lazer_scores.user_id', $this->id)
             ->whereNotNull('pp')
             ->join('beatmaps', 'beatmaps.id', '=', 'lazer_scores.beatmap_id')

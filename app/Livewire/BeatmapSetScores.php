@@ -37,6 +37,7 @@ class BeatmapSetScores extends Component
         $q = LazerScore::query()
             ->select('lazer_scores.*', 'beatmaps.difficulty_rating', 'players.username')
             ->whereIn('beatmap_id', $this->set->beatmaps->pluck('id'))
+            ->whereNull('sniped_at')
             ->join('players', 'lazer_scores.user_id', '=', 'players.id')
             ->join('beatmaps', 'lazer_scores.beatmap_id', '=', 'beatmaps.id')
             ->orderBy('beatmaps.difficulty_rating')

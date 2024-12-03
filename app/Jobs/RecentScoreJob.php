@@ -10,6 +10,7 @@ use App\Models\LazerScore;
 use App\Models\Player;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Str;
 
 class RecentScoreJob implements ShouldQueue
 {
@@ -31,7 +32,17 @@ class RecentScoreJob implements ShouldQueue
         if ($this->name) {
             $player = Player::where('username', 'ilike', '%' . $this->name . '%')->first();
             if (! $player) {
-                return;
+                // replace space with _
+                $this->name = str_replace(' ', '_', $this->name);
+                $this->name = '@' . $this->name;
+
+                // get player
+                $res = osu()->get(Str::of('/users/')->append($this->name)->toString());
+                $player = Player::create([
+                    'id' => $res['id'],
+                    'username' => $res['username'],
+                    'avatar_url' => $res['avatar_url'],
+                ]);
             }
 
             $osuId = $player->id;

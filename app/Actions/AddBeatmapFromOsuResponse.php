@@ -40,7 +40,7 @@ class AddBeatmapFromOsuResponse
 
         Beatmap::create([
             'id' => $beatmap['id'],
-            'beatmapset_id' => $beatmap['id'],
+            'beatmapset_id' => $beatmap['beatmapset_id'],
             'difficulty_rating' => $beatmap['difficulty_rating'],
             'mode' => $beatmap['mode'],
             'total_length' => $beatmap['total_length'],

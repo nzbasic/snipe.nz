@@ -22,7 +22,9 @@ class AddBeatmapFromOsuResponse
             return;
         }
 
-        if (! in_array($beatmap['status'], ["ranked", "approved", "loved"])) {
+        $beatmapset = $beatmap['beatmapset'] ?? null;
+
+        if ($beatmapset && ! in_array($beatmapset['status'], ["ranked", "approved", "loved"])) {
             return;
         }
 

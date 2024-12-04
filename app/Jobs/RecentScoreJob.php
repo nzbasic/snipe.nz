@@ -2,9 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Actions\AddBeatmapFromOsuResponse;
-use App\Actions\AddBeatmapSetFromOsuResponse;
-use App\Actions\AddScoreFromOsuResponse;
 use App\Models\DiscordUserLink;
 use App\Models\LazerScore;
 use App\Models\Player;

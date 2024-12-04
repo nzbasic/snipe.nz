@@ -22,15 +22,17 @@ class AddBeatmapFromOsuResponse
             return;
         }
 
-        $beatmapset = $beatmap['beatmapset'] ?? null;
-
-        if ($beatmapset && ! in_array($beatmapset['status'], ["ranked", "approved", "loved"])) {
+        if ($beatmap['beatmapset'] && ! in_array($beatmap['beatmapset']['status'], ["ranked", "approved", "loved"])) {
             return;
         }
 
-        $beatmapset = BeatmapSet::query()->where('id', $beatmap['beatmapset_id'])->first();
-        if (!$beatmapset && ($beatmap['beatmapset'] ?? false)) {
-            (new AddBeatmapSetFromOsuResponse)($beatmap['beatmapset']);
+        $set = BeatmapSet::query()->where('id', $beatmap['beatmapset_id'])->first();
+        if (! $set) {
+            if ($beatmap['beatmapset']) {
+                (new AddBeatmapSetFromOsuResponse)($beatmap['beatmapset'], noBeatmaps: true);
+            } else {
+                return;
+            }
         }
 
         // if no max_combo, skip, its not full response
@@ -40,7 +42,7 @@ class AddBeatmapFromOsuResponse
 
         Beatmap::create([
             'id' => $beatmap['id'],
-            'beatmapset_id' => $beatmap['beatmapset_id'],
+            'beatmapset_id' => $set?->id ?? $beatmap['beatmapset']['id'] ?? $beatmap['beatmapset_id'],
             'difficulty_rating' => $beatmap['difficulty_rating'],
             'mode' => $beatmap['mode'],
             'total_length' => $beatmap['total_length'],

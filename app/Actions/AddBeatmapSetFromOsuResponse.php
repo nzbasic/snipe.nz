@@ -6,7 +6,7 @@ use App\Models\BeatmapSet;
 
 class AddBeatmapSetFromOsuResponse
 {
-    public function __invoke(array $beatmapset) {
+    public function __invoke(array $beatmapset, bool $noBeatmaps = false): void{
         $found = BeatmapSet::query()->where('id', $beatmapset['id'])->first();
         if ($found) {
             $found->update([
@@ -42,6 +42,10 @@ class AddBeatmapSetFromOsuResponse
             'ranked_date' => $beatmapset['ranked_date'],
             'last_updated' => $beatmapset['last_updated'],
         ]);
+
+        if ($noBeatmaps) {
+            return;
+        }
 
         $beatmaps = $beatmapset['beatmaps'] ?? [];
         foreach ($beatmaps as $beatmap) {

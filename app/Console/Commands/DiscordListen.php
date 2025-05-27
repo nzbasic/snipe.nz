@@ -109,7 +109,7 @@ class DiscordListen extends Command
                 dispatch(new RecentScoreJob($user, $args))->onQueue('osu');
                 break;
             case 'target':
-                (new TargetEmbed())->send();
+                (new TargetEmbed())->reply($message);
                 break;
         }
     }

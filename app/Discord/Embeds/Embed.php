@@ -2,7 +2,9 @@
 
 namespace App\Discord\Embeds;
 
+use Discord\Builders\MessageBuilder;
 use Illuminate\Support\Facades\Http;
+use Discord\Parts\Channel\Message;
 
 abstract class Embed
 {
@@ -15,5 +17,20 @@ abstract class Embed
             'content' => $this->content,
             'embeds' => $this->embeds,
         ]);
+    }
+
+    public function reply(Message $message)
+    {
+        $replyMessage = MessageBuilder::new();
+
+        if ($this->content) {
+            $replyMessage->setContent($this->content);
+        }
+
+        if ($this->embeds) {
+            $replyMessage->setEmbeds($this->embeds);
+        }
+
+        $message->reply($replyMessage);
     }
 }

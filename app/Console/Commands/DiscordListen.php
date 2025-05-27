@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Discord\Embeds\TargetEmbed;
 use App\Jobs\RecentScoreJob;
 use Discord\Discord;
 use Discord\WebSockets\Event;
@@ -106,6 +107,9 @@ class DiscordListen extends Command
             case 'rs':
             case 'recentscore':
                 dispatch(new RecentScoreJob($user, $args))->onQueue('osu');
+                break;
+            case 'target':
+                (new TargetEmbed())->send();
                 break;
         }
     }

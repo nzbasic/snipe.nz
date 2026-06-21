@@ -24,7 +24,7 @@
     $filterIndicators = $getFilterIndicators();
     $hasColumnGroups = $hasColumnGroups();
     $hasColumnsLayout = $hasColumnsLayout();
-    $hasSummary = $hasSummary();
+    $hasSummary = $hasSummary($this->getAllTableSummaryQuery());
     $header = $getHeader();
     $headerActions = array_filter(
         $getHeaderActions(),
@@ -113,13 +113,12 @@
     @if (! $isLoaded)
         wire:init="loadTable"
     @endif
-    x-ignore
     @if (FilamentView::hasSpaMode())
-        ax-load="visible"
+        x-load="visible"
     @else
-        ax-load
+        x-load
     @endif
-    ax-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('table', 'filament/tables') }}"
+    x-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('table', 'filament/tables') }}"
     x-data="table"
     @class([
         'fi-ta',
@@ -641,7 +640,7 @@
                                         @if ($recordHasActions)
                                             <x-filament-tables::actions
                                                 :actions="$actions"
-                                                :alignment="(! $contentGrid) ? 'start md:end' : Alignment::Start"
+                                                :alignment="(! $contentGrid) ? 'start md:end' : $actionsAlignment ?? Alignment::Start"
                                                 :record="$record"
                                                 wrap="-sm"
                                                 :class="$recordActionsClasses"
@@ -706,7 +705,8 @@
                 @endif
             {{-- snipe.nz override: render the table (and its column-search header) even when
                  there are zero results, so the per-column search bars stay usable. The empty
-                 message is rendered inside the body below (search "snipe.nz override"). --}}
+                 message is rendered inside the body below (search "snipe.nz override").
+                 NOTE: re-apply these two edits whenever Filament is upgraded. --}}
             @elseif ($records !== null)
                 <x-filament-tables::table
                     :reorderable="$isReorderable"
@@ -860,11 +860,10 @@
                                         ->class([
                                             'fi-table-header-cell-' . str($column->getName())->camel()->kebab(),
                                             'w-full' => blank($columnWidth) && $column->canGrow(default: false),
-                                            '[&:not(:first-of-type)]:border-s [&:not(:last-of-type)]:border-e border-gray-200 dark:border-white/5' => $column->getGroup(),
                                             $getHiddenClasses($column),
                                         ])
                                         ->style([
-                                            ('width: ' . $columnWidth) => filled($columnWidth),
+                                            ('width: ' . e($columnWidth)) => filled($columnWidth),
                                         ])
                                 "
                             >
@@ -948,10 +947,10 @@
                                 <x-filament-tables::cell
                                     @class([
                                         'fi-table-individual-search-cell-' . str($column->getName())->camel()->kebab(),
-                                        'px-3 py-2',
+                                        'min-w-48 px-3 py-2' => $isIndividuallySearchable = $column->isIndividuallySearchable(),
                                     ])
                                 >
-                                    @if ($column->isIndividuallySearchable())
+                                    @if ($isIndividuallySearchable)
                                         <x-filament-tables::search-field
                                             :debounce="$searchDebounce"
                                             :on-blur="$isSearchOnBlur"
@@ -1262,7 +1261,9 @@
                     @endif
                 </x-filament-tables::table>
             @elseif ($records === null)
-                <div class="h-32"></div>
+                <div class="flex h-32 items-center justify-center">
+                    <x-filament::loading-indicator class="h-8 w-8" />
+                </div>
             @elseif ($emptyState = $getEmptyState())
                 {{ $emptyState }}
             @else

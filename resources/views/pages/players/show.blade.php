@@ -30,7 +30,7 @@
                     <x-layout.card class="!p-3.5 w-full sm:h-44">
                         <div class="text-sm sm:text-base grid grid-cols-[auto_1fr] gap-x-4 gap-y-0">
                             <span>Rank</span>
-                            <span>#{{ $stats['rank'] }}</span>
+                            <span>{{ $stats['rank'] ? '#' . $stats['rank'] : 'Unranked' }}</span>
 
                             <span>Total count</span>
                             <span>{{ number_format($stats['total_firsts']) }}</span>

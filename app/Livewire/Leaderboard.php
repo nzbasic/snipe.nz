@@ -4,9 +4,12 @@ namespace App\Livewire;
 
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Support\Enums\MaxWidth;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Filters\QueryBuilder;
+use Filament\Tables\Filters\QueryBuilder\Constraints\NumberConstraint;
 use Filament\Tables\Table;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -78,7 +81,19 @@ class Leaderboard extends Component implements HasForms, HasTable
                     ->alignRight()
                     ->visibleFrom('lg')
                     ->sortable(),
-            ]);
+            ])
+            ->filters([
+                QueryBuilder::make()
+                    ->constraints([
+                        NumberConstraint::make('total_firsts')->label('Count'),
+                        NumberConstraint::make('raw_total_pp')->label('Total PP'),
+                        NumberConstraint::make('weighted_total_pp')->label('Weighted PP'),
+                        NumberConstraint::make('avg_pp')->label('Average PP'),
+                        NumberConstraint::make('avg_playcount')->label('Average Playcount'),
+                    ]),
+            ])
+            ->filtersFormColumns(2)
+            ->filtersFormWidth(MaxWidth::TwoExtraLarge);
     }
 
     public function render()

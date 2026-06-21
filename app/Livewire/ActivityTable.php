@@ -5,9 +5,12 @@ namespace App\Livewire;
 use App\Models\Activity;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Support\Enums\MaxWidth;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Filters\QueryBuilder;
+use Filament\Tables\Filters\QueryBuilder\Constraints\NumberConstraint;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Url;
@@ -94,7 +97,20 @@ class ActivityTable extends Component implements HasForms, HasTable
                     ->alignRight()
                     ->numeric(0)
                     ->sortable(),
-            ]);
+            ])
+            // Advanced filters (like the Beatmaps page). Column names are
+            // unambiguous across the joins, so they resolve without aliasing.
+            ->filters([
+                QueryBuilder::make()
+                    ->constraints([
+                        NumberConstraint::make('difficulty_rating')->label('Stars'),
+                        NumberConstraint::make('pp')->label('PP'),
+                        NumberConstraint::make('total_length')->label('Length (s)'),
+                        NumberConstraint::make('playcount')->label('Beatmap playcount'),
+                    ]),
+            ])
+            ->filtersFormColumns(2)
+            ->filtersFormWidth(MaxWidth::TwoExtraLarge);
     }
 
     public function render()

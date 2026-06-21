@@ -1,9 +1,9 @@
 <x-layout.block title="Activity">
     <x-slot:actions>
-{{--        <x-form.button as="a" href="/players" class="flex items-center gap-1 text-sm">--}}
-{{--            <span class="whitespace-nowrap">View all</span>--}}
-{{--            <x-lucide-arrow-right class="h-4 w-4"/>--}}
-{{--        </x-form.button>--}}
+        <x-form.button as="a" href="/activity" class="flex items-center gap-1 text-sm">
+            <span class="whitespace-nowrap">View all</span>
+            <x-lucide-arrow-right class="h-4 w-4"/>
+        </x-form.button>
     </x-slot:actions>
 
     <div class="flex flex-col gap-2">

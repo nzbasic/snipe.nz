@@ -43,6 +43,10 @@
                             <x-form.button as="a" href="/beatmaps">
                                 Beatmaps
                             </x-form.button>
+
+                            <x-form.button class="hidden md:block" as="a" href="/activity">
+                                Activity
+                            </x-form.button>
                         </div>
 
                         <livewire:search-modal />

@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', \App\Http\Controllers\HomeController::class)->name('home');
 
+Route::view('/activity', 'pages.activity.index')->name('activity');
+
 Route::resource('players', \App\Http\Controllers\PlayersController::class)->only(['index', 'show']);
 Route::resource('beatmaps', \App\Http\Controllers\BeatmapController::class)->only(['index', 'show']);
 Route::resource('challenges', \App\Http\Controllers\ChallengeController::class)->only(['index', 'show']);

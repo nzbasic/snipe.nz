@@ -11,7 +11,7 @@
         "laravel-frontend-presets/tall": "^8.0",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
-        "livewire/livewire": "^3.5",
+        "livewire/livewire": "~3.6.4",
         "mallardduck/blade-lucide-icons": "^1.23",
         "mongodb/laravel-mongodb": "^5.1",
         "mxl/laravel-queue-rate-limit": "^3.5",

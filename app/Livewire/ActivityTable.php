@@ -63,6 +63,10 @@ class ActivityTable extends Component implements HasForms, HasTable
                 fn (Activity $record): string => route('beatmaps.show', ['beatmap' => $record->beatmap_id]),
             )
             ->columns([
+                TextColumn::make('created_at')
+                    ->label('Date')
+                    ->dateTime('M j, Y')
+                    ->sortable(query: fn (Builder $query, string $direction): Builder => $query->orderBy('activity.created_at', $direction)),
                 TextColumn::make('sniper_name')
                     ->label('Sniper')
                     ->searchable(isIndividual: true, isGlobal: false, query: function (Builder $query, string $search): Builder {

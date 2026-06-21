@@ -50,6 +50,11 @@ class ActivityTable extends Component implements HasForms, HasTable
                         'beatmaps.difficulty_rating as stars',
                         'lazer_scores.pp as pp',
                     ])
+                    // When sorting by a numeric column, drop rows with no value
+                    // (null/0) so they don't pile up at the top on a DESC sort
+                    // (Postgres orders NULLs first). `> 0` excludes NULL too.
+                    ->when($this->tableSortColumn === 'pp', fn ($q) => $q->where('lazer_scores.pp', '>', 0))
+                    ->when($this->tableSortColumn === 'stars', fn ($q) => $q->where('beatmaps.difficulty_rating', '>', 0))
             )
             ->defaultSort('activity.created_at', 'desc')
             ->paginationPageOptions([10, 25, 50])

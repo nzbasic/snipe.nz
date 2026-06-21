@@ -60,7 +60,8 @@ class Beatmaps extends Component implements HasForms, HasTable
                     ->join('players', 'lazer_scores.user_id', '=', 'players.id')
                     ->whereNull('lazer_scores.sniped_at')
                     ->when($this->tableSortColumn === 'pp', function ($query) {
-                        $query->whereNotNull('lazer_scores.pp');
+                        // Drop null/0 pp so empty values don't sort to the top.
+                        $query->where('lazer_scores.pp', '>', 0);
                     })
             )
             ->defaultSort('pp', 'desc')

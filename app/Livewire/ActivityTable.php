@@ -3,11 +3,15 @@
 namespace App\Livewire;
 
 use App\Models\Activity;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Support\Enums\MaxWidth;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\Indicator;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Url;
@@ -69,16 +73,10 @@ class ActivityTable extends Component implements HasForms, HasTable
                     ->sortable(query: fn (Builder $query, string $direction): Builder => $query->orderBy('activity.created_at', $direction)),
                 TextColumn::make('sniper_name')
                     ->label('Sniper')
-                    ->searchable(isIndividual: true, isGlobal: false, query: function (Builder $query, string $search): Builder {
-                        return $query->where('snipers.username', 'ilike', "%{$search}%");
-                    })
                     ->sortable(query: fn (Builder $query, string $direction): Builder => $query->orderBy('snipers.username', $direction))
                     ->limit(20),
                 TextColumn::make('victim_name')
                     ->label('Victim')
-                    ->searchable(isIndividual: true, isGlobal: false, query: function (Builder $query, string $search): Builder {
-                        return $query->where('victims.username', 'ilike', "%{$search}%");
-                    })
                     ->sortable(query: fn (Builder $query, string $direction): Builder => $query->orderBy('victims.username', $direction))
                     ->limit(20),
                 TextColumn::make('beatmap')
@@ -95,7 +93,46 @@ class ActivityTable extends Component implements HasForms, HasTable
                     ->alignRight()
                     ->numeric(0)
                     ->sortable(),
-            ]);
+            ])
+            // Search lives in the filters toolbar (not per-column) so it stays
+            // reachable when a strict filter returns zero rows — Filament hides
+            // the table header (and any column-search inputs) on an empty result.
+            // Deferred so typing across both fields only runs on Apply, giving a
+            // single shared "debounce" instead of one search per keystroke/field.
+            ->filters([
+                Filter::make('players')
+                    ->form([
+                        TextInput::make('sniper')->label('Sniper'),
+                        TextInput::make('victim')->label('Victim'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                filled($data['sniper'] ?? null),
+                                fn (Builder $q): Builder => $q->where('snipers.username', 'ilike', '%' . $data['sniper'] . '%'),
+                            )
+                            ->when(
+                                filled($data['victim'] ?? null),
+                                fn (Builder $q): Builder => $q->where('victims.username', 'ilike', '%' . $data['victim'] . '%'),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+
+                        if (filled($data['sniper'] ?? null)) {
+                            $indicators[] = Indicator::make('Sniper: ' . $data['sniper'])->removeField('sniper');
+                        }
+
+                        if (filled($data['victim'] ?? null)) {
+                            $indicators[] = Indicator::make('Victim: ' . $data['victim'])->removeField('victim');
+                        }
+
+                        return $indicators;
+                    }),
+            ])
+            ->deferFilters()
+            ->filtersFormColumns(2)
+            ->filtersFormWidth(MaxWidth::Large);
     }
 
     public function render()

@@ -98,15 +98,17 @@ class ActivityTable extends Component implements HasForms, HasTable
                     ->numeric(0)
                     ->sortable(),
             ])
-            // Advanced filters (like the Beatmaps page). Column names are
-            // unambiguous across the joins, so they resolve without aliasing.
+            // Advanced filters (like the Beatmaps page). These columns live on
+            // joined tables, so they must filter via the relationship (Filament
+            // otherwise qualifies the column with the base table -> activity.pp,
+            // which doesn't exist). Filament applies these as whereHas subqueries.
             ->filters([
                 QueryBuilder::make()
                     ->constraints([
-                        NumberConstraint::make('difficulty_rating')->label('Stars'),
-                        NumberConstraint::make('pp')->label('PP'),
-                        NumberConstraint::make('total_length')->label('Length (s)'),
-                        NumberConstraint::make('playcount')->label('Beatmap playcount'),
+                        NumberConstraint::make('pp')->label('PP')->relationship('newScore', 'pp'),
+                        NumberConstraint::make('stars')->label('Stars')->relationship('beatmap', 'difficulty_rating'),
+                        NumberConstraint::make('length')->label('Length (s)')->relationship('beatmap', 'total_length'),
+                        NumberConstraint::make('playcount')->label('Beatmap playcount')->relationship('beatmap', 'playcount'),
                     ]),
             ])
             ->filtersFormColumns(2)

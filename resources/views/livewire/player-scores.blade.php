@@ -31,7 +31,20 @@
                         <x-lucide-sliders-horizontal class="h-4 w-4" />
                     </x-slot:icon>
 
-                    <div>WIP</div>
+                    <div class="flex flex-col gap-2">
+                        <x-form.select id="mod" wire:model.change="mod" label="Mod">
+                            <option value="any">Any</option>
+                            <option value="NM">No Mod</option>
+                            <option value="HD">HD</option>
+                            <option value="HR">HR</option>
+                            <option value="DT">DT</option>
+                            <option value="FL">FL</option>
+                            <option value="EZ">EZ</option>
+                            <option value="HT">HT</option>
+                        </x-form.select>
+                        <x-form.input id="minStars" wire:model.live.debounce.300ms="minStars" name="minStars" type="number" label="Min Stars" />
+                        <x-form.input id="minPp" wire:model.live.debounce.300ms="minPp" name="minPp" type="number" label="Min PP" />
+                    </div>
                 </x-pines.popover>
 
                 <x-pines.popover>
@@ -76,6 +89,16 @@
                                 class="truncate hover:underline font-bold"
                             >
                                 {{ $score['title'] }}
+                            </a>
+
+                            <a
+                                href="https://osu.ppy.sh/beatmaps/{{ $score['beatmap_id'] }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title="View on osu!"
+                                class="shrink-0 text-gray-500 hover:text-blue-500"
+                            >
+                                <x-lucide-external-link class="h-3.5 w-3.5" />
                             </a>
 
                             <x-osu.mods :mods="$score['mods']" />

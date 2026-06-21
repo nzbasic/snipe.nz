@@ -30,9 +30,30 @@ class PlayerScores extends Component
     #[Validate('numeric|min:1|max:50')]
     public $pageSize = 10;
 
+    #[Url]
+    #[Validate('in:any,NM,HD,HR,DT,FL,EZ,HT')]
+    public $mod = 'any';
+
+    #[Url]
+    #[Validate('nullable|numeric|min:0')]
+    public $minStars = null;
+
+    #[Url]
+    #[Validate('nullable|numeric|min:0')]
+    public $minPp = null;
+
     public function mount($id)
     {
         $this->id = $id;
+    }
+
+    public function updated($property)
+    {
+        // Reset to the first page when a filter/sort/setting changes (but NOT
+        // on pagination itself), otherwise the user can land on an empty page.
+        if (in_array($property, ['mod', 'minStars', 'minPp', 'sort', 'direction', 'scoring', 'pageSize'], true)) {
+            $this->resetPage();
+        }
     }
 
     public function save()
@@ -79,6 +100,18 @@ class PlayerScores extends Component
             ->whereNotNull('pp')
             ->join('beatmaps', 'beatmaps.id', '=', 'lazer_scores.beatmap_id')
             ->join('beatmap_sets', 'beatmap_sets.id', '=', 'beatmaps.beatmapset_id')
+            // NB: lazer_scores.mods is stored as a double-encoded JSON string
+            // (a jsonb scalar, not an array), so `#>> '{}'` unwraps it to the
+            // inner JSON text before matching. "No Mod" means only Classic (CL)
+            // or nothing applied.
+            ->when($this->mod === 'NM', fn ($query) => $query->whereRaw(
+                "lazer_scores.mods #>> '{}' IN ('[]', '[{\"acronym\":\"CL\"}]')"))
+            ->when(in_array($this->mod, ['HD', 'HR', 'DT', 'FL', 'EZ', 'HT'], true),
+                fn ($query) => $query->whereRaw("lazer_scores.mods #>> '{}' LIKE ?", ['%"' . $this->mod . '"%']))
+            ->when(is_numeric($this->minStars),
+                fn ($query) => $query->where('beatmaps.difficulty_rating', '>=', (float) $this->minStars))
+            ->when(is_numeric($this->minPp),
+                fn ($query) => $query->where('lazer_scores.pp', '>=', (float) $this->minPp))
             ->orderBy($sort, $this->direction)
             ->paginate($this->pageSize);
 

@@ -40,8 +40,13 @@ class UserBuilder
             ->append('/scores/')
             ->append($type);
 
+        // Default osu! `limit` for this endpoint is tiny (~5), so big play
+        // sessions overflow the window between checks and scores get missed.
+        // Request the max in a single call — same request count, full session.
         return $this->client->get($url, [
             'mode' => 'osu',
+            'limit' => 100,
+            'include_fails' => 0,
         ]);
     }
 }

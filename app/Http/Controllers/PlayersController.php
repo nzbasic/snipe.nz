@@ -21,14 +21,6 @@ class PlayersController extends Controller
     {
         $stats = Leaderboard::query()->find($player->id);
 
-        $recent = Activity::query()
-            ->with(['oldUser', 'newUser', 'oldScore', 'newScore', 'beatmap', 'beatmap.beatmapset'])
-            ->where('new_user_id', $player->id)
-            ->orWhere('old_user_id', $player->id)
-            ->limit(5)
-            ->orderByDesc('created_at')
-            ->get();
-
         $targets = Activity::query()
             ->where('new_user_id', $player->id)
             ->join('players', 'players.id', '=', 'activity.old_user_id')
@@ -50,7 +42,6 @@ class PlayersController extends Controller
         return view('pages.players.show', [
             'stats' => $stats,
             'player' => $player,
-            'recent' => $recent,
             'targets' => $targets,
             'targeted_by' => $targeted_by,
         ]);

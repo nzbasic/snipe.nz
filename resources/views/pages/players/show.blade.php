@@ -82,7 +82,7 @@
             </x-layout.card>
         </div>
 
-        <x-osu.activity :recent="$recent" />
+        <livewire:player-activity :id="$player['id']" />
 
         <livewire:player-scores :id="$player['id']" />
     </x-layout.width.default>

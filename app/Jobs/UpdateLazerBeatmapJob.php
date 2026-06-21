@@ -22,7 +22,12 @@ class UpdateLazerBeatmapJob implements ShouldQueue
 
     public $tries = 1;
 
-    public function __construct(private readonly int $id) {}
+    /**
+     * @param  bool  $silent  Forwarded to AddScoreFromOsuResponse — used by the
+     *                        bulk reindex so recalculation-driven #1 flips don't
+     *                        spam the snipe feed. See update:beatmaps --silent.
+     */
+    public function __construct(private readonly int $id, private readonly bool $silent = false) {}
 
     public function handle()
     {
@@ -40,6 +45,6 @@ class UpdateLazerBeatmapJob implements ShouldQueue
         }
 
         $top = $scores[0];
-        (new AddScoreFromOsuResponse)($top);
+        (new AddScoreFromOsuResponse)($top, $this->silent);
     }
 }

@@ -15,7 +15,15 @@ use Illuminate\Support\Facades\Http;
 
 class AddScoreFromOsuResponse
 {
-    public function __invoke(array $top) {
+    /**
+     * @param  array  $top  The osu! country leaderboard top score.
+     * @param  bool  $silent  When true (e.g. a bulk reindex after an osu! scoring
+     *                        change), update #1 ownership without recording an
+     *                        Activity, sending a Discord embed, or refreshing the
+     *                        leaderboard view. Prevents flooding the snipe feed
+     *                        with recalculation-driven ownership flips.
+     */
+    public function __invoke(array $top, bool $silent = false) {
         $beatmap = Beatmap::find($top['beatmap_id']);
         if (!$beatmap) {
             return;
@@ -28,22 +36,24 @@ class AddScoreFromOsuResponse
 
         $foundPlayer = Player::find($player['id']);
         if (!$foundPlayer) {
-            Player::create([
+            $foundPlayer = Player::create([
                 'id' => $player['id'],
+                'username' => $player['username'],
+                'avatar_url' => $player['avatar_url'],
+            ]);
+        } else {
+            $foundPlayer->update([
                 'username' => $player['username'],
                 'avatar_url' => $player['avatar_url'],
             ]);
         }
 
-        $foundPlayer->update([
-            'username' => $player['username'],
-            'avatar_url' => $player['avatar_url'],
-        ]);
-
         $currentScore = LazerScore::query()
             ->where('beatmap_id', $top['beatmap_id'])
             ->whereNull('sniped_at')
             ->first();
+
+        $isRealSnipe = false;
 
         if ($currentScore) {
             $isSameScore = $currentScore->id === $top['id'];
@@ -51,24 +61,33 @@ class AddScoreFromOsuResponse
                 return;
             }
 
-            // the score is a snipe, add the new score, and set the values on the old score
+            // A genuine snipe means the new #1 was played *after* the one it
+            // displaces. If the new top is older, osu! merely reordered the
+            // leaderboard (e.g. mod-multiplier recalculation surfaced an old
+            // score) — update ownership but don't announce a snipe.
+            $isRealSnipe = !$silent
+                && Carbon::parse($top['ended_at'])->gt(Carbon::parse($currentScore->ended_at));
+
+            // The score is the new #1; set the snipe metadata on the old score.
             $currentScore->update([
                 'sniped_by_user_id' => $top['user_id'],
                 'sniped_at' => now(),
                 'sniped_by_score_id' => $top['id'],
             ]);
 
-            Activity::create([
-                'created_at' => $top['ended_at'],
+            if ($isRealSnipe) {
+                Activity::create([
+                    'created_at' => $top['ended_at'],
 
-                'old_user_id' => $currentScore->user_id,
-                'new_user_id' => $top['user_id'],
+                    'old_user_id' => $currentScore->user_id,
+                    'new_user_id' => $top['user_id'],
 
-                'old_score_id' => $currentScore->id,
-                'new_score_id' => $top['id'],
+                    'old_score_id' => $currentScore->id,
+                    'new_score_id' => $top['id'],
 
-                'beatmap_id' => $currentScore->beatmap_id,
-            ]);
+                    'beatmap_id' => $currentScore->beatmap_id,
+                ]);
+            }
         }
 
         $foundScore = LazerScore::find($top['id']);
@@ -102,9 +121,13 @@ class AddScoreFromOsuResponse
             ]);
         }
 
-        Leaderboard::refreshView();
+        // During a bulk reindex we skip the (expensive, non-concurrent) view
+        // refresh on every score and refresh once at the end instead.
+        if (!$silent) {
+            Leaderboard::refreshView();
+        }
 
-        if ($currentScore) {
+        if ($isRealSnipe) {
             (new SnipeEmbed($beatmap, $beatmapSet, $currentScore, $top))->send();
         }
     }

@@ -108,7 +108,9 @@ class ActivityTable extends Component implements HasForms, HasTable
                     ->sortable(),
                 TextColumn::make('current_first')
                     ->label('Current #1')
-                    ->state(fn (Activity $record): string => $record->new_score_sniped_at === null ? 'Yes' : 'No'),
+                    ->badge()
+                    ->state(fn (Activity $record): string => $record->new_score_sniped_at === null ? 'Yes' : 'No')
+                    ->color(fn (Activity $record): string => $record->new_score_sniped_at === null ? 'success' : 'gray'),
             ])
             ->filters([
                 // "Current #1" — the activity's new score still holds #1 when its

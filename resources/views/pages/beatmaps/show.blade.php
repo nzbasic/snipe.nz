@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', $set['artist'] . ' - ' . $set['title'] . ' [' . $beatmap['version'] . ']')
+
 @section('content')
     <x-layout.width.default>
         <x-layout.block>

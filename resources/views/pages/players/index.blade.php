@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Players')
+
 @section('content')
     <x-layout.width.full class="md:text-base">
         <x-layout.block>

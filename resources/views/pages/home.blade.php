@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Country #1 Tracker')
+
 @section('content')
     <x-layout.width.default>
         <x-layout.block title="Challenges">

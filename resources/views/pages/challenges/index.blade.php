@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Challenges')
+
 @section('content')
     <x-layout.width.default class="md:text-base">
         <x-layout.block>

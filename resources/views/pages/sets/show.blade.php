@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', $set['artist'] . ' - ' . $set['title'])
+
 @section('content')
     <x-layout.width.default>
         <x-layout.block class="">

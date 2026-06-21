@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Beatmaps')
+
 @section('content')
     <x-layout.width.full class="md:text-base">
         <div class="">

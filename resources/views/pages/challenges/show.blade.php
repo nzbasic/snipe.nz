@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Challenge')
+
 @php
     if ($challenge->type === 'player') {
         $href = "https://osu.ppy.sh/users/{$challenge->type_id}";

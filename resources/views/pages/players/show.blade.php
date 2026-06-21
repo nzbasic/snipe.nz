@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', $player['username'])
+
 @section('content')
     <x-layout.width.default>
         <x-layout.block>

@@ -88,6 +88,13 @@ class ActivityTable extends Component implements HasForms, HasTable
                 TextColumn::make('beatmap')
                     ->label('Beatmap')
                     ->state(fn (Activity $record): string => "{$record->artist} - {$record->set_title} [{$record->version}]")
+                    ->searchable(isIndividual: true, isGlobal: false, query: function (Builder $query, string $search): Builder {
+                        return $query->where(function (Builder $q) use ($search): void {
+                            $q->where('beatmap_sets.artist', 'ilike', "%{$search}%")
+                                ->orWhere('beatmap_sets.title', 'ilike', "%{$search}%")
+                                ->orWhere('beatmaps.version', 'ilike', "%{$search}%");
+                        });
+                    })
                     ->limit(40),
                 TextColumn::make('stars')
                     ->label('Stars')

@@ -3,14 +3,15 @@
 namespace App\Livewire;
 
 use App\Models\Activity;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Filters\QueryBuilder;
-use Filament\Tables\Filters\QueryBuilder\Constraints\NumberConstraint;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Url;
@@ -52,6 +53,7 @@ class ActivityTable extends Component implements HasForms, HasTable
                         'beatmaps.version as version',
                         'beatmaps.difficulty_rating as stars',
                         'lazer_scores.pp as pp',
+                        'lazer_scores.sniped_at as new_score_sniped_at',
                     ])
                     // When sorting by a numeric column, drop rows with no value
                     // (null/0) so they don't pile up at the top on a DESC sort
@@ -97,22 +99,55 @@ class ActivityTable extends Component implements HasForms, HasTable
                     ->alignRight()
                     ->numeric(0)
                     ->sortable(),
+                TextColumn::make('current_first')
+                    ->label('Current #1')
+                    ->badge()
+                    ->state(fn (Activity $record): string => $record->new_score_sniped_at === null ? 'Yes' : 'No')
+                    ->color(fn (Activity $record): string => $record->new_score_sniped_at === null ? 'success' : 'gray'),
             ])
-            // Advanced filters (like the Beatmaps page). These columns live on
-            // joined tables, so they must filter via the relationship (Filament
-            // otherwise qualifies the column with the base table -> activity.pp,
-            // which doesn't exist). Filament applies these as whereHas subqueries.
             ->filters([
-                QueryBuilder::make()
-                    ->constraints([
-                        NumberConstraint::make('pp')->label('PP')->relationship('newScore', 'pp'),
-                        NumberConstraint::make('stars')->label('Stars')->relationship('beatmap', 'difficulty_rating'),
-                        NumberConstraint::make('length')->label('Length (s)')->relationship('beatmap', 'total_length'),
-                        NumberConstraint::make('playcount')->label('Beatmap playcount')->relationship('beatmap', 'playcount'),
-                    ]),
+                // "Current #1" — the activity's new score still holds #1 when its
+                // lazer_scores row hasn't been sniped (sniped_at IS NULL).
+                TernaryFilter::make('current_first')
+                    ->label('Current #1')
+                    ->placeholder('All')
+                    ->trueLabel('Yes')
+                    ->falseLabel('No')
+                    ->queries(
+                        true: fn (Builder $query): Builder => $query->whereNull('lazer_scores.sniped_at'),
+                        false: fn (Builder $query): Builder => $query->whereNotNull('lazer_scores.sniped_at'),
+                        blank: fn (Builder $query): Builder => $query,
+                    ),
+                // Numeric range filters. Filament's QueryBuilder can't target
+                // manually-joined columns (it qualifies with the base table, or
+                // with relationship() forces broken aggregate subqueries), so use
+                // a plain form that queries the joined columns directly.
+                Filter::make('numeric')
+                    ->form([
+                        TextInput::make('min_pp')->label('Min PP')->numeric(),
+                        TextInput::make('max_pp')->label('Max PP')->numeric(),
+                        TextInput::make('min_stars')->label('Min stars')->numeric()->step(0.01),
+                        TextInput::make('max_stars')->label('Max stars')->numeric()->step(0.01),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(filled($data['min_pp'] ?? null), fn (Builder $q): Builder => $q->where('lazer_scores.pp', '>=', $data['min_pp']))
+                            ->when(filled($data['max_pp'] ?? null), fn (Builder $q): Builder => $q->where('lazer_scores.pp', '<=', $data['max_pp']))
+                            ->when(filled($data['min_stars'] ?? null), fn (Builder $q): Builder => $q->where('beatmaps.difficulty_rating', '>=', $data['min_stars']))
+                            ->when(filled($data['max_stars'] ?? null), fn (Builder $q): Builder => $q->where('beatmaps.difficulty_rating', '<=', $data['max_stars']));
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if (filled($data['min_pp'] ?? null)) $indicators[] = 'PP ≥ ' . $data['min_pp'];
+                        if (filled($data['max_pp'] ?? null)) $indicators[] = 'PP ≤ ' . $data['max_pp'];
+                        if (filled($data['min_stars'] ?? null)) $indicators[] = 'Stars ≥ ' . $data['min_stars'];
+                        if (filled($data['max_stars'] ?? null)) $indicators[] = 'Stars ≤ ' . $data['max_stars'];
+
+                        return $indicators;
+                    }),
             ])
             ->filtersFormColumns(2)
-            ->filtersFormWidth(MaxWidth::TwoExtraLarge);
+            ->filtersFormWidth(MaxWidth::Large);
     }
 
     public function render()

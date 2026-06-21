@@ -21,7 +21,18 @@
                     </div>
 
                     <div class="flex justify-between gap-2">
-                        <a href="/beatmaps/{{ $snipe['beatmap']['id'] }}" class="font-bold hover:underline truncate whitespace-nowrap">{{ $snipe['beatmap']['beatmapset']['artist'] }} - {{ $snipe['beatmap']['beatmapset']['title'] }}</a>
+                        <div class="flex items-center gap-1 min-w-0">
+                            <a href="/beatmaps/{{ $snipe['beatmap']['id'] }}" class="font-bold hover:underline truncate whitespace-nowrap">{{ $snipe['beatmap']['beatmapset']['artist'] }} - {{ $snipe['beatmap']['beatmapset']['title'] }}</a>
+                            <a
+                                href="https://osu.ppy.sh/beatmaps/{{ $snipe['beatmap']['id'] }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title="View on osu!"
+                                class="shrink-0 text-gray-500 hover:text-blue-500"
+                            >
+                                <x-lucide-external-link class="h-3.5 w-3.5" />
+                            </a>
+                        </div>
                         <a href="/beatmaps/{{ $snipe['beatmap']['id'] }}" class="font-bold hover:underline whitespace-nowrap">[{{ $snipe['beatmap']['version'] }}]</a>
                     </div>
                 </div>

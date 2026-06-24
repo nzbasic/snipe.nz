@@ -6,7 +6,7 @@ use App\Models\BeatmapSet;
 
 class AddBeatmapSetFromOsuResponse
 {
-    public function __invoke(array $beatmapset, bool $noBeatmaps = false): void{
+    public function __invoke(array $beatmapset, bool $noBeatmaps = false, bool $allowUnranked = false): void{
         $found = BeatmapSet::query()->where('id', $beatmapset['id'])->first();
         if ($found) {
             $found->update([
@@ -18,7 +18,7 @@ class AddBeatmapSetFromOsuResponse
             return;
         }
 
-        if (! in_array($beatmapset['status'], ["ranked", "approved", "loved"])) {
+        if (! $allowUnranked && ! in_array($beatmapset['status'], ["ranked", "approved", "loved"])) {
             return;
         }
 
@@ -39,7 +39,7 @@ class AddBeatmapSetFromOsuResponse
             'title_unicode' => $beatmapset['title_unicode'],
             'user_id' => $beatmapset['user_id'],
             'bpm' => $beatmapset['bpm'],
-            'ranked_date' => $beatmapset['ranked_date'],
+            'ranked_date' => $beatmapset['ranked_date'] ?? null,   // null for unranked sets
             'last_updated' => $beatmapset['last_updated'],
         ]);
 
@@ -53,7 +53,7 @@ class AddBeatmapSetFromOsuResponse
                 continue;
             }
 
-            (new AddBeatmapFromOsuResponse)($beatmap);
+            (new AddBeatmapFromOsuResponse)($beatmap, $allowUnranked);
         }
     }
 }

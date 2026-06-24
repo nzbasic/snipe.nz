@@ -36,11 +36,11 @@ class Osu implements ApiClient
         ]);
     }
 
-    public function call(string $method, string $endpoint, array $data = []): mixed
+    public function call(string $method, string $endpoint, array $data = [], array $headers = []): mixed
     {
         $this->accessToken = $this->getAccessToken();
 
-        return $this->parentCall($method, $endpoint, $data);
+        return $this->parentCall($method, $endpoint, $data, $headers);
     }
 
     public function beatmap(int|null $id = null, bool $fetchBeatmap = true): BeatmapBuilder

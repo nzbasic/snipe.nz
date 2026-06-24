@@ -70,14 +70,19 @@ class RecentScoreJob implements ShouldQueue
             }
 
             $beatmap = $score['beatmap'];
-            // (new AddBeatmapFromOsuResponse)($beatmap);
-            //
-            // $beatmapset = $score['beatmapset'];
-            // (new AddBeatmapSetFromOsuResponse)($beatmapset);
+            $status = $score['beatmapset']['status'] ?? null;
 
-            $existing = LazerScore::query()->where('beatmap_id', $beatmap['id'])->whereNull('sniped_at')->first();
-            if ((! $existing) || ($existing->id !== $score['id'])) {
-                dispatch(new UpdateLazerBeatmapJob($beatmap['id']))->onQueue('osu');
+            if (in_array($status, ['pending', 'wip', 'graveyard'], true)) {
+                // Unranked maps have no leaderboard to read; record the observed
+                // pass directly into our own per-player top-N store.
+                dispatch(new RecordUnrankedPassJob($score))->onQueue('osu');
+            } else {
+                // Ranked/approved/loved/qualified: re-read the country leaderboard
+                // if the current #1 we hold differs from what we just saw.
+                $existing = LazerScore::query()->where('beatmap_id', $beatmap['id'])->whereNull('sniped_at')->first();
+                if ((! $existing) || ($existing->id !== $score['id'])) {
+                    dispatch(new UpdateLazerBeatmapJob($beatmap['id']))->onQueue('osu');
+                }
             }
 
             \Cache::put("recent_score_{$score['id']}", true, now()->addDay());

@@ -43,10 +43,18 @@ class UserBuilder
         // Default osu! `limit` for this endpoint is tiny (~5), so big play
         // sessions overflow the window between checks and scores get missed.
         // Request the max in a single call — same request count, full session.
+        //
+        // x-api-version opts into the lazer `solo_score` format. Without it this
+        // endpoint returns the legacy shape, where passes on UNRANKED maps come
+        // back with id=0 and no total_score (unusable for tracking). With it,
+        // every score has a real unique id + total_score. Ranked handling here
+        // only reads id + beatmap, so the switch is safe.
         return $this->client->get($url, [
             'mode' => 'osu',
             'limit' => 100,
             'include_fails' => 0,
+        ], [
+            'x-api-version' => '20240529',
         ]);
     }
 }

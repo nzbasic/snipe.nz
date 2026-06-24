@@ -33,6 +33,12 @@ trait HasEndpoints
             $this->client->withToken($this->accessToken);
         }
 
+        // Per-request headers (e.g. x-api-version to opt into the lazer score
+        // format on endpoints that still default to the legacy shape).
+        if (! empty($headers)) {
+            $this->client->withHeaders($headers);
+        }
+
         // Make the request
         $res = $this->client->$method($url, $data);
 
@@ -52,7 +58,7 @@ trait HasEndpoints
      */
     public function get(string $endpoint, array $data = [], array $headers = []): mixed
     {
-        return $this->call('GET', $endpoint, $data);
+        return $this->call('GET', $endpoint, $data, $headers);
     }
 
     /**

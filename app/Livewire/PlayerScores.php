@@ -28,7 +28,7 @@ class PlayerScores extends Component
 
     #[Url('size')]
     #[Validate('numeric|min:1|max:50')]
-    public $pageSize = 10;
+    public $pageSize = 50;
 
     #[Url]
     #[Validate('in:any,NM,HD,HR,DT,FL,EZ,HT')]

@@ -16,43 +16,70 @@ class PlayerStatsChart extends ChartWidget
 
     protected function getData(): array
     {
+        // A #1 score contributes its pp/map to every day in [ended_at, sniped_at).
+        // Rather than joining the full date series against every score (which is
+        // O(days * scores) and seconds-slow for active players), build per-day
+        // deltas and take a running total. pp is additive per score; a beatmap
+        // counts once per day regardless of how many of the player's scores are
+        // active on it, so its intervals are merged before being summed.
         $data = \DB::select("
-            WITH RECURSIVE dates AS (
-                SELECT DATE('2024-11-16') as date
-
-                UNION ALL
-
-                SELECT DATE(date + INTERVAL '1 day')
-                FROM dates
-                WHERE date < CURRENT_DATE
+            WITH days AS (
+                SELECT generate_series(DATE '2024-11-16', CURRENT_DATE, INTERVAL '1 day')::date AS date
             ),
-            daily_scores AS (
-                SELECT
-                    d.date,
-                    s.id,
-                    s.pp,
-                    s.ended_at,
-                    s.sniped_at,
-                    s.beatmap_id
-                FROM dates d
-                LEFT JOIN lazer_scores s ON
-                    s.user_id = :user_id
-                    AND DATE(s.ended_at) <= d.date
-                    AND (
-                        (s.sniped_at IS NULL)
-                        OR (
-                            DATE(s.ended_at) <= d.date
-                            AND (s.sniped_at IS NULL OR DATE(s.sniped_at) > d.date)
-                        )
-                    )
+            pp_deltas AS (
+                SELECT GREATEST(DATE(ended_at), DATE '2024-11-16') AS day, SUM(pp) AS d_pp
+                FROM lazer_scores
+                WHERE user_id = :user_id AND ended_at IS NOT NULL
+                GROUP BY 1
+                UNION ALL
+                SELECT GREATEST(DATE(sniped_at), DATE '2024-11-16') AS day, -SUM(pp) AS d_pp
+                FROM lazer_scores
+                WHERE user_id = :user_id AND sniped_at IS NOT NULL
+                GROUP BY 1
+            ),
+            score_intervals AS (
+                SELECT beatmap_id,
+                       GREATEST(DATE(ended_at), DATE '2024-11-16') AS s,
+                       CASE WHEN sniped_at IS NULL THEN CURRENT_DATE + 1
+                            ELSE GREATEST(DATE(sniped_at), DATE '2024-11-16') END AS e
+                FROM lazer_scores
+                WHERE user_id = :user_id AND ended_at IS NOT NULL
+            ),
+            flagged AS (
+                SELECT beatmap_id, s, e,
+                       CASE WHEN s > COALESCE(MAX(e) OVER (PARTITION BY beatmap_id ORDER BY s, e
+                                                          ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING), s - 1)
+                            THEN 1 ELSE 0 END AS new_island
+                FROM score_intervals
+            ),
+            islands AS (
+                SELECT beatmap_id, s, e,
+                       SUM(new_island) OVER (PARTITION BY beatmap_id ORDER BY s, e) AS grp
+                FROM flagged
+            ),
+            merged AS (
+                SELECT MIN(s) AS s, MAX(e) AS e
+                FROM islands GROUP BY beatmap_id, grp
+            ),
+            map_deltas AS (
+                SELECT s AS day, 1 AS d_map FROM merged
+                UNION ALL
+                SELECT e AS day, -1 AS d_map FROM merged WHERE e <= CURRENT_DATE
+            ),
+            daily AS (
+                SELECT day, SUM(d_pp) AS d_pp, 0 AS d_map FROM pp_deltas GROUP BY day
+                UNION ALL
+                SELECT day, 0 AS d_pp, SUM(d_map) AS d_map FROM map_deltas GROUP BY day
+            ),
+            daily_agg AS (
+                SELECT day, SUM(d_pp) AS d_pp, SUM(d_map) AS d_map FROM daily GROUP BY day
             )
-            SELECT
-                date,
-                SUM(pp) as total_pp,
-                COUNT(DISTINCT beatmap_id) as unique_maps
-            FROM daily_scores
-            GROUP BY date
-            ORDER BY date;
+            SELECT d.date,
+                   SUM(COALESCE(dl.d_pp, 0)) OVER (ORDER BY d.date) AS total_pp,
+                   SUM(COALESCE(dl.d_map, 0)) OVER (ORDER BY d.date) AS unique_maps
+            FROM days d
+            LEFT JOIN daily_agg dl ON dl.day = d.date
+            ORDER BY d.date;
         ", ['user_id' => $this->playerId]);
 
         $pluck = match($this->filter) {

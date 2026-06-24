@@ -30,6 +30,12 @@
                     />
                 @endforeach
             </x-osu.challenges>
+
+            @if($history->hasPages())
+                <div class="mt-4">
+                    {{ $history->onEachSide(1)->links() }}
+                </div>
+            @endif
         </x-layout.block>
     </x-layout.width.default>
 @endsection

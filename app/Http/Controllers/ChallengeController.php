@@ -36,7 +36,7 @@ class ChallengeController extends Controller
                     });
             })
             ->orderByDesc('ends_at')
-            ->paginate(15);
+            ->paginate(50);
 
         return view('pages.challenges.index', [
             'active' => $active,

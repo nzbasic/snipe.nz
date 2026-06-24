@@ -66,6 +66,7 @@ class Beatmaps extends Component implements HasForms, HasTable
             )
             ->defaultSort('pp', 'desc')
             ->paginationPageOptions([10, 25, 50])
+            ->defaultPaginationPageOption(50)
             ->recordUrl(
                 fn (Beatmap $record): string => route('beatmaps.show', ['beatmap' => $record->beatmap_id]),
             )

@@ -14,7 +14,10 @@ class ChallengeController extends Controller
 
         return view('pages.challenges.index', [
             'active' => $challenges->where('status', 'active'),
-            'history' => $challenges->where('status', 'completed'),
+            'history' => $challenges->where('status', 'completed')
+                ->filter(fn (Challenge $challenge) => $challenge->activity->isNotEmpty())
+                ->sortByDesc('ends_at')
+                ->values(),
         ]);
     }
 

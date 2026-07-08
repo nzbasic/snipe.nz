@@ -58,6 +58,12 @@ class RecentScoreJob implements ShouldQueue
 
         $res = osu()->user($osuId)->scores()->get();
 
+        // Linked users (snipe link command) are eligible for new #1 top-play
+        // announcements. Load the link once; a cheap stored-pp heuristic decides
+        // whether to spend a /scores/best verification request (see below).
+        $link = DiscordUserLink::query()->where('osuId', $osuId)->first();
+        $topPlayCandidate = false;
+
         foreach ($res['scores'] as $score) {
             // sometimes type is not an array?
             if (! ($score['id'] ?? false)) {
@@ -67,6 +73,13 @@ class RecentScoreJob implements ShouldQueue
             $checked = \Cache::has("recent_score_{$score['id']}");
             if ($checked) {
                 continue;
+            }
+
+            // Heuristic: a pass whose pp beats the user's last-known #1 pp (or when
+            // we have no baseline yet) may be a new top play — flag it so we verify
+            // once after the loop instead of once per score.
+            if ($link && ($score['pp'] ?? null) && ($link->top_pp === null || $score['pp'] > $link->top_pp)) {
+                $topPlayCandidate = true;
             }
 
             $beatmap = $score['beatmap'];
@@ -86,6 +99,17 @@ class RecentScoreJob implements ShouldQueue
             }
 
             \Cache::put("recent_score_{$score['id']}", true, now()->addDay());
+        }
+
+        // One gated verification per scan: confirm the possible new #1 via a
+        // single /scores/best request and post it if real. A short lock stops
+        // overlapping scans (e.g. !r racing the sweep) from double-firing.
+        if ($link && $topPlayCandidate) {
+            $lock = "verify_top_{$osuId}";
+            if (! \Cache::has($lock)) {
+                \Cache::put($lock, true, now()->addMinutes(10));
+                dispatch(new VerifyTopPlayJob($osuId))->onQueue('osu');
+            }
         }
     }
 }

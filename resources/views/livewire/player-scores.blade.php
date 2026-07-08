@@ -140,7 +140,7 @@
                                         {{ \Carbon\Carbon::parse($score['ended_at'])->format('Y-m-d') }}
                                         @break
                                     @case('pp')
-                                        {{ number_format($score['pp']) }}pp
+                                        {{ number_format($score['pp'] ?? 0) }}pp
                                         @break
                                     @case('beatmap_length')
                                         {{ gmdate('i:s', $score['beatmap_length']) }}
@@ -151,7 +151,7 @@
                                 @endswitch
                             </p>
                         @else
-                            <p>{{ number_format($score['pp']) }}pp</p>
+                            <p>{{ number_format($score['pp'] ?? 0) }}pp</p>
                         @endif
                     </div>
                 </div>

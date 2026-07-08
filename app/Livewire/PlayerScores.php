@@ -97,7 +97,6 @@ class PlayerScores extends Component
             ])
             ->whereNull('sniped_at')
             ->where('lazer_scores.user_id', $this->id)
-            ->whereNotNull('pp')
             ->join('beatmaps', 'beatmaps.id', '=', 'lazer_scores.beatmap_id')
             ->join('beatmap_sets', 'beatmap_sets.id', '=', 'beatmaps.beatmapset_id')
             // NB: lazer_scores.mods is stored as a double-encoded JSON string
@@ -111,12 +110,19 @@ class PlayerScores extends Component
             ->when(is_numeric($this->minStars),
                 fn ($query) => $query->where('beatmaps.difficulty_rating', '>=', (float) $this->minStars))
             ->when(is_numeric($this->minPp),
-                fn ($query) => $query->where('lazer_scores.pp', '>=', (float) $this->minPp))
-            ->orderBy($sort, $this->direction)
-            ->paginate($this->pageSize);
+                fn ($query) => $query->where('lazer_scores.pp', '>=', (float) $this->minPp));
+
+        // Loved maps award no pp (stored NULL). Treat it as 0 so those #1s sort
+        // to the bottom by pp instead of being dropped or sorted as greatest
+        // (Postgres orders NULLs first on DESC).
+        if ($sort === 'pp') {
+            $q->orderByRaw('COALESCE(lazer_scores.pp, 0) ' . ($this->direction === 'asc' ? 'asc' : 'desc'));
+        } else {
+            $q->orderBy($sort, $this->direction);
+        }
 
         return view('livewire.player-scores', [
-            'scores' => $q,
+            'scores' => $q->paginate($this->pageSize),
         ]);
     }
 }

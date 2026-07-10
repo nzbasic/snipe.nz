@@ -7,7 +7,7 @@ use App\Models\Leaderboard;
 use Carbon\Carbon;
 
 /**
- * Announces a linked user's new #1 top play. Built from an osu! `/scores/best`
+ * Announces a player's new #1 top play. Built from an osu! `/scores/best`
  * entry (lazer format: nested beatmap/beatmapset/user + a `weight`). Mirrors
  * SnipeEmbed's layout and posts to the dedicated top-plays webhook.
  */

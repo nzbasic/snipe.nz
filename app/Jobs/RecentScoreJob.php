@@ -26,6 +26,8 @@ class RecentScoreJob implements ShouldQueue
      */
     public function handle(): void
     {
+        $player = null;
+
         if ($this->name) {
             $player = Player::where('username', 'ilike', '%' . $this->name . '%')->first();
             if (! $player) {
@@ -35,33 +37,40 @@ class RecentScoreJob implements ShouldQueue
 
                 // get player
                 $res = osu()->get(Str::of('/users/')->append($this->name)->toString());
-                $player = Player::create([
-                    'id' => $res['id'],
+                $player = Player::firstOrCreate(['id' => $res['id']], [
                     'username' => $res['username'],
                     'avatar_url' => $res['avatar_url'],
                 ]);
             }
-
-            $osuId = $player->id;
         } else if ($this->discordId) {
             $found = DiscordUserLink::query()->where('discordId', $this->discordId)->first();
             if (! $found) {
                 return;
             }
 
-            $osuId = $found->osuId;
+            // Mongo stores osuId as a string; everything downstream is int-keyed.
+            $osuId = (int) $found->osuId;
+            $player = Player::find($osuId);
+            if (! $player) {
+                $res = osu()->get("/users/{$osuId}");
+                $player = Player::firstOrCreate(['id' => $res['id']], [
+                    'username' => $res['username'],
+                    'avatar_url' => $res['avatar_url'],
+                ]);
+            }
         }
 
-        if (! $osuId) {
+        if (! $player) {
             return;
         }
 
+        $osuId = $player->id;
+
         $res = osu()->user($osuId)->scores()->get();
 
-        // Linked users (snipe link command) are eligible for new #1 top-play
-        // announcements. Load the link once; a cheap stored-pp heuristic decides
-        // whether to spend a /scores/best verification request (see below).
-        $link = DiscordUserLink::query()->where('osuId', $osuId)->first();
+        // Every tracked player is eligible for new #1 top-play announcements.
+        // A cheap stored-pp heuristic (players.top_pp) decides whether to spend
+        // a /scores/best verification request (see below).
         $topPlayCandidate = false;
 
         foreach ($res['scores'] as $score) {
@@ -75,10 +84,10 @@ class RecentScoreJob implements ShouldQueue
                 continue;
             }
 
-            // Heuristic: a pass whose pp beats the user's last-known #1 pp (or when
+            // Heuristic: a pass whose pp beats the player's last-known #1 pp (or when
             // we have no baseline yet) may be a new top play — flag it so we verify
             // once after the loop instead of once per score.
-            if ($link && ($score['pp'] ?? null) && ($link->top_pp === null || $score['pp'] > $link->top_pp)) {
+            if (($score['pp'] ?? null) && ($player->top_pp === null || $score['pp'] > $player->top_pp)) {
                 $topPlayCandidate = true;
             }
 
@@ -104,7 +113,7 @@ class RecentScoreJob implements ShouldQueue
         // One gated verification per scan: confirm the possible new #1 via a
         // single /scores/best request and post it if real. A short lock stops
         // overlapping scans (e.g. !r racing the sweep) from double-firing.
-        if ($link && $topPlayCandidate) {
+        if ($topPlayCandidate) {
             $lock = "verify_top_{$osuId}";
             if (! \Cache::has($lock)) {
                 \Cache::put($lock, true, now()->addMinutes(10));

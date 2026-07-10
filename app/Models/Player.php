@@ -13,6 +13,12 @@ class Player extends Model
         'id',
         'username',
         'avatar_url',
+        'top_pp',
+        'top_score_id',
+    ];
+
+    protected $casts = [
+        'top_pp' => 'float',
     ];
 
     public function scores(): HasMany

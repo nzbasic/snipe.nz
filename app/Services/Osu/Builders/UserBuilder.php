@@ -17,6 +17,17 @@ class UserBuilder
         $this->id = $id;
     }
 
+    public function details(string $mode = 'osu')
+    {
+        if (! $this->id) {
+            return $this;
+        }
+
+        $this->result['user'] = $this->client->get("users/{$this->id}/{$mode}", []);
+
+        return $this;
+    }
+
     public function scores(string $type = 'recent')
     {
         if (! $this->id) {

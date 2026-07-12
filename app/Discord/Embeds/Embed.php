@@ -19,10 +19,19 @@ abstract class Embed
         return config('services.discord.webhook');
     }
 
+    /**
+     * The display name the webhook posts under. Subclasses can override
+     * (e.g. TopPlayEmbed -> "NZ Top Plays").
+     */
+    protected function username(): string
+    {
+        return 'snipe.nz';
+    }
+
     public function send(): void {
         Http::post($this->webhook(), [
             'avatar_url' => "https://snipe.nz/icon.png",
-            'username' => 'snipe.nz',
+            'username' => $this->username(),
             'content' => $this->content,
             'embeds' => $this->embeds,
         ]);

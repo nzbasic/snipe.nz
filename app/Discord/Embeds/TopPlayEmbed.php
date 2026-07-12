@@ -3,17 +3,17 @@
 namespace App\Discord\Embeds;
 
 use App\Models\Beatmap;
-use App\Models\Leaderboard;
 use Carbon\Carbon;
 
 /**
  * Announces a player's new #1 top play. Built from an osu! `/scores/best`
- * entry (lazer format: nested beatmap/beatmapset/user + a `weight`). Mirrors
+ * entry (lazer format: nested beatmap/beatmapset/user + a `weight`), plus an
+ * optional full user object (with statistics) for the author line. Mirrors
  * SnipeEmbed's layout and posts to the dedicated top-plays webhook.
  */
 class TopPlayEmbed extends Embed
 {
-    public function __construct(array $score)
+    public function __construct(array $score, ?array $userDetails = null)
     {
         $beatmap = $score['beatmap'] ?? [];
         $set = $score['beatmapset'] ?? [];
@@ -53,19 +53,20 @@ class TopPlayEmbed extends Embed
         $miss = $score['statistics']['miss'] ?? 0;
         $scoreLine2 = "{$pp}pp    $comboStr    {$miss}x";
 
-        // Author: prefer the snipe.nz profile (rank / total pp / #1s) like
-        // SnipeEmbed; fall back to the osu! profile for users not on the
-        // snipe leaderboard (no #1s yet).
-        $leaderboard = $userId ? Leaderboard::query()->where('user_id', $userId)->first() : null;
-        if ($leaderboard) {
-            $authorName = "{$leaderboard->username} #" . number_format($leaderboard->rank)
-                . ' (' . number_format($leaderboard->raw_total_pp) . 'pp — '
-                . number_format($leaderboard->total_firsts) . ' #1s)';
-            $authorUrl = "https://snipe.nz/players/{$userId}";
-        } else {
-            $authorName = $user['username'] ?? (string) $userId;
-            $authorUrl = $userId ? "https://osu.ppy.sh/users/{$userId}" : null;
+        // Author: scorepost style — "username: 8,140.57pp (#19,735 NZ120)" —
+        // built from the full user object's statistics when available.
+        $username = $userDetails['username'] ?? $user['username'] ?? (string) $userId;
+        $stats = $userDetails['statistics'] ?? null;
+        $authorName = $username;
+        if ($stats && isset($stats['pp'], $stats['global_rank'])) {
+            $country = $userDetails['country_code'] ?? $user['country_code'] ?? '';
+            $countryRank = $stats['country_rank'] ?? null;
+            $authorName = "$username: " . number_format($stats['pp'], 2) . 'pp'
+                . ' (#' . number_format($stats['global_rank'])
+                . ($countryRank ? " $country" . number_format($countryRank) : '')
+                . ')';
         }
+        $authorUrl = $userId ? "https://osu.ppy.sh/users/{$userId}" : null;
 
         $embeds = [
             [
@@ -94,5 +95,10 @@ class TopPlayEmbed extends Embed
     protected function webhook(): ?string
     {
         return config('services.discord.top_play_webhook');
+    }
+
+    protected function username(): string
+    {
+        return 'osu!nz top plays';
     }
 }

@@ -26,6 +26,9 @@ class VerifyTopPlayJob implements ShouldQueue
 
     public $tries = 1;
 
+    /** Don't announce top plays below this — filters out new/low-pp accounts. */
+    private const MIN_PP = 100;
+
     public function __construct(private readonly int $osuId) {}
 
     public function handle(): void
@@ -49,9 +52,13 @@ class VerifyTopPlayJob implements ShouldQueue
         $player->top_score_id = $top['id'];
         $player->save();
 
-        // Announce only a genuinely new #1 — never on first seed, never a repeat.
-        if ($hadBaseline && $previousTopId !== $top['id']) {
-            (new TopPlayEmbed($top))->send();
+        // Announce only a genuinely new #1 — never on first seed, never a
+        // repeat, and only above the pp floor (baseline still updates above).
+        if ($hadBaseline && $previousTopId !== $top['id'] && $top['pp'] >= self::MIN_PP) {
+            // One extra request for the author line's stats (total pp, global +
+            // country rank); only runs when a post is actually going out.
+            $details = osu()->user($this->osuId)->details()->get()['user'] ?? null;
+            (new TopPlayEmbed($top, ($details['ok'] ?? false) ? $details : null))->send();
         }
     }
 }
